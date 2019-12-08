@@ -1,0 +1,69 @@
+addpath('~/MWI/')
+load mask.mat
+load NM_Mag_Phase.mat
+
+Info.Mask = Mask;
+Info.FirstTE = 1.45e-3;
+Info.EchoSpacing = 1.05e-3;
+Info.Vox = [2 2 3] * 1e-3;
+Info.EchoIndexes = [6 8];%testing
+Info.Method = 1; %Du
+[LFGC,Gp, Gv, Gs] = LFG_Correction(Mag, Phase, Info);
+
+
+E.FirstEchoTime = 1.45e-3;
+E.EchoSpacing = 1.05e-3;
+
+sd = size(Mag);
+res = zeros(sd(1),sd(2),sd(3));
+Params = zeros(sd(1),sd(2),sd(3),7); % must indclude number of parameters in this line!
+res2 = res;
+Params2 = zeros(sd(1),sd(2),sd(3),3); % must indclude number of parameters in this line!
+
+
+tic
+np = sd(1);
+nv = sd(2);
+ns = sd(3);
+Threshold = 0.01;
+LastIndex = 50;
+Echoes = 2:51;
+ResThreshold = 0.2;
+Info.Algorithm = 'trust-region-reflective';
+
+disp('Single Component Fitting Started!...')
+parfor i = 1:np
+	for j = 1:nv
+		for k = 1:ns
+			if Mask(i,j,k) > 0
+				tmp = squeeze(LFGC(i,j,k,:));
+	                   	tmpd = tmp(1:LastIndex);
+	                   	[Params2(i,j,k,:) , res2(i,j,k)] = SingleComponentNLLS(tmpd,Info);
+			end
+		end
+	end
+end
+disp('SCF Completed!')
+disp('3PM fitting started!...')
+parfor i = 1:np
+	for j = 1:nv
+		for k = 1:ns
+			if Mask(i,j,k) > 0
+				tmp = squeeze(LFGC(i,j,k,:));
+	                   	tmpd = tmp(1:LastIndex);
+	                   	[Params(i,j,k,:) , res(i,j,k)] = ThreePoolM_NLLS(tmpd,Info);
+			end
+		end
+	end
+end
+disp('Finished fitting 3PM!')
+
+MWF = Find_MWF(Params, [1 4 7], 'NLLS_Test');
+
+disp('Saving results...')
+Description = 'Calculating MWF from LFGC! 8Param 3PM! First 50Echoes(2:51)!';
+clear Mag Phase
+runtime = toc;
+save('NM_Test1_50E')
+
+disp('Done!')
