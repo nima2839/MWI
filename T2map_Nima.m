@@ -4,7 +4,7 @@ function [maps,distributions,image_corr] = T2map_Nima(image,varargin)
 %	- Regularization is disabled in this version!
 %	- A flip angle map can be given as input;
 %	- Flip angles for spline function now go over 180, the results are mirrored to the other side of 180;
-%	- Number of flip angles used for spline func. is increased from 8 to 18
+%	- Number of flip angles used for spline func. is kept unchanged, but it can be increased fo better accuracy!
 %	- Min flip angle is increased from 50 to 60;
 %	- Observation Weights has been added
 
@@ -86,8 +86,8 @@ p.addParamValue('Threshold',0,@(x)isnumeric(x) && isscalar(x)); % 200 to 0; Sinc
 p.addParamValue('Chi2Factor',1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
 p.addParamValue('nT2',200,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=300);
 p.addParamValue('T2Range',[0.015,2],@(x)isnumeric(x) && length(x)==2 && x(2)>x(1) && x(1)>=0.001 && x(2)<=10);
-p.addParamValue('MinRefAngle',50,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
-p.addParamValue('nAngles',18,@(x)isnumeric(x) && isscalar(x) && x>1);
+p.addParamValue('MinRefAngle',60,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
+p.addParamValue('nAngles',8,@(x)isnumeric(x) && isscalar(x) && x>1);
 p.addParamValue('Reg','lcurve',@(x)any(strcmp(x,{'no','chi2','lcurve'})));
 p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
 p.addParamValue('nCores',4,@(x)isnumeric(x) && isscalar(x) && x>=1 && x<=8);
@@ -248,7 +248,7 @@ for row=1:nrows
                     end
                     % Find the minimum chi-squared and the corresponding angle
                     alpha_spline=flip_angles(1):0.001:flip_angles(end);
-                    chi2_spline=interp1(flip_angles,chi2_alpha,alpha_spline,'spline');
+                    chi2_spline=interp1([flip_angles, (360 - flip(flip_angles(1:end-1)))], [chi2_alpha, flip(chi2_alpha(1:end-1))], alpha_spline,'spline'); % Nima : Here is a trick for ya!
                     [dummy,index]=min(chi2_spline);
                     alpha(col,slice)=alpha_spline(index);
                     if alpha_spline(index) > 182 % Nima: maps everything to under 180; Threshold value si a bit arbitrary
