@@ -1,4 +1,4 @@
-function X = cum_NNLS(C, d, w, Chi2Factor)
+function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 	% solves : ||cum(C)x -Cum(d)|| = 0;
 	% d: size must be 1*n'
 	% w: observation weights; same size as "d";
@@ -15,6 +15,8 @@ function X = cum_NNLS(C, d, w, Chi2Factor)
 	d = PreProcess(d);
 	if nargin < 4
 		X = lsqnonneg(C,d);
+		mu = nan;
+		Chi2FactorActual = 1;
 		return;
 	end
 % X = LSQNONNEG_REG(C,d,Chi2Factor) returns the regularized NNLS solution X

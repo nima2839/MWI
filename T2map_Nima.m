@@ -3,8 +3,9 @@ function [maps,distributions,image_corr] = T2map_Nima(image,varargin)
 % Nima Changes:
 %	- Regularization is disabled in this version!
 %	- A flip angle map can be given as input;
-%	- Flip angles for spline function now go over 180, to 220 degrees;
+%	- Flip angles for spline function now go over 180, the results are mirrored to the other side of 180;
 %	- Number of flip angles used for spline func. is increased from 8 to 18
+%	- Min flip angle is increased from 50 to 60;
 %	- Observation Weights has been added
 
 %
@@ -234,15 +235,14 @@ for row=1:nrows
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data=squeeze(image(row,col,slice,1:nechs));
-				        obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
-                obs_weigts(1:5) = 2;
+				obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
                 if faset==0
                     %======================================================
                     % Find optimum flip angle
                     %======================================================
                     % Fit each basis and  find chi-squared
                     for a=1:nangles
-                        T2_dis_ls=Weighted_NNLS(basis_angles{a},decay_data, obs_weigts);
+                        [T2_dis_ls, ~, ~] = Nima_UBC_NNLS(basis_angles{a},decay_data, obs_weigts); % Nima: This is to be tested!
                         decay_pred=basis_angles{a}*T2_dis_ls;
                         chi2_alpha(a)=sum((decay_data-decay_pred).^2);
                     end
@@ -285,12 +285,12 @@ for row=1:nrows
                 %switch reg % Nima: regularization is now disabled
                  %   case 'no'
                     % Fit T2 distribution using unregularized NNLS
-                    T2_dis=Weighted_NNLS(basis_decay,decay_data, obs_weigts);
-                    mu=nan;
-                    chi2=1;
+                    %T2_dis=Weighted_NNLS(basis_decay,decay_data, obs_weigts);
+                    %mu=nan;
+                    %chi2=1;
                 %    case 'chi2'
                     % Fit T2 distribution using chi2 based regularized NNLS
-                %    [T2_dis,mu,chi2]=lsqnonneg_reg(basis_decay,decay_data,Chi2Factor);
+                    [T2_dis,mu,chi2] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weigts, Chi2Factor);
                 %    case 'lcurve'
                     % Fit T2 distribution using lcurve based regularization
                  %   [T2_dis,mu,chi2]=lsqnonneg_lcurve(basis_decay,decay_data);
