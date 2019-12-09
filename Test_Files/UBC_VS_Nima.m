@@ -1,6 +1,5 @@
 addpath(pwd)
-addpath ~/Simulation
-addpath ~/MWI
+addpath(genpath('~/MWI'))
 addpath(genpath('~/GRASE/Postprocessing'))
 
 MyInfo.NumWaterComp = 3;
@@ -8,7 +7,7 @@ MyInfo.Times = (1:32)*1e-2;
 
 MyInfo.TimeConstRange{1} = [20 20]*1e-3;
 MyInfo.TimeConstRange{2} = [80 80]*1e-3;
-MyInfo.TimeConstRange{3} = [300 300]*1e-3;
+MyInfo.TimeConstRange{3} = [500 500]*1e-3;
 MyInfo.T1Val = [.8 1 1.5];
 MyInfo.FractionRange{1}= [0.15,0.15];
 MyInfo.FractionRange{2}= [0.75,0.75];
@@ -22,8 +21,16 @@ FA = 80:2:180;
 nFA = length(FA);
 
 SNR = 40:5:100;
+nSNR = length(SNR)
 
-for j = 1:length(SNR)
+time = 0;
+
+for j = 1:nSNR
+	if time > 0
+		fprintf('ETA: %f minutes! \n', time)
+	else
+		disp('Process Started...')
+	end
 	MyInfo.SNR = SNR(j);
 	tic;
 	parfor i  = 1:nFA
@@ -34,8 +41,10 @@ for j = 1:length(SNR)
 		[dist{i}{j},maps{i}{j}] = UBC_Fitting(a);
 	end
 	time = toc;
-	fprintf('ETA: %f minutes! \n', (length(SNR) - j)* time/60)
+	time = (length(SNR) - j)* time/60;
 end
+
+clear time i j
 
 cd ~/Simulation/UBC_VS_Nima
 save('UBCNIMA_Results')
