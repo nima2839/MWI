@@ -44,9 +44,6 @@ function [maps,distributions,image_corr] = T2map_Nima(image,varargin)
 %       'Save_NNLS_basis': yes/no option to include a 5-D matrix of NNLS
 %                          basis matrices as another output within the maps
 %                          structure ('no')
-%       'Waitbar': yes/no option determining whether a progress bar is
-%                  generated.  Selecting 'no' will also suppress any
-%                  mesages printed to the command window. ('yes')
 %
 % Ouputs:
 %   maps: Structure containing 3D maps of the following parameters
@@ -98,7 +95,6 @@ p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==4);
 
 %
 p.addParamValue('Save_NNLS_basis','no',@(x)any(strcmp(x,{'yes','no'})));
-p.addParamValue('Waitbar','no',@(x)any(strcmp(x,{'yes','no'})));
 % Parse inputs (MATLAB will throw an error here if any variables fail validation)
 p.parse(image,varargin{:});
 % Define all variables from the inputParser Results
@@ -120,7 +116,6 @@ nCores=p.Results.nCores;
 
 savereg=strcmp(p.Results.Save_regparam,'yes');
 saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
-waitbar=strcmp(p.Results.Waitbar,'yes');
 
 %==========================================================================
 % Initialize all the data
@@ -146,22 +141,14 @@ chi2map=nan*ones(nrows,ncols,nslices);
 if saveNNLS
     decay_basis=nan*ones(nrows,ncols,nslices,nechs,nT2);
 end
-if waitbar
-    % Estimate completion time
-    num=sum(sum(sum(image(:,:,:,1)>=Threshold)));
-    est=(num*0.0117)*(nechs/32)*(nT2/40)*(nangles/8)*(8/nCores);
-    if faset~=0
-        est=est/5.2;
-    end
-    fprintf('ESTIMATED completion time is %2.0f hours, %2.0f minutes...\n',floor(est/3600),(est/3600-floor(est/3600))*60)
-end
+
 %==========================================================================
 % Find the basis matrices for each flip angle
 %==========================================================================
 % Initialize parameters and variable for angle optimization
 T2_times=logspace(log10(T2Range(1)),log10(T2Range(2)),nT2);
 if faset==0
-    flip_angles=linspace(minangle,220,nangles); % Nima: Changed from 180 to 220
+    flip_angles=linspace(minangle, 180, nangles);
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
@@ -197,15 +184,6 @@ end
 
 try
 
-if waitbar
-    pctRunOnAll javaaddpath /data/workgroup/matlab/testing_functions/SEcorr/java
-
-    progressStepSize = 1;
-    ppm = ParforProgMon('T2map_SEcorr: ', nrows, progressStepSize, 400, 80);
-else
-    ppm=[];
-end
-
 for row=1:nrows
     %row
     gdn=nan*ones(ncols,nslices);
@@ -235,7 +213,7 @@ for row=1:nrows
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data=squeeze(image(row,col,slice,1:nechs));
-				obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
+				        obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
                 if faset==0
                     %======================================================
                     % Find optimum flip angle
@@ -330,15 +308,7 @@ for row=1:nrows
     if saveNNLS
         decay_basis(row,:,:,:,:) = basis_matrices;
     end
-    if waitbar
-        % Increment counter for waitbar
-        if mod(row,1)==0
-            ppm.increment();
-        end
-    end
-end
-if waitbar
-    ppm.delete();
+
 end
 
 catch err
@@ -369,11 +339,6 @@ if saveNNLS
     maps.NNLS_basis=decay_basis;
 end
 
-if waitbar
-    % Print message on finish with image name and total run time
-    name=inputname(1);
-    fprintf('%s completed in %2.0f hours, %2.0f minutes\n',name,floor(toc(tstart)/3600),(toc(tstart)/3600-floor(toc(tstart)/3600))*60)
-end
 
 %save basis_matrices basis_matrices
 
