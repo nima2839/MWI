@@ -185,7 +185,7 @@ end
 
 try
 
-parfor row=1:nrows
+for row=1:nrows
     %row
     gdn=nan*ones(ncols,nslices);
     ggm=nan*ones(ncols,nslices);
@@ -208,7 +208,7 @@ parfor row=1:nrows
     else
         basis_matrices=[];
     end
-    for col=1:ncols
+    parfor col=1:ncols
         for slice=1:nslices
             % Conditional loop to reject low signal pixels
             if image(row,col,slice,1)>=Threshold
