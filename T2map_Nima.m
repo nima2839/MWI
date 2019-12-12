@@ -153,13 +153,13 @@ if faset==0
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
-    temp_basis_decay=zeros(nechs,nT2);
+    basis_decay=zeros(nechs,nT2);
     for a=1:nangles
         for x=1:nT2
             echo_amp = EPGdecaycurve(nechs, flip_angles(a), TE, T2_times(x), T1(x), RefCon); % Nima : different T1 value could be used for each T2
-            temp_basis_decay(:,x) = echo_amp';
+            basis_decay(:,x) = echo_amp';
         end
-        basis_angles{a}= temp_basis_decay;
+        basis_angles{a}=basis_decay;
     end
     basis_decay_faset=[];  %ignore
 else
@@ -184,8 +184,8 @@ end
 %end
 
 try
-
-for row=1:nrows
+obs_weigts = ones(1,32); % Nima: set observation weights here
+parfor row=1:nrows
     %row
     gdn=nan*ones(ncols,nslices);
     ggm=nan*ones(ncols,nslices);
@@ -193,7 +193,7 @@ for row=1:nrows
     SNR=nan*ones(ncols,nslices);
     FNR=nan*ones(ncols,nslices);
     alpha=nan*ones(ncols,nslices);
-    %chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
+    chi2_alpha=nan*ones(1,nangles);
     dists=nan*ones(ncols,nslices,nT2);
     mus=nan*ones(ncols,nslices);
     chi2s=nan*ones(ncols,nslices);
@@ -208,15 +208,12 @@ for row=1:nrows
     else
         basis_matrices=[];
     end
-    parfor col=1:ncols
-        basis_decay=zeros(nechs,nT2); % Nima : to test if it fixes the parfor problem
-        chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
-        for slice = 1:nslices
+    for col=1:ncols
+        for slice=1:nslices
             % Conditional loop to reject low signal pixels
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,1:nechs));
-				        obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
                 if faset==0
                     %======================================================
                     % Find optimum flip angle
@@ -255,10 +252,10 @@ for row=1:nrows
 
                 %
 %                 basis_matrices(col,slice,:,:)=basis_decay;
-                % Nima : test to see if it fixes the parfor bug
-                %if saveNNLS
-                %    basis_matrices(col,slice,:,:) = basis_decay;
-                %end
+                %
+                if saveNNLS
+                    basis_matrices(col,slice,:,:) = basis_decay;
+                end
                 %==========================================================
                 % Calculate T2 distribution and global parameters
                 %==========================================================
