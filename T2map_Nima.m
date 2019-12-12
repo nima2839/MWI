@@ -240,14 +240,14 @@ for row=1:nrows
                     % Compute the NNLS basis over T2 space
 
                     for x=1:nT2
-                        echo_amp=EPGdecaycurve(nechs,alpha(col,slice),TE,T2_times(x),T1,RefCon);
-                        basis_decay(:,x)=echo_amp';
+                        echo_amp = EPGdecaycurve(nechs, alpha(col,slice), TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
+                        basis_decay(:,x) = echo_amp';
                     end
                 else
                     alpha(col,slice)=FlipAngleMap(row,col,slice);
                     for x=1:nT2
-                        echo_amp=EPGdecaycurve(nechs,alpha(col,slice),TE,T2_times(x),T1,RefCon);
-                        basis_decay(:,x)=echo_amp';
+                        echo_amp = EPGdecaycurve(nechs, alpha(col,slice), TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
+                        basis_decay(:,x) = echo_amp';
                     end
                 end
 
@@ -255,7 +255,7 @@ for row=1:nrows
 %                 basis_matrices(col,slice,:,:)=basis_decay;
                 %
                 if saveNNLS
-                    basis_matrices(col,slice,:,:)=basis_decay;
+                    basis_matrices(col,slice,:,:) = basis_decay;
                 end
                 %==========================================================
                 % Calculate T2 distribution and global parameters
