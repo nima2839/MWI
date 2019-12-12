@@ -46,7 +46,7 @@ for c = 1 : Zres
 end
 
 runtime=toc;
-cd ~/GRASE_Results
+cd ~/GRASE/GRASE_Results
 clear MWI_1 MWI
 save(['GRASE_Results_Input_T1_', FileName])
 end
