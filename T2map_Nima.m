@@ -229,7 +229,7 @@ for row=1:nrows
                     chi2_spline=interp1([flip_angles, (360 - flip(flip_angles(1:end-1)))], [chi2_alpha, flip(chi2_alpha(1:end-1))], alpha_spline,'spline'); % Nima : Here is a trick for ya!
                     [dummy,index]=min(chi2_spline);
                     alpha(col,slice)=alpha_spline(index);
-                    if alpha_spline(index) > 182 % Nima: maps everything to under 180; Threshold value si a bit arbitrary
+                    if alpha_spline(index) > 180.5 % Nima: maps everything to under 180; Threshold value is a bit arbitrary
                       alpha(col,slice)= 360 - alpha_spline(index);
                     end
                     %======================================================
