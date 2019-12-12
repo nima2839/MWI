@@ -185,7 +185,7 @@ end
 
 try
 
-for row=1:nrows
+parfor row=1:nrows
     %row
     gdn=nan*ones(ncols,nslices);
     ggm=nan*ones(ncols,nslices);
