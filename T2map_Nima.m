@@ -209,6 +209,7 @@ for row=1:nrows
         basis_matrices=[];
     end
     parfor col=1:ncols
+        basis_decay=zeros(nechs,nT2); % Nima : to test if it fixes the parfor problem
         chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
         for slice = 1:nslices
             % Conditional loop to reject low signal pixels
