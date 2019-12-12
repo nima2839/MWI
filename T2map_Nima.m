@@ -254,10 +254,10 @@ for row=1:nrows
 
                 %
 %                 basis_matrices(col,slice,:,:)=basis_decay;
-                %
-                if saveNNLS
-                    basis_matrices(col,slice,:,:) = basis_decay;
-                end
+                % Nima : test to see if it fixes the parfor bug
+                %if saveNNLS
+                %    basis_matrices(col,slice,:,:) = basis_decay;
+                %end
                 %==========================================================
                 % Calculate T2 distribution and global parameters
                 %==========================================================
