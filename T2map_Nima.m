@@ -153,13 +153,13 @@ if faset==0
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
-    basis_decay=zeros(nechs,nT2);
+    temp_basis_decay=zeros(nechs,nT2);
     for a=1:nangles
         for x=1:nT2
             echo_amp = EPGdecaycurve(nechs, flip_angles(a), TE, T2_times(x), T1(x), RefCon); % Nima : different T1 value could be used for each T2
-            basis_decay(:,x) = echo_amp';
+            temp_basis_decay(:,x) = echo_amp';
         end
-        basis_angles{a}=basis_decay;
+        basis_angles{a}= temp_basis_decay;
     end
     basis_decay_faset=[];  %ignore
 else
@@ -210,7 +210,7 @@ for row=1:nrows
     end
     parfor col=1:ncols
         chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
-        for slice=1:nslices
+        for slice = 1:nslices
             % Conditional loop to reject low signal pixels
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
