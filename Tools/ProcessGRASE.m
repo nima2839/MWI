@@ -3,7 +3,7 @@ function  ProcessGRASE( FileName )
 tic;
 
 % Nima : testing an arbitrary T1 map for GRASE data
-T1 = ones(1,200)
+T1 = ones(1,200);
 T1(1:25) = .2; % 200 ms
 T1(25:40) = .6; % 600 ms
 % The rest can be left at 1 second since the difference is negligible!
