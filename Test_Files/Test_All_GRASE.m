@@ -1,4 +1,4 @@
-addpath('~/GRASE/Postprocessing')
+addpath(genpath('~/GRASE/Postprocessing'))
 addpath(genpath('~/MWI'))
 names{1} = 'Can-05-Rrm-064-M0R';
 
