@@ -1,13 +1,13 @@
 function [maps,distributions, T1] = T2map_Nima(image,varargin)
 %
 % Nima Changes:
-%	- Regularization is disabled in this version!
+%	- Regularization is always enabled in this version!
 %	- A flip angle map can be given as input;
 %	- Flip angles for spline function now go over 180, the results are mirrored to the other side of 180;
-%	- Number of flip angles used for spline func. is kept unchanged, but it can be increased fo better accuracy!
+%	- Number of flip angles used for spline func. is kept unchanged, but it can be increased for better accuracy!
 %	- Min flip angle is increased from 50 to 60;
-%	- Observation Weights has been added
-% - Add T1 map vector as an input for their corresponding T2 in T2 distribution
+%	- Observation Weights has been added;
+% - Add T1 map vector as an input for their corresponding T2 in T2 distribution;
 
 %
 % [maps,distributions] = T2map_SEcorr(image,...)
@@ -60,18 +60,12 @@ function [maps,distributions, T1] = T2map_Nima(image,varargin)
 %   lsqnonneg_reg.m
 %   lsqnonneg_lcurve.m
 %
-% Created by Thomas Prasloski
-% email: tprasloski@gmail.com
-% Ver. 3.2, August 2012
 
 %==========================================================================
 % Parse inputs and apply default values when necessary
 %==========================================================================
 % Make image double
 image=double(image);
-%
-%image_corr = zeros(size(image));
-% image_corr2 = zeros(size(image));
 %
 % Create input parser object
 p=inputParser;
