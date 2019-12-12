@@ -7,6 +7,7 @@ function [maps,distributions,image_corr] = T2map_Nima(image,varargin)
 %	- Number of flip angles used for spline func. is kept unchanged, but it can be increased fo better accuracy!
 %	- Min flip angle is increased from 50 to 60;
 %	- Observation Weights has been added
+% - Add T1 map vector as an input for their corresponding T2 in T2 distribution
 
 %
 % [maps,distributions] = T2map_SEcorr(image,...)
@@ -77,7 +78,7 @@ p=inputParser;
 % Define all input values
 p.addRequired('image',@(x)isa(x,'double') && ndims(x)==4);
 p.addParamValue('TE',0.01,@(x)isnumeric(x) && isscalar(x) && x>=0.001 && x<=1); % TE modification _J
-p.addParamValue('T1',1,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=0.001);
+%p.addParamValue('T1',1,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=0.001); % Nima : a vector is expected now
 p.addParamValue('RefCon',180,@(x)isnumeric(x) && isscalar(x) && x<=180 && x>=1);
 p.addParamValue('Threshold',0,@(x)isnumeric(x) && isscalar(x)); % 200 to 0; Since we are using synthetic data
 p.addParamValue('Chi2Factor',1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
@@ -92,22 +93,22 @@ p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 
 % Nima:Set FlipAngleMap
 p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==4);
-
+p.addParamValue('T1',ones(1,200),@(x)isa(x,'double'));
 %
 p.addParamValue('Save_NNLS_basis','no',@(x)any(strcmp(x,{'yes','no'})));
 % Parse inputs (MATLAB will throw an error here if any variables fail validation)
 p.parse(image,varargin{:});
 % Define all variables from the inputParser Results
-TE=p.Results.TE;
-T1=p.Results.T1;
-RefCon=p.Results.RefCon;
-Threshold=p.Results.Threshold;
-Chi2Factor=p.Results.Chi2Factor;
-nT2=p.Results.nT2;
-T2Range=p.Results.T2Range;
-minangle=p.Results.MinRefAngle;
-nangles=p.Results.nAngles;
-reg=p.Results.Reg;
+TE = p.Results.TE;
+T1 = p.Results.T1; % Nima : This is a vector now
+RefCon = p.Results.RefCon;
+Threshold = p.Results.Threshold;
+Chi2Factor = p.Results.Chi2Factor;
+nT2 = p.Results.nT2;
+T2Range = p.Results.T2Range;
+minangle = p.Results.MinRefAngle;
+nangles = p.Results.nAngles;
+reg = p.Results.Reg;
 % Nima: Change this value according to the new changes
 FlipAngleMap = p.Results.FlipAngleMap;
 faset=	~isempty(FlipAngleMap);	%p.Results.SetFlipAngle;
@@ -155,8 +156,8 @@ if faset==0
     basis_decay=zeros(nechs,nT2);
     for a=1:nangles
         for x=1:nT2
-            echo_amp=EPGdecaycurve(nechs,flip_angles(a),TE,T2_times(x),T1,RefCon);
-            basis_decay(:,x)=echo_amp';
+            echo_amp = EPGdecaycurve(nechs, flip_angles(a), TE, T2_times(x), T1(x), RefCon); % Nima : different T1 value could be used for each T2
+            basis_decay(:,x) = echo_amp';
         end
         basis_angles{a}=basis_decay;
     end
@@ -166,8 +167,8 @@ else
    flip_angles=[];  %ignore
    basis_decay_faset=zeros(nechs,nT2);
    for x=1:nT2
-       echo_amp=EPGdecaycurve(nechs,faset,TE,T2_times(x),T1,RefCon);
-       basis_decay_faset(:,x)=echo_amp';
+       echo_amp = EPGdecaycurve(nechs, faset, TE, T2_times(x), T1(x), RefCon); % Nima : different T1 value could be used for each T2
+       basis_decay_faset(:,x) = echo_amp';
    end
 end
 %==========================================================================
@@ -212,7 +213,7 @@ for row=1:nrows
             % Conditional loop to reject low signal pixels
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
-                decay_data=squeeze(image(row,col,slice,1:nechs));
+                decay_data = squeeze(image(row,col,slice,1:nechs));
 				        obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
                 if faset==0
                     %======================================================
