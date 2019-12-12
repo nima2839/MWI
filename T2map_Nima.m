@@ -193,7 +193,7 @@ for row=1:nrows
     SNR=nan*ones(ncols,nslices);
     FNR=nan*ones(ncols,nslices);
     alpha=nan*ones(ncols,nslices);
-    chi2_alpha=nan*ones(1,nangles);
+    %chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
     dists=nan*ones(ncols,nslices,nT2);
     mus=nan*ones(ncols,nslices);
     chi2s=nan*ones(ncols,nslices);
@@ -209,6 +209,7 @@ for row=1:nrows
         basis_matrices=[];
     end
     parfor col=1:ncols
+        chi2_alpha=nan*ones(1,nangles); % Nima : to test if it fixes the parfor problem
         for slice=1:nslices
             % Conditional loop to reject low signal pixels
             if image(row,col,slice,1)>=Threshold
