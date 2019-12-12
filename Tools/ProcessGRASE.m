@@ -27,7 +27,7 @@ end
 
 clear mgrase
 
-[maps,distributions,~] = T2map_Nima(tf_mgrase,'T1',T1);
+[maps,distributions,~] = T2map_Nima(tf_mgrase(:,:,14:15,:),'T1',T1);
 
 
 MWI = sqz(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
