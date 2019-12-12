@@ -184,9 +184,9 @@ end
 %end
 
 try
-obs_weigts = ones(1,32); % Nima: set observation weights here
-parfor row=1:nrows
-    %row
+
+for row=1:nrows
+    row
     gdn=nan*ones(ncols,nslices);
     ggm=nan*ones(ncols,nslices);
     gva=nan*ones(ncols,nslices);
@@ -214,6 +214,7 @@ parfor row=1:nrows
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,1:nechs));
+				        obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
                 if faset==0
                     %======================================================
                     % Find optimum flip angle
