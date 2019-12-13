@@ -4,7 +4,7 @@ tic;
 
 % Nima : testing an arbitrary T1 map for GRASE data
 T1 = ones(1,200);
-T1(1:25) = .2; % 200 ms
+T1(1:25) = .350; % 350 ms
 T1(25:40) = .6; % 600 ms
 % The rest can be left at 1 second since the difference is negligible!
 
@@ -27,10 +27,10 @@ end
 
 clear mgrase
 
-[maps,distributions,~] = T2map_Nima(tf_mgrase,'T1',T1);
+[maps,distributions,~] = T2map_Nima(tf_mgrase,'T1',T1, 'Threshold', 200, 'MinRefAngle', 80, 'nAngles', 10, 'T2Range', [0.008, 2]);
 
 
-MWI = sqz(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
+MWI = sqz(squeeze(sum(distributions(:,:,:,1:50),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
 [ Xres , Yres , Zres ] = size( MWI );
@@ -47,6 +47,6 @@ end
 
 runtime=toc;
 cd ~/GRASE/GRASE_Results
-clear MWI_1 MWI
-save(['GRASE_Results_Input_T1_', FileName])
+Deccription = 'Threshold =200; MinRefAngle=80, nAngles = 10, T2Range = 8e-3 to 2, and T1 = 0.35,0.6,1, Cutoff = index 50';
+save(['GRASE_Results_Special_Input_', FileName])
 end
