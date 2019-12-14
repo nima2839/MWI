@@ -204,7 +204,8 @@ parfor row = 1:nrows
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,:));
-				        obs_weigts = exp(decay_data/max(decay_data)); % Nima: set observation weights here
+				        obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
+                obs_weigts(1:10) = 1.5; 
                 if faset == 0
                     %======================================================
                     % Find optimum flip angle
