@@ -87,7 +87,7 @@ p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 
 % Nima:Set FlipAngleMap
 p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==4);
-p.addParamValue('T1',ones(1,200),@(x)isa(x,'double'));
+p.addParamValue('T1', [], @(x)isa(x,'double'));
 %
 p.addParamValue('Save_NNLS_basis','no',@(x)any(strcmp(x,{'yes','no'})));
 % Parse inputs (MATLAB will throw an error here if any variables fail validation)
@@ -95,6 +95,7 @@ p.parse(image,varargin{:});
 % Define all variables from the inputParser Results
 TE = p.Results.TE;
 T1 = p.Results.T1; % Nima : This is a vector now
+
 RefCon = p.Results.RefCon;
 Threshold = p.Results.Threshold;
 Chi2Factor = p.Results.Chi2Factor;
@@ -107,6 +108,9 @@ nangles = p.Results.nAngles;
 FlipAngleMap = p.Results.FlipAngleMap;
 faset=	~isempty(FlipAngleMap);	%p.Results.SetFlipAngle;
 
+if isempty(T1)
+	T1 = ones(1, nT2);
+end
 % nCores=p.Results.nCores;
 % nCores= 4; % in case of error message about Cores;
 
@@ -204,7 +208,7 @@ parfor row = 1:nrows
             if image(row,col,slice,1)>=Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,:));
-				        obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
+                obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
                 obs_weigts(1:10) = 1.5; 
                 if faset == 0
                     %======================================================
