@@ -86,7 +86,7 @@ p.addParamValue('nCores',4,@(x)isnumeric(x) && isscalar(x) && x>=1 && x<=8);
 p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 
 % Nima:Set FlipAngleMap
-p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==4);
+p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==3);
 p.addParamValue('T1', [], @(x)isa(x,'double'));
 %
 p.addParamValue('Save_NNLS_basis','no',@(x)any(strcmp(x,{'yes','no'})));
@@ -209,7 +209,7 @@ parfor row = 1:nrows
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,:));
                 obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
-                %obs_weigts(1:10) = 1.5; 
+                %obs_weigts(1:10) = 1.5;
                 if faset == 0
                     %======================================================
                     % Find optimum flip angle
