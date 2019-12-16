@@ -1,7 +1,7 @@
 addpath(genpath('~/MWI'))
 load '~/GRASE/GRASE_Results/GRASE_Results_Special_Input_Can-05-Rrm-064-M0R.mat'
 
-FA_Map = maps.alhpa;
+FA_Map = maps.alpha;
 FA_Map(isnan(FA_Map)) = 0;
 FA_Map = medfilt3(FA_Map, [5 5 3]);
 
