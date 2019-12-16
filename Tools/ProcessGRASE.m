@@ -48,5 +48,5 @@ end
 runtime=toc;
 cd ~/GRASE/GRASE_Results
 Deccription = 'Threshold = 200; MinRefAngle= 60, nAngles = 10, T2Range = 1e-2 to 2, and T1 = 0.2,0.5,1, Cutoff = index 40';
-save(['GRASE_Results_Special_Input_', FileName])
+save(['GRASE_Results_Special_Input_NObsW', FileName])
 end
