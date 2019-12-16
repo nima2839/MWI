@@ -1,4 +1,4 @@
-function out  = ProcessGRE_Tukey(FileName,ReadPath,SavePath)
+function ProcessGRE_Tukey(FileName,ReadPath,SavePath)
 
 cd(ReadPath)
 disp(['Reading ', FileName,]);
@@ -20,6 +20,7 @@ complex_data = Mag.*exp(1i*Phase);
 
 clear Mag Phase
 disp('Applying Tukey3D filter!');
+filtered = zeros(sd);
 for i = 1:sd(4)
 	filtered(:,:,:,i) =  ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
@@ -37,5 +38,5 @@ data = GetAllData(test);
 
 cd(SavePath)
 
-save(['C3PM_Results' , FileName]), 'data');
+save(['C3PM_Results' , FileName], 'data');
 end
