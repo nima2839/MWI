@@ -1,6 +1,6 @@
 addpath(genpath('~/MWI'))
 
-ReadPath = '~/GRE/GRE_To_do/';
+ReadPath = '~/GRE/GRE_To_Do/';
 SavePath = '~/GRE/GRE_Results/';
 
 names{1} = 'GRE_ROFlip_Brain.mat';
