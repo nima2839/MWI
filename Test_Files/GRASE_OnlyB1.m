@@ -2,7 +2,7 @@ addpath(genpath('~/MWI'))
 load('~/GRASE/GRASE_Results/GRASE_Results_Special_Input_Can-05-Rrm-064-M0R.mat','tf_mgrase')
 
 tic;
-[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'MinRefAngle', 60, 'nAngles', 12, 'T2Range', [0.015, 2],'FlipAngleMap');
+[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'MinRefAngle', 60, 'nAngles', 12, 'T2Range', [0.015, 2]);
 runtime = toc;
 
 Final_MWI = squeeze(sum(distributions(:,:,:,1:40),4)./sum(distributions,4));
