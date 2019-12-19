@@ -30,7 +30,8 @@ test = TestClass(abs(filtered),angle(filtered),MyInfo);
 test = CalcLFGC(test);
 test = Calc_SC(test,2);
 %test = Calc_2PM(test);
-test = Calc_Complex3PM(test);
+%test = Calc_Complex3PM(test);
+test =  Calc_3PM(test);
 disp('Saving results...')
 test.Description = 'LFGC!Tukey3D!';
 test.RunTime = toc;
