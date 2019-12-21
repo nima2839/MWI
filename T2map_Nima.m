@@ -124,7 +124,9 @@ saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
 % tstart=tic;
 % Find size of the data
 [nrows,ncols,nslices,nechs] = size(image);
-FlipAngleMap = zeros(nrows,ncols,nslices); % This fixes the parfor problem!
+if faset == 0
+	FlipAngleMap = zeros(nrows,ncols,nslices); % This fixes the parfor problem!
+end
 % Initialize map matrices
 gdnmap=nan*ones(nrows,ncols,nslices);
 ggmmap=nan*ones(nrows,ncols,nslices);
