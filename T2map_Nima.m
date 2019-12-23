@@ -319,7 +319,7 @@ end
 function basis_decay = Calc_basis_decay(nechs, nT2, alpha, TE, T2_times, T1, RefCon)
   basis_decay=zeros(nechs,nT2);
   % Compute the NNLS basis over T2 space
-
+	alpha
   for x=1:nT2
       echo_amp = EPGdecaycurve(nechs, alpha, TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
       basis_decay(:,x) = echo_amp';
