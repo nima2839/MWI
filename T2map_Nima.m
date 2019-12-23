@@ -204,7 +204,7 @@ parfor row = 1:nrows
     else
         basis_matrices=[];
     end
-	row
+	
     for col = 1:ncols
         for slice = 1:nslices
             % Conditional loop to reject low signal pixels
@@ -320,7 +320,9 @@ end
 function basis_decay = Calc_basis_decay(nechs, nT2, alpha, TE, T2_times, T1, RefCon)
   basis_decay=zeros(nechs,nT2);
   % Compute the NNLS basis over T2 space
-	alpha
+  if alpha == 0 % this prevents the code from freezing
+	alpha = 180;
+  end
   for x=1:nT2
       echo_amp = EPGdecaycurve(nechs, alpha, TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
       basis_decay(:,x) = echo_amp';
