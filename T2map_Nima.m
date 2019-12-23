@@ -188,7 +188,7 @@ end
 try
 
 parfor row = 1:nrows
-    row
+    %row
     gdn = zeros(ncols,nslices);
     ggm = zeros(ncols,nslices);
     gva = zeros(ncols,nslices);
@@ -200,10 +200,11 @@ parfor row = 1:nrows
     chi2s = zeros(ncols,nslices);
 
     if saveNNLS
-        basis_matrices=nan*ones(ncols,nslices,nechs,nT2);
+        basis_matrices = zeros(ncols,nslices,nechs,nT2);
     else
         basis_matrices=[];
     end
+	row
     for col = 1:ncols
         for slice = 1:nslices
             % Conditional loop to reject low signal pixels
