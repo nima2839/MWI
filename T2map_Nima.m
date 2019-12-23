@@ -105,8 +105,8 @@ minangle = p.Results.MinRefAngle;
 nangles = p.Results.nAngles;
 % reg = p.Results.Reg;
 % Nima: Change this value according to the new changes
-FlipAngleMap = p.Results.FlipAngleMap;
-faset=	~isempty(FlipAngleMap);	%p.Results.SetFlipAngle;
+alphamap = p.Results.FlipAngleMap;
+faset=	~isempty(alphamap);	%p.Results.SetFlipAngle;
 
 if isempty(T1)
 	T1 = ones(1, nT2);
@@ -124,16 +124,16 @@ saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
 % tstart=tic;
 % Find size of the data
 [nrows,ncols,nslices,nechs] = size(image);
-if faset == 0
-	FlipAngleMap = zeros(nrows,ncols,nslices); % This fixes the parfor problem!
-end
+
 % Initialize map matrices
-gdnmap=nan*ones(nrows,ncols,nslices);
-ggmmap=nan*ones(nrows,ncols,nslices);
-gvamap=nan*ones(nrows,ncols,nslices);
-SNRmap=nan*ones(nrows,ncols,nslices);
-FNRmap=nan*ones(nrows,ncols,nslices);
-alphamap=nan*ones(nrows,ncols,nslices);
+gdnmap = zeros(nrows,ncols,nslices);
+ggmmap = zeros(nrows,ncols,nslices);
+gvamap = zeros(nrows,ncols,nslices);
+SNRmap = zeros(nrows,ncols,nslices);
+FNRmap = zeros(nrows,ncols,nslices);
+if faset == 0
+	alphamap = zeros(nrows,ncols,nslices);
+end
 distributions=nan*ones(nrows,ncols,nslices,nT2);
 mumap=nan*ones(nrows,ncols,nslices);
 chi2map=nan*ones(nrows,ncols,nslices);
@@ -187,17 +187,17 @@ end
 
 try
 
-parfor row = 1:nrows
-    %row
-    gdn=nan*ones(ncols,nslices);
-    ggm=nan*ones(ncols,nslices);
-    gva=nan*ones(ncols,nslices);
-    SNR=nan*ones(ncols,nslices);
-    FNR=nan*ones(ncols,nslices);
-    alpha=nan*ones(ncols,nslices);
-    dists=nan*ones(ncols,nslices,nT2);
-    mus=nan*ones(ncols,nslices);
-    chi2s=nan*ones(ncols,nslices);
+for row = 1:nrows
+    row
+    gdn = zeros(ncols,nslices);
+    ggm = zeros(ncols,nslices);
+    gva = zeros(ncols,nslices);
+    SNR = zeros(ncols,nslices);
+    FNR = zeros(ncols,nslices);
+    alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
+	dists = zeros(ncols,nslices,nT2);
+    mus = zeros(ncols,nslices);
+    chi2s = zeros(ncols,nslices);
 
     if saveNNLS
         basis_matrices=nan*ones(ncols,nslices,nechs,nT2);
@@ -217,8 +217,8 @@ parfor row = 1:nrows
                     % Find optimum flip angle
                     %======================================================
                     alpha(col,slice) = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, flip_angles);
-                else
-                    alpha(col,slice) = FlipAngleMap(row,col,slice);
+                %else
+                %    alpha(col,slice) = alphamap(row,col,slice);
                 end
                 %======================================================
                 % Fit basis matrix using alpha
@@ -254,8 +254,10 @@ parfor row = 1:nrows
     gvamap(row,:,:) = gva;
     SNRmap(row,:,:) = SNR;
     FNRmap(row,:,:) = FNR;
-    alphamap(row,:,:) = alpha;
-    distributions(row,:,:,:) = dists;
+	if faset == 0
+		alphamap(row,:,:) = alpha;
+    end
+	distributions(row,:,:,:) = dists;
     mumap(row,:,:) = mus;
     chi2map(row,:,:)=chi2s;
     if saveNNLS
