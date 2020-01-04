@@ -96,13 +96,16 @@ classdef SimClass
 			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
 		end
 
-		function [Dist, Maps] = UBC_Nima_Fitting(obj)
+		function [Dist, Maps] = UBC_Nima_Fitting(obj, T1)
+			if nargin < 2
+				T1 = ones(1,200);
+			end
 			temp(1,1,:,:) = abs(obj.SimulatedData(:,:)) *1e3; % Scale is for thresholding in the code
 
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)));
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)), 'T1', T1);
 			else
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
 			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
 		end
