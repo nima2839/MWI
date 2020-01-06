@@ -204,11 +204,11 @@ parfor row = 1:nrows
     else
         basis_matrices=[];
     end
-	
+
     for col = 1:ncols
         for slice = 1:nslices
             % Conditional loop to reject low signal pixels
-            if image(row,col,slice,1)>=Threshold
+            if image(row,col,slice,1) > Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,:));
                 obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
