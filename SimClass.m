@@ -91,7 +91,7 @@ classdef SimClass
 			if obj.MyInfo.TrueFAFlag
 				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			else
-				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp,'MinRefAngle', 60, 'nAngles', 12);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
 			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
 		end
@@ -105,7 +105,7 @@ classdef SimClass
 			if obj.MyInfo.TrueFAFlag
 				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)), 'T1', T1);
 			else
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'MinRefAngle', 60, 'nAngles', 12);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
 			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
 		end
