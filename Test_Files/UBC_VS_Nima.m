@@ -7,7 +7,7 @@ MyInfo.Times = (1:32)*1e-2;
 MyInfo.TimeConstRange{1} = [20 20]*1e-3;
 MyInfo.TimeConstRange{2} = [80 80]*1e-3;
 MyInfo.TimeConstRange{3} = [500 500]*1e-3;
-MyInfo.T1Val = [.8 1 1.5];
+MyInfo.T1Val = [1 1 1];
 MyInfo.FractionRange{1}= [0.15,0.15];
 MyInfo.FractionRange{2}= [0.75,0.75];
 MyInfo.FractionRange{3}= [0.1,0.1];
@@ -60,6 +60,6 @@ Nmaps = temp3;
 Ndist = temp4;
 
 clear temp1 temp2 temp3 temp4 i j
-
+Comment = 'Change nAngles from 8 to 12, MinRefAngle from 50 to 60, for both methods!';
 cd ~/Simulation/UBC_VS_Nima
-save('UBCNIMA_Results')
+save('UBCNIMA_Results_2')
