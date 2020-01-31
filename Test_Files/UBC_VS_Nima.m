@@ -19,7 +19,7 @@ MyInfo.SNR = 60;
 FA = 80:2:180;
 nFA = length(FA);
 
-SNR = 40:5:100;
+SNR = 40:10:100;
 nSNR = length(SNR)
 
 time = 0;
