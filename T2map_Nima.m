@@ -187,7 +187,7 @@ end
 
 try
 
-for row = 1:nrows
+parfor row = 1:nrows
     %row
     gdn = zeros(ncols,nslices);
     ggm = zeros(ncols,nslices);
