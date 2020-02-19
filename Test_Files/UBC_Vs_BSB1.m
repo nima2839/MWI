@@ -3,7 +3,7 @@ addpath(genpath('~/MWI'))
 
 cd ~/GRASE/GRASE_To_Do
 
-FileName = 'GRASE_Results_Can-05-Ppm-034-M0.mat');
+FileName = 'GRASE_Results_Can-05-Ppm-034-M0.mat';
 
 load(FileName, 'tf_mgrase')
 
