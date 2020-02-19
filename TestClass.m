@@ -17,6 +17,8 @@ classdef TestClass
        Flag_UseLFGC % If true, LFGC data would be used for calculations
        Params_3PM   % Parameters calculated via 3PM will be stored in this variable
        Res_3PM
+       Params_C3PM   % Parameters calculated via Complex-3PM will be stored in this variable
+       Res_C3PM
        RSC          % Single Component Relaxation Parameter
        Res_SC
        Params_2PM
@@ -27,6 +29,9 @@ classdef TestClass
        NNLS_W
        res_NNLS
        NNLS_Times
+       MWF_3PM
+       MWF_C3PM
+       MWF_2PM
        % LFG values
        Gv
        Gp
@@ -36,27 +41,27 @@ classdef TestClass
 	   Phi0
    end
    methods
-       function obj=TestClass(dataMag,dataPhase,myinfo)
-          obj.Mag = dataMag;
-          obj.Phase = dataPhase;
-          obj.MyInfo = myinfo;
-          obj.SizeData = size(dataMag);
-          obj.Flag_UseLFGC = false;
-          if ~isfield(myinfo,'BipolarFlag')
-            obj.MyInfo.BipolarFlag = false;
-          end
-          disp('TestClass Initiated!')
+       function obj = TestClass(dataMag,dataPhase,myinfo)
+         obj.Mag = dataMag;
+         obj.Phase = dataPhase;
+         obj.MyInfo = myinfo;
+         obj.SizeData = size(dataMag);
+         obj.Flag_UseLFGC = false;
+         if ~isfield(myinfo,'BipolarFlag')
+           obj.MyInfo.BipolarFlag = false;
+         end
+         disp('TestClass Initiated!')
        end
 
-	     function obj=SetMag(obj,Mag)
-		       obj.Mag = Mag;
-	   end
+	     function obj = SetMag(obj,Mag)
+         obj.Mag = Mag;
+       end
 
-	     function obj=SetLFGC(obj,Mag)
-		       obj.LFGC = Mag;
-	   end
+	     function obj = SetLFGC(obj,Mag)
+         obj.LFGC = Mag;
+       end
 
-       function obj=CalcLFGC(obj,method)
+       function obj = CalcLFGC(obj,method)
           if nargin > 1
               obj.Info.Method =  method;
           end
@@ -65,7 +70,7 @@ classdef TestClass
           obj.Flag_UseLFGC = true;
        end
 
-       function obj=Calc_3PM(obj)
+       function obj = Calc_3PM(obj)
            np = obj.SizeData(1);
            nv = obj.SizeData(2);
            ns = obj.SizeData(3);
@@ -79,9 +84,9 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),8]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 =   [0.1,   60,	  0,	0.6,	30,	0.3,	25,	   0];
-	         lb = [0,     40,	 -75,	0,	  10,	0,	  0.1,	-30];
-	         ub = [2,	  300,	75,	2,	  40,	2,	  40,	   30];
+           X0 = [0.1,   60,	  5,	0.7,	30,	0.2,	25,	   0];
+	         lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0];
+	         ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -109,34 +114,35 @@ classdef TestClass
            end
            obj.Params_3PM = params;
            obj.Res_3PM = res;
+           obj.MWF_3PM = Calc_MWF(params, [1 4 6]);
            disp('Finished fitting 3PM!')
            toc
        end
 
 	     function obj = Calc_Freq_bg(obj)
-  	    tic
-			  disp('Calculating Freq_bg!')
-		    echo1(:,:,:) = obj.Phase(:,:,:,1);
-			  echo2(:,:,:) = obj.Phase(:,:,:,3);
-			  es = obj.MyInfo.EchoSpacing * (2);
-			  p2 = exp(1i*echo2);
-		    p1 = exp(-1i*echo1);
-			  obj.Freq_bg = angle(p1.*p2)/(es*2*pi);
-	      disp('Done!')
-	      toc
-		 end
+         tic
+			   disp('Calculating Freq_bg!')
+		     echo1(:,:,:) = obj.Phase(:,:,:,1);
+			   echo2(:,:,:) = obj.Phase(:,:,:,3);
+			   es = obj.MyInfo.EchoSpacing * (2);
+			   p2 = exp(1i*echo2);
+		     p1 = exp(-1i*echo1);
+			   obj.Freq_bg = angle(p1.*p2)/(es*2*pi);
+	       disp('Done!')
+	       toc
+       end
 
 		   function obj = Calc_phi_zero(obj)
-			obj = Calc_Freq_bg(obj);
-			tic
-			disp('Calculating Phi0!')
-			pn(:,:,:) = exp(1i*obj.Phase(:,:,:,1));
-			TE = obj.MyInfo.FirstTE;
-			temp = exp(-1i*TE*obj.Freq_bg*2*pi);
-			obj.Phi0 = angle(pn.*temp);
-			disp('Done!')
-			toc
-		end
+         obj = Calc_Freq_bg(obj);
+			   tic
+         disp('Calculating Phi0!')
+         pn(:,:,:) = exp(1i*obj.Phase(:,:,:,1));
+         TE = obj.MyInfo.FirstTE;
+         temp = exp(-1i*TE*obj.Freq_bg*2*pi);
+         obj.Phi0 = angle(pn.*temp);
+         disp('Done!')
+         toc
+       end
 
        function obj = Bipolar_Phase_Correction(obj)
          disp('Bipolar_Phase_Correction Started...!');
@@ -153,7 +159,7 @@ classdef TestClass
          disp('Done!');
        end
 
-	     function obj=Calc_Complex3PM(obj)
+	     function obj = Calc_Complex3PM(obj)
 		       obj = Calc_phi_zero(obj);
            if obj.MyInfo.BipolarFlag
              obj = Bipolar_Phase_Correction(obj);
@@ -171,9 +177,9 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),9]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 =   [0.1,   60,	  5,	0.6,	30,0,	0.3,	25,	   0];
-	         lb = [0,     30,	 -75,	0,	  10,-25,	0,	  0.1,	-30]; 
-	         ub = [2,	  300,	75,	2,	  40,25,	2,	  40,	   30];
+           X0 =   [0.1,   60,	  5,	0.7,	30,0,	0.2,	25,	   0];
+	         lb = [0,     30,	 -25,	0,	  10,-25,	0,	  0.1,	-25];
+	         ub = [2,	  300,	25,	2,	  40,25,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -215,13 +221,14 @@ classdef TestClass
                 params(i,:,:,:) = tempP;
                 res(i,:,:) = tempR;
            end
-           obj.Params_3PM = params;
-           obj.Res_3PM = res;
-           disp('Finished fitting 3PM!')
+           obj.Params_C3PM = params;
+           obj.Res_C3PM = res;
+           obj.MWF_C3PM = Calc_MWF(params, [1 4 7]);
+           disp('Finished fitting C3PM!')
            toc
        end
 
-       function obj=Calc_SC(obj,Method)
+       function obj = Calc_SC(obj,Method)
           if nargin < 2
               Method = 1;
           end
@@ -277,7 +284,8 @@ classdef TestClass
           obj.Flag_UseSC = true;
           toc
        end
-       function obj=Calc_2PM(obj)
+
+       function obj = Calc_2PM(obj)
            np = obj.SizeData(1);
            nv = obj.SizeData(2);
            ns = obj.SizeData(3);
@@ -291,9 +299,9 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),5]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 = [0.1, 60,	0,	 0.9, 30];
-           lb = [0,   40,   -70,	0.5, 1];
-           ub = [2,	300,	70,	2, 40];
+           X0 = [0.1, 60,	5,	 0.9, 30];
+           lb = [0,   40,   0,	0.5, 1];
+           ub = [2,	300,	25,	2, 40];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -321,9 +329,35 @@ classdef TestClass
            end
            obj.Params_2PM = params;
            obj.Res_2PM = res;
+           obj.MWF_2PM = obj.Params_2PM(:,:,:,1).*(obj.Params_2PM(:,:,:,1)+obj.Params_2PM(:,:,:,4)).^-1;
            disp('Finished fitting 2PM!')
            toc
        end
+
+       function obj = Calc_NNLS(obj)
+           obj = CalcLFGC(obj);
+           LFG.Gs = obj.Gs;
+           LFG.Gv = obj.Gv;
+           LFG.Gp = obj.Gp;
+           et.FirstEchoTime = obj.MyInfo.FirstTE;
+           et.EchoSpacing = obj.MyInfo.EchoSpacing;
+           options.T_range = [1 120];
+           options.Number_T = 120;
+           options.Vox = obj.MyInfo.Vox;
+           tic
+           disp('Calculating Weights Using NNLS...')
+           [W, T, r] = NNLS_T_Batch_Fitting(obj.Mag,et,options,LFG);
+           obj.NNLS_W = W;
+           obj.NNLS_Times =T;
+           obj.res_NNLS = r;
+           disp('done!')
+           toc
+         end
+
+       function MWF = Calc_MWF(Params, Index)
+         MWF = Params(:,:,:,Index(1)).*((Params(:,:,:,Index(1)) + Params(:,:,:,Index(2)) + Params(:,:,:,Index(3))).^-1);
+       end
+
        function data = GetAllData(obj)
           if obj.Flag_UseLFGC
             data.LFGC = obj.LFGC;
@@ -333,8 +367,10 @@ classdef TestClass
           data.Info = obj.MyInfo;
           data.RC = obj.RSC;
           data.resRC = obj.Res_SC;
-          data.Params = obj.Params_3PM;
+          data.Params_3PM = obj.Params_3PM;
           data.res3pm = obj.Res_3PM;
+          data.Params_C3PM = obj.Params_C3PM;
+          data.resC3pm = obj.Res_C3PM;
           data.Description = obj.Description;
           data.runtime = obj.RunTime;
           data.Params_2PM = obj.Params_2PM;
@@ -342,26 +378,9 @@ classdef TestClass
           data.NNLS_W = obj.NNLS_W;
           data.res_NNLS = obj.res_NNLS;
           data.NNLS_Times = obj.NNLS_Times;
-       end
-       function obj =Calc_NNLS(obj)
-         obj = CalcLFGC(obj);
-         LFG.Gs = obj.Gs;
-         LFG.Gv = obj.Gv;
-         LFG.Gp = obj.Gp;
-         et.FirstEchoTime = obj.MyInfo.FirstTE;
-         et.EchoSpacing = obj.MyInfo.EchoSpacing;
-         options.T_range = [1 120];
-         options.Number_T = 120;
-         options.Vox = obj.MyInfo.Vox;
-
-         tic
-         disp('Calculating Weights Using NNLS...')
-         [W, T, r] = NNLS_T_Batch_Fitting(obj.Mag,et,options,LFG);
-         obj.NNLS_W = W;
-         obj.NNLS_Times =T;
-         obj.res_NNLS = r;
-         disp('done!')
-         toc
+          data.MWF_3PM = data.MWF_3PM;
+          data.MWF_C3PM = data.MWF_C3PM;
+          data.MWF_2PM = data.MWF_2PM;
        end
    end
 end
