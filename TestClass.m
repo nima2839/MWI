@@ -53,6 +53,14 @@ classdef TestClass
          disp('TestClass Initiated!')
        end
 
+       function obj = Normal_Procedure(obj)
+         obj = CalcLFGC(obj);
+         obj = Calc_SC(obj,2);
+         obj = Calc_2PM(obj);
+         obj = Calc_3PM(obj);
+         obj = Calc_Complex3PM(obj);
+       end
+
 	     function obj = SetMag(obj,Mag)
          obj.Mag = Mag;
        end
