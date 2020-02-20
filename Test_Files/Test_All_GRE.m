@@ -8,5 +8,5 @@ names{2} = 'Feb20_GRE_20cont_Monopolar.mat';
 names{3} = 'Feb20_GRE_32cont.mat';
 
 for i = 1:length(names)
-  ProcessGRE_Tukey(names{i}, ReadPath, SavePath);
+  ProcessGRE(names{i}, ReadPath, SavePath);
 end
