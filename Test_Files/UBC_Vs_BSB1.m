@@ -10,6 +10,7 @@ load(FileName, 'tf_mgrase')
 cd('~')
 FlipAngleMap = 180 * double(niftiread('rB1_Phase.nii')) / 800;
 FlipAngleMap = permute(FlipAngleMap,[2 1 3]);
+tic
 [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'MinRefAngle', 60, 'nAngles', 12, 'T2Range', [0.015, 2], 'FlipAngleMap', FlipAngleMap);
 
 
