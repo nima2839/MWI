@@ -122,7 +122,7 @@ classdef TestClass
            end
            obj.Params_3PM = params;
            obj.Res_3PM = res;
-           obj.MWF_3PM = Calc_MWF(params, [1 4 6]);
+           obj.MWF_3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);;
            disp('Finished fitting 3PM!')
            toc
        end
@@ -231,7 +231,7 @@ classdef TestClass
            end
            obj.Params_C3PM = params;
            obj.Res_C3PM = res;
-           obj.MWF_C3PM = Calc_MWF(params, [1 4 7]);
+           obj.MWF_C3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,7)).^-1);
            disp('Finished fitting C3PM!')
            toc
        end
@@ -361,10 +361,6 @@ classdef TestClass
            disp('done!')
            toc
          end
-
-       function MWF = Calc_MWF(Params, Index)
-         MWF = Params(:,:,:,Index(1)).*((Params(:,:,:,Index(1)) + Params(:,:,:,Index(2)) + Params(:,:,:,Index(3))).^-1);
-       end
 
        function data = GetAllData(obj)
           if obj.Flag_UseLFGC
