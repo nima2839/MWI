@@ -21,27 +21,10 @@ function MWF_Map = Find_MWF(Data, Index , Method)
         end
     end
    elseif strcmp(Method,'NLLS')
-      for k = 1:sd(3)
-        for j = 1:sd(2)
-            parfor i = 1:sd(1)
-                temp = squeeze(Data(i,j,k,:));
-                MWF_Map(i,j,k) = temp(Index(1))/(temp(Index(1)) + temp(Index(2)) + temp(Index(3)));
-            end
-        end
-      end
-	elseif strcmp(Method,'NLLS_Test')
 		np = sd(1);
 		nv = sd(2);
 		ns = sd(3);
-% 		parfor k = 1:ns
-%         		for j = 1:nv
-%             			for i = 1:np
-%                                 temp = squeeze(Data(i,j,k,:));
-                                MWF_Map(:,:,:) = Data(:,:,:,Index(1)).*((Data(:,:,:,Index(1)) + Data(:,:,:,Index(2)) + Data(:,:,:,Index(3))).^-1);
-
-%             			end
-%         		end
-%       	end
+    MWF_Map(:,:,:) = Data(:,:,:,Index(1)).*((Data(:,:,:,Index(1)) + Data(:,:,:,Index(2)) + Data(:,:,:,Index(3))).^-1);
    else
        error('Specify method!')
    end
