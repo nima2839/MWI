@@ -382,9 +382,9 @@ classdef TestClass
           data.NNLS_W = obj.NNLS_W;
           data.res_NNLS = obj.res_NNLS;
           data.NNLS_Times = obj.NNLS_Times;
-          data.MWF_3PM = data.MWF_3PM;
-          data.MWF_C3PM = data.MWF_C3PM;
-          data.MWF_2PM = data.MWF_2PM;
+          data.MWF_3PM = obj.MWF_3PM;
+          data.MWF_C3PM = obj.MWF_C3PM;
+          data.MWF_2PM = obj.MWF_2PM;
        end
    end
 end
