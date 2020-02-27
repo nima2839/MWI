@@ -56,7 +56,7 @@ classdef TestClass
        function obj = Normal_Procedure(obj)
          obj = CalcLFGC(obj);
          obj = Calc_SC(obj,2);
-         obj = Calc_2PM(obj);
+         %obj = Calc_2PM(obj);
          obj = Calc_3PM(obj);
          obj = Calc_Complex3PM(obj);
        end
@@ -92,7 +92,7 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),8]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 = [0.1,   60,	  5,	0.7,	30,	0.2,	25,	   0];
+           X0 = [0.1,   60,	  0,	0.7,	30,	0.2,	25,	   0];
 	         lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0];
 	         ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
@@ -185,7 +185,7 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),9]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 =   [0.1,   60,	  5,	0.7,	30,0,	0.2,	25,	   0];
+           X0 =   [0.1,   60,	  0,	0.7,	30,0,	0.2,	25,	   0];
 	         lb = [0,     30,	 -25,	0,	  10,-25,	0,	  0.1,	-25];
 	         ub = [2,	  300,	25,	2,	  40,25,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
