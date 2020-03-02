@@ -29,7 +29,7 @@ function UBC_Vs_BSB1(Subject)
 
   runtime=toc;
   cd ~/GRASE/GRASE_Results
-  Description = 'Threshold = 200; MinRefAngle= 60, nAngles = 12, FlipAngleMap from B1-map with factor 1.165';
+  Description = 'Threshold = 200;FlipAngleMap from B1-map with factor 1.165';
   save(['GRASE_Results_B1_map_', Subject])
 
 end
