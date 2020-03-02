@@ -6,7 +6,8 @@ function UBC_Vs_BSB1(Subject)
   load(FileName, 'tf_mgrase')
 
   cd(['~/GRASE/B1_Maps/',Subject,'/'])
-  FlipAngleMap = 180 * double(niftiread('rB1_Phase.nii')) / (800*1.165);
+
+  FlipAngleMap = (180 * double(niftiread('rB1_Phase.nii'))) / (800*1.165);
   FlipAngleMap = flip(permute(FlipAngleMap,[2 1 3]),1);
   tic
   [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'T2Range', [0.015, 2], 'FlipAngleMap', FlipAngleMap);
