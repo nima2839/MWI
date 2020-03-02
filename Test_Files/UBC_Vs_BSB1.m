@@ -1,12 +1,12 @@
 function UBC_Vs_BSB1(Subject)
   cd ~/GRASE/GRASE_To_Do
 
-  FileName = ['GRASE_Results_',Subject,'.mat';
+  FileName = ['GRASE_Results_',Subject,'.mat'];
 
   load(FileName, 'tf_mgrase')
 
   cd(['~/GRASE/B1_Maps/',Subject,'/'])
-  pwd
+  
   FlipAngleMap = (180 * double(niftiread('rB1_Phase.nii'))) / (800*1.165);
   FlipAngleMap = flip(permute(FlipAngleMap,[2 1 3]),1);
   tic
