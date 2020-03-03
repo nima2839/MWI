@@ -19,6 +19,8 @@ classdef TestClass
        Res_3PM
        Params_C3PM   % Parameters calculated via Complex-3PM will be stored in this variable
        Res_C3PM
+       Params_S3PM
+       Res_S3PM
        RSC          % Single Component Relaxation Parameter
        Res_SC
        Params_2PM
@@ -30,6 +32,7 @@ classdef TestClass
        res_NNLS
        NNLS_Times
        MWF_3PM
+       MWF_S3PM
        MWF_C3PM
        MWF_2PM
        % LFG values
@@ -57,8 +60,9 @@ classdef TestClass
          obj = CalcLFGC(obj);
          obj = Calc_SC(obj,2);
          %obj = Calc_2PM(obj);
-         obj = Calc_3PM(obj);
-         obj = Calc_Complex3PM(obj);
+         %obj = Calc_3PM(obj);
+         obj = Calc_S3PM(obj);
+         %obj = Calc_Complex3PM(obj);
        end
 
 	     function obj = SetMag(obj,Mag)
@@ -122,10 +126,63 @@ classdef TestClass
            end
            obj.Params_3PM = params;
            obj.Res_3PM = res;
-           obj.MWF_3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);;
+           obj.MWF_3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);
            disp('Finished fitting 3PM!')
            toc
        end
+
+       function obj = Calc_S3PM(obj)
+           np = obj.SizeData(1);
+           nv = obj.SizeData(2);
+           ns = obj.SizeData(3);
+           mask = obj.MyInfo.Mask;
+           mag = obj.Mag;
+           gp = obj.Gp;
+           gv = obj.Gv;
+           gs = obj.Gs;
+           Gradient = sqrt(gp.^2 + gv.^2 + gs.^2);
+           Vox = obj.MyInfo.Vox;
+           Distance = sqrt(Sum(Vox(:).^2));
+           %ei = obj.EchoIndexes;
+           params = zeros([obj.SizeData(1:3),9]);
+           res = zeros(obj.SizeData(1:3));
+           Info = obj.MyInfo;
+           X0 = [0.1,   60,	  0,	0.7,	30,	0.2,	15,	   0,  0];
+          lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0,  0];
+          ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25,  20];
+           flag = obj.Flag_UseSC;
+           if flag
+               RC = obj.RSC;
+           end
+           tic
+           disp('S3PM Started..!')
+           parfor i = 1:np
+               tempP = zeros(nv,ns,8);
+               tempR = zeros(nv,ns);
+                for j = 1:nv
+                    for k = 1:ns
+                        if mask(i,j,k) > 0
+                            tmp = squeeze(mag(i,j,k,:));
+                           tmpd = tmp;	%tmp(ei);
+                            Rx0 = X0;
+                            if flag
+                                Rx0(5) = RC(i,j,k) - 3;
+                            end
+                            Rx0(9) = Gradient(i,j,k) * Distance * 42.575e6;
+                           [tempP(j,k,:), tempR(j,k)] = Sinc3PM_NLLS(tmpd,Info,Rx0,lb,ub);
+                        end
+                    end
+                end
+                params(i,:,:,:) = tempP;
+                res(i,:,:) = tempR;
+           end
+           obj.Params_S3PM = params;
+           obj.Res_S3PM = res;
+           obj.MWF_S3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);
+           disp('Finished fitting S3PM!')
+           toc
+       end
+
 
 	     function obj = Calc_Freq_bg(obj)
          tic
