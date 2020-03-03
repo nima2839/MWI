@@ -19,6 +19,7 @@ end
 
 tic
 test = TestClass(abs(filtered),angle(filtered),Info);
+clear filtered complex_data
 test = Normal_Procedure(test);
 disp('Saving results...')
 test.RunTime = toc;
@@ -26,5 +27,5 @@ GRE_MWF_data = GetAllData(test);
 clear test
 cd(SavePath)
 
-save(['C3PM_Results' , FileName, '_Tukey3D']);
+save(['C3PM_Results' , FileName, '_Tukey3D'],GRE_MWF_data);
 end
