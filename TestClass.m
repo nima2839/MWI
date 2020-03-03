@@ -60,7 +60,7 @@ classdef TestClass
          obj = CalcLFGC(obj);
          obj = Calc_SC(obj,2);
          %obj = Calc_2PM(obj);
-         %obj = Calc_3PM(obj);
+         obj = Calc_3PM(obj);
          obj = Calc_S3PM(obj);
          %obj = Calc_Complex3PM(obj);
        end
