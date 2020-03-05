@@ -142,7 +142,7 @@ classdef TestClass
            gs = obj.Gs;
            Gradient = sqrt(gp.^2 + gv.^2 + gs.^2);
            Vox = obj.MyInfo.Vox;
-           Distance = sqrt(Sum(Vox(:).^2));
+           Distance = sqrt(sum(Vox(:).^2));
            %ei = obj.EchoIndexes;
            params = zeros([obj.SizeData(1:3),9]);
            res = zeros(obj.SizeData(1:3));
