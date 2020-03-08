@@ -60,8 +60,8 @@ classdef TestClass
          obj = CalcLFGC(obj);
          obj = Calc_SC(obj,2);
          %obj = Calc_2PM(obj);
-         obj = Calc_3PM(obj);
          obj = Calc_S3PM(obj);
+         obj = Calc_3PM(obj);
          %obj = Calc_Complex3PM(obj);
        end
 
@@ -157,7 +157,7 @@ classdef TestClass
            tic
            disp('S3PM Started..!')
            parfor i = 1:np
-               tempP = zeros(nv,ns,8);
+               tempP = zeros(nv,ns,9);
                tempR = zeros(nv,ns);
                 for j = 1:nv
                     for k = 1:ns
