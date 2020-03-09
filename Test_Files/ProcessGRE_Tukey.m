@@ -27,5 +27,5 @@ GRE_MWF_data = GetAllData(test);
 clear test
 cd(SavePath)
 
-save(['C3PM_Results' , FileName, '_Tukey3D'],GRE_MWF_data);
+save(['C3PM_Results' , FileName, '_Tukey3D'],'GRE_MWF_data');
 end
