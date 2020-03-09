@@ -22,7 +22,7 @@ end
 [maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200);
 
 
-MWI = sqz(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
+MWI = squeeze(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
 [ Xres , Yres , Zres ] = size( MWI );
@@ -46,7 +46,7 @@ tic
 [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'MinRefAngle', 60, 'nAngles', 12, 'T2Range', [0.015, 2]);
 
 
-MWI = sqz(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
+MWI = squeeze(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
 [ Xres , Yres , Zres ] = size( MWI );
