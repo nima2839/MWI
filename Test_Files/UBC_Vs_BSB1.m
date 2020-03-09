@@ -1,7 +1,7 @@
 function UBC_Vs_BSB1(Subject)
   cd ~/GRASE/GRASE_Results
 
-  FileName = ['GRASE_Results_',Subject,'.mat'];
+  FileName = ['GRASE_Results_B1_map_',Subject,'.mat'];
 
   load(FileName, 'tf_mgrase')
 
