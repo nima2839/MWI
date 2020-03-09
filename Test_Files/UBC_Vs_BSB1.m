@@ -1,5 +1,5 @@
 function UBC_Vs_BSB1(Subject)
-  cd ~/GRASE/GRASE_To_Do
+  cd ~/GRASE/GRASE_Results
 
   FileName = ['GRASE_Results_',Subject,'.mat'];
 
