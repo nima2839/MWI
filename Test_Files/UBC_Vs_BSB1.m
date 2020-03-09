@@ -13,7 +13,7 @@ function UBC_Vs_BSB1(Subject)
   [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'T2Range', [0.015, 2], 'FlipAngleMap', FlipAngleMap);
 
 
-  MWI = sqz(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
+  MWI = squeeze(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
   MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
   [ Xres , Yres , Zres ] = size( MWI );
