@@ -430,6 +430,8 @@ classdef TestClass
           data.resRC = obj.Res_SC;
           data.Params_3PM = obj.Params_3PM;
           data.res3pm = obj.Res_3PM;
+          data.Params_S3PM = obj.Params_S3PM;
+          data.resS3pm = obj.Res_S3PM;
           data.Params_C3PM = obj.Params_C3PM;
           data.resC3pm = obj.Res_C3PM;
           data.Description = obj.Description;
@@ -440,6 +442,7 @@ classdef TestClass
           data.res_NNLS = obj.res_NNLS;
           data.NNLS_Times = obj.NNLS_Times;
           data.MWF_3PM = obj.MWF_3PM;
+          data.MWF_S3PM = obj.MWF_S3PM;
           data.MWF_C3PM = obj.MWF_C3PM;
           data.MWF_2PM = obj.MWF_2PM;
        end
