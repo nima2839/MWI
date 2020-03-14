@@ -39,7 +39,7 @@ end
 
 runtime=toc;
 cd ~/GRASE/GRASE_Results
-save(['GRASE_Results', FileName])
+save(['GRASE_Results_', FileName])
 
 tic
 
