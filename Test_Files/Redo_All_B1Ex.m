@@ -1,4 +1,5 @@
-cd ~/GRASE/GRASE_Results/B1Ex
+addpath(genpath('~/MWI'))
+cd ~/GRASE/GRASE_Results/GRASE_ExtB1_Results
 
 files = dir('*.mat');
 
