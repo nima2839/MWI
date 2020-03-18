@@ -78,7 +78,7 @@ p.addParamValue('Threshold',0,@(x)isnumeric(x) && isscalar(x)); % 200 to 0; Sinc
 p.addParamValue('Chi2Factor',1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
 p.addParamValue('nT2',200,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=300);
 p.addParamValue('T2Range',[0.015,2],@(x)isnumeric(x) && length(x)==2 && x(2)>x(1) && x(1)>=0.001 && x(2)<=10);
-p.addParamValue('MinRefAngle',60,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
+p.addParamValue('MinRefAngle',50,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
 p.addParamValue('nAngles',8,@(x)isnumeric(x) && isscalar(x) && x>1);
 p.addParamValue('Reg','lcurve',@(x)any(strcmp(x,{'no','chi2','lcurve'})));
 p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
