@@ -1,5 +1,5 @@
 function Redo_B1_Ex(name)
-load(name,'tfmgrase')
+load(name,'tf_mgrase')
 tic
 
 [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200);
@@ -19,7 +19,7 @@ for c = 1 : Zres
         end
     end
 end
-
+clear MWI MWI_1 tf_mgrase
 runtime=toc;
 cd ~/GRASE/GRASE_Results
 Description = 'Threshold = 200; ';
