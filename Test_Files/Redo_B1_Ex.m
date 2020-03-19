@@ -2,7 +2,7 @@ function Redo_B1_Ex(name)
 load(name,'tf_mgrase')
 tic
 
-[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200);
+[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'nT2', 60);
 
 
 MWI = squeeze(squeeze(sum(distributions(:,:,:,1:40),4))./squeeze(sum(distributions(:,:,:,:),4)));
@@ -21,7 +21,6 @@ for c = 1 : Zres
 end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
-cd ~/GRASE/GRASE_Results
-Description = 'Threshold = 200; ';
+Description = 'Threshold = 200; nT2 = 60 ';
 save(name)
 end
