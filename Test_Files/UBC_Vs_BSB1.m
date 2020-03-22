@@ -1,6 +1,6 @@
 function UBC_Vs_BSB1(Subject)
-  cd ~/GRASE/GRASE_Results
-
+  cd ~/GRASE/GRASE_To_Do
+  disp(Subject);
   load(FileName, 'tf_mgrase')
 
   cd(['~/GRASE/B1_Maps/',Subject,'/'])
