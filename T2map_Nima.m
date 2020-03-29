@@ -135,7 +135,7 @@ if faset == 0
 	alphamap = zeros(nrows,ncols,nslices);
 end
 distributions=nan*ones(nrows,ncols,nslices,nT2);
-ResMap=nan*ones(nrows,ncols,nslices,nT2); % Nima
+ResMap=nan*ones(nrows,ncols,nslices,nechs); % Nima
 mumap=nan*ones(nrows,ncols,nslices);
 chi2map=nan*ones(nrows,ncols,nslices);
 
