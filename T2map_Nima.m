@@ -129,12 +129,13 @@ saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
 gdnmap = zeros(nrows,ncols,nslices);
 ggmmap = zeros(nrows,ncols,nslices);
 gvamap = zeros(nrows,ncols,nslices);
-SNRmap = zeros(nrows,ncols,nslices);
-FNRmap = zeros(nrows,ncols,nslices);
+%SNRmap = zeros(nrows,ncols,nslices); % Nima
+%FNRmap = zeros(nrows,ncols,nslices); % Nima
 if faset == 0
 	alphamap = zeros(nrows,ncols,nslices);
 end
 distributions=nan*ones(nrows,ncols,nslices,nT2);
+ResMap=nan*ones(nrows,ncols,nslices,nT2); % Nima
 mumap=nan*ones(nrows,ncols,nslices);
 chi2map=nan*ones(nrows,ncols,nslices);
 
@@ -196,6 +197,7 @@ parfor row = 1:nrows
     FNR = zeros(ncols,nslices);
     alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
 	dists = zeros(ncols,nslices,nT2);
+	TempRes = zeros(ncols,nslices,nT2);
     mus = zeros(ncols,nslices);
     chi2s = zeros(ncols,nslices);
 
@@ -244,8 +246,9 @@ parfor row = 1:nrows
                 gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
                 decay_calc = basis_decay*T2_dis;
                 residuals = decay_calc-decay_data;
-                FNR(col,slice) = sum(T2_dis)/sqrt(var(residuals));
-                SNR(col,slice) = max(decay_data)/sqrt(var(residuals));
+				TempRes(col,slice,:) = residuals; % Nima
+                %FNR(col,slice) = sum(T2_dis)/sqrt(var(residuals)); % Nima
+                %SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); % Nima
             end
         end
     end
@@ -253,12 +256,13 @@ parfor row = 1:nrows
     gdnmap(row,:,:) = gdn;
     ggmmap(row,:,:) = ggm;
     gvamap(row,:,:) = gva;
-    SNRmap(row,:,:) = SNR;
-    FNRmap(row,:,:) = FNR;
+    %SNRmap(row,:,:) = SNR; % Nima
+    %FNRmap(row,:,:) = FNR; % Nima
 	if faset == 0
 		alphamap(row,:,:) = alpha;
     end
 	distributions(row,:,:,:) = dists;
+	ResMap(row,:,:,:) = TempRes; % Nima
     mumap(row,:,:) = mus;
     chi2map(row,:,:)=chi2s;
     if saveNNLS
@@ -282,8 +286,9 @@ maps.gdn = gdnmap;
 maps.ggm = ggmmap;
 maps.gva = gvamap;
 maps.alpha = alphamap;
-maps.FNR = FNRmap;
-maps.SNR = SNRmap;
+%maps.FNR = FNRmap; % Nima
+%maps.SNR = SNRmap; % Nima
+maps.Residuals = ResMap; % Nima
 if savereg
     maps.mu=mumap;
     maps.chi2factor=chi2map;
