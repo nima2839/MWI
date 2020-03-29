@@ -197,7 +197,7 @@ parfor row = 1:nrows
     FNR = zeros(ncols,nslices);
     alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
 	dists = zeros(ncols,nslices,nT2);
-	TempRes = zeros(ncols,nslices,nT2);
+	TempRes = zeros(ncols,nslices,nechs); % Nima
     mus = zeros(ncols,nslices);
     chi2s = zeros(ncols,nslices);
 
