@@ -30,7 +30,7 @@ function UBC_Vs_BSB1(Subject)
 
   clear tf_mgrase MWI MWI_1 FlipAngleMap
 
-  cd ~/GRASE/GRASE_Results
+  cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
   Description = 'Threshold = 200;FlipAngleMap from B1-map with nominal angle of 155.5, nT2 = 60';
   save(['GRASE_Results_B1_map_', Subject])
 
