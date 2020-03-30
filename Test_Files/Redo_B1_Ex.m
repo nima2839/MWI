@@ -1,4 +1,5 @@
 function Redo_B1_Ex(name)
+  cd ~/GRASE/GRASE_To_Do
 load(name,'tf_mgrase')
 tic
 
