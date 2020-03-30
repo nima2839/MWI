@@ -22,5 +22,6 @@ end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
 Description = 'Threshold = 200; nT2 = 60 ';
+cd ~/GRASE/GRASE_Results/GRASE_ExtB1_Results
 save(name)
 end
