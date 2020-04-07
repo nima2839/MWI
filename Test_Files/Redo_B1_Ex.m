@@ -1,11 +1,14 @@
 function Redo_B1_Ex(name)
+disp(['Processing B1_Ext on: ',name])
+try
+cd ~/GRASE/GRASE_To_Do/
 load(name,'tf_mgrase')
 tic
 
-[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'nT2', 60);
+[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2]);
 
 
-MWI = squeeze(squeeze(sum(distributions(:,:,:,1:13),4))./squeeze(sum(distributions(:,:,:,:),4)));
+MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
 [ Xres , Yres , Zres ] = size( MWI );
@@ -21,6 +24,10 @@ for c = 1 : Zres
 end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
-Description = 'Threshold = 200; nT2 = 60 ';
+Description = 'Threshold = 200; nT2 = 60, T2Range 0.008, 2';
+cd ~/GRASE/GRASE_Results/GRASE_ExtB1_Results/
 save(name)
+catch ME
+ disp(ME.message)
+end
 end

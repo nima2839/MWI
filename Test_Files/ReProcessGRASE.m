@@ -1,8 +1,11 @@
 function ReProcessGRASE(name)
+disp('ReProcessGRASE on: ',name])
+try
+cd ~/GRASE/GRASE_To_Do/
 load(name,'tf_mgrase')
 tic
 
-[maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'nT2', 60);
+[maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2]);
 
 
 MWI = squeeze(squeeze(sum(distributions(:,:,:,1:13),4))./squeeze(sum(distributions(:,:,:,:),4)));
@@ -21,6 +24,10 @@ for c = 1 : Zres
 end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
-Description = 'Threshold = 200; nT2 = 60 ';
+Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s ';
+cd ~/GRASE/GRASE_Results/UBC_Results
 save(name)
+catch ME
+	disp(ME.message)
+	end
 end
