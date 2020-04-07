@@ -1,5 +1,4 @@
 classdef SimClass
-% GRASE code must be included for T2 simulation
 	properties
 		MyInfo % Contains necessary info
 			% 	Note: all range values must be a vector of size 2, even if the corresponding is a constant value!
