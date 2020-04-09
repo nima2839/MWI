@@ -1,5 +1,5 @@
 function ReProcessGRASE(name)
-disp('ReProcessGRASE on: ',name])
+disp(['ReProcessGRASE on: ',name])
 try
 cd ~/GRASE/GRASE_To_Do/
 load(name,'tf_mgrase')
