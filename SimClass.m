@@ -36,6 +36,10 @@ classdef SimClass
 			if ~isfield(MyInfo, 'FlipAngle')
 				MyInfo.FlipAngle = 180;
 			end
+			
+			if ~isfield(MyInfo, 'T1Val')
+				error('MyInfo.T1Val needs to be defined!')
+			end
 
 			obj.MyInfo = MyInfo;
 			if ~isfield(MyInfo, 'T2Dist')
@@ -49,13 +53,15 @@ classdef SimClass
 			end
 
 			SimulatedData = zeros(MyInfo.NumData,length(MyInfo.Times));
-			Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
-			Compartment_T_Map = zeros(MyInfo.NumWaterComp,1);
+			
 			if isfield(MyInfo,'FreqRange')
 				Compartment_Freq_Map = cell(MyInfo.NumWaterComp,1);
 			end
-
+			tic;
 			if ~isfield(MyInfo, 'T2Dist')
+			Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
+			Compartment_T_Map = zeros(MyInfo.NumWaterComp,1);
+			
 				for k = 1:MyInfo.NumWaterComp
 					tempT = SimClass.GenerateRandomValues(MyInfo.TimeConstRange{k}, MyInfo.NumData);
 					tempFraction = SimClass.GenerateRandomValues(MyInfo.FractionRange{k}, MyInfo.NumData);
@@ -75,17 +81,19 @@ classdef SimClass
 				Compartment_Fraction_Map = {};
 				Compartment_T_Map = {};
 				
-				SimResult = GenerateT2DecayCurves(MyInfo.Times, MyInfo.T2Dist, MyInfo.T1Val, MyInfo.FlipAngle);
+				SimResult = SimClass.GenerateT2DecayCurves(MyInfo.Times, MyInfo.T2Dist, MyInfo.T1Val, MyInfo.FlipAngle);
 				for i = 1:MyInfo.NumData
 					SimulatedData(i,:) = awgn(SimResult(:), MyInfo.SNR);
 				end
 			end
+			SimTime = toc;
 			obj.Compartment_Fraction_Map = Compartment_Fraction_Map;
 			obj.Compartment_T_Map = Compartment_T_Map;
 			obj.SimulatedData = SimulatedData;
 			if isfield(MyInfo,'FreqRange')
 				obj.Compartment_Freq_Map = Compartment_Freq_Map;
 			end
+			disp(['Total Simulation Time: ', string(SimTime)])
 		end
 
 		function [Dist, Maps] = NNLS_Fitting(obj)
@@ -188,7 +196,7 @@ classdef SimClass
 			% This function uses the "GenerateT2DecayCurves" for alternative input option
 			T2Dist.T2Values = T2;
 			T2Dist.Weights = 1;
-			output = GenerateT2DecayCurves(Times,T2Dist,T1,FA, SNR);
+			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1,FA, SNR);
 		end
 
 		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA, SNR)
@@ -201,9 +209,10 @@ classdef SimClass
 			TE = Times(2) - Times(1);
 			RefCon = 180; % Predefined
 	
-			basis_decay = Calc_basis_decay(ETL, nT2, FA, TE, T2Dist.T2Values, T1Val, RefCon);
+			basis_decay = SimClass.Calc_basis_decay(ETL, nT2, FA, TE, T2Dist.T2Values, T1Val, RefCon);
 			
-			output = basis_decay * T2Dist.Weights;
+			
+			output = basis_decay * T2Dist.Weights';
 			% Normalize output
 			output = output / sum(1);
 			if SNR > 0
