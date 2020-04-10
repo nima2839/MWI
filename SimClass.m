@@ -1,19 +1,26 @@
 classdef SimClass
 	properties
-		MyInfo % Contains necessary info
+		MyInfo % Contains necessary info, this is user defined property
 			% 	Note: all range values must be a vector of size 2, even if the corresponding is a constant value!
 			%	Fields:
 			%	NumData: Number of data point to be simulated
 			%	Times: A vector containing all the echo times
 			%	NumWaterComp: Number of water compartment in the simuation
 			%	TimeConstRange:  a cell that contains range of each compartment time constant range (seconds)
+			%		- edit1: if "T2Dist" is defined then this should not be defined at all!
 			%	T1Val: an array containing all T1 values corresponding to each water compartment (seconds)
-			%	FractionRange: a cell containing the fraction of each water compartment
-			%	FreqRange: a cell ... (for T2 simulations should not exist!)
-			% FlipAngle: refocusing flip angle value (degrees)
+			%		- edit1: if "T2Dist" is defined then it should be a vector with the same length!
+			%	FractionRange: a cell containing the fraction of each water compartment (only for T2* simuation)!
+			%	FreqRange: a cell ... (Must not exist for T2 simulations!)
+			%	FlipAngle: refocusing flip angle value (degrees)
 			%	TrueFAFlag: If false code will estimate FA on its own
-			% SNR
-
+			%	SNR: uses adittive white Gaussian noise!
+			%	T2Dist: This is a struct containing two vectors->
+			%		- T2Values: contains T2 values in the distribution
+			%		- Weights: contain the corresponding weights
+			%
+			
+		Dist % Contains distribution weights corresponding to "T2Dist"  option!
 		Compartment_T_Map % TimeConstant values of each water compartment
 		Compartment_Freq_Map
 		Compartment_Fraction_Map
@@ -21,10 +28,6 @@ classdef SimClass
 	end
 	methods
 		function obj = SimClass(MyInfo)
-
-			if ~isfield(MyInfo, 'SNR')
-				MyInfo.SNR = 0;
-			end
 
 			if ~isfield(MyInfo, 'TrueFAFlag')
 				MyInfo.TrueFAFlag = false;
@@ -35,33 +38,47 @@ classdef SimClass
 			end
 
 			obj.MyInfo = MyInfo;
-			if length(MyInfo.TimeConstRange) ~= MyInfo.NumWaterComp || length(MyInfo.FractionRange) ~= MyInfo.NumWaterComp
-				error('Number of water compartments and corresponding range values are inconsistent!');
+			if ~isfield(MyInfo, 'T2Dist')
+				if length(MyInfo.TimeConstRange) ~= MyInfo.NumWaterComp || length(MyInfo.FractionRange) ~= MyInfo.NumWaterComp
+					error('Number of water compartments and corresponding range values are inconsistent!');
+				end
+				
+				if ~isfield(MyInfo, 'SNR')
+					MyInfo.SNR = 0;
+				end
 			end
 
 			SimulatedData = zeros(MyInfo.NumData,length(MyInfo.Times));
 			Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
-			Compartment_T_Map = cell(MyInfo.NumWaterComp,1);
+			Compartment_T_Map = zeros(MyInfo.NumWaterComp,1);
 			if isfield(MyInfo,'FreqRange')
 				Compartment_Freq_Map = cell(MyInfo.NumWaterComp,1);
 			end
 
+			if ~isfield(MyInfo, 'T2Dist')
+				for k = 1:MyInfo.NumWaterComp
+					tempT = SimClass.GenerateRandomValues(MyInfo.TimeConstRange{k}, MyInfo.NumData);
+					tempFraction = SimClass.GenerateRandomValues(MyInfo.FractionRange{k}, MyInfo.NumData);
+					if isfield(MyInfo,'FreqRange')
+						Compartment_Freq_Map{k} = SimClass.GenerateRandomValues(MyInfo.FreqRange{k}, MyInfo.NumData);
+						temp = cell2mat(arrayfun(@(T,f,a) a * SimClass.CreateDecayCurve(T, MyInfo.Times, f,MyInfo.SNR), tempT, Compartment_Freq_Map{k},tempFraction,'UniformOutput',false));
+					else
 
-			for k = 1:MyInfo.NumWaterComp
-				tempT = SimClass.GenerateRandomValues(MyInfo.TimeConstRange{k}, MyInfo.NumData);
-				tempFraction = SimClass.GenerateRandomValues(MyInfo.FractionRange{k}, MyInfo.NumData);
-
-				if isfield(MyInfo,'FreqRange')
-					Compartment_Freq_Map{k} = SimClass.GenerateRandomValues(MyInfo.FreqRange{k}, MyInfo.NumData);
-					temp = cell2mat(arrayfun(@(T,f,a) a * SimClass.CreateDecayCurve(T, MyInfo.Times, f,MyInfo.SNR), tempT, Compartment_Freq_Map{k},tempFraction,'UniformOutput',false));
-				else
-					%ES = MyInfo.Times(2) - MyInfo.Times(1);
-					temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
-							tempT,tempFraction,'UniformOutput',false));
+						temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Delta(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
+								tempT,tempFraction,'UniformOutput',false));
+					end
+					SimulatedData = SimulatedData + reshape(temp, size(SimulatedData'))';
+					Compartment_Fraction_Map{k} = tempFraction;
+					Compartment_T_Map(k) = tempT;
 				end
-				SimulatedData = SimulatedData + reshape(temp, size(SimulatedData'))';
-				Compartment_Fraction_Map{k} = tempFraction;
-				Compartment_T_Map{k} = tempT;
+			else
+				Compartment_Fraction_Map = {};
+				Compartment_T_Map = {};
+				
+				SimResult = GenerateT2DecayCurves(MyInfo.Times, MyInfo.T2Dist, MyInfo.T1Val, MyInfo.FlipAngle);
+				for i = 1:MyInfo.NumData
+					SimulatedData(i,:) = awgn(SimResult(:), MyInfo.SNR);
+				end
 			end
 			obj.Compartment_Fraction_Map = Compartment_Fraction_Map;
 			obj.Compartment_T_Map = Compartment_T_Map;
@@ -72,14 +89,14 @@ classdef SimClass
 		end
 
 		function [Dist, Maps] = NNLS_Fitting(obj)
-			MyInfo.FirstTE = obj.MyInfo.Times(1);
-			MyInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
-			MyInfo.Range_T = [1 120] * 1e-3;
-			MyInfo.Num_T =  100;
+			TempInfo.FirstTE = obj.MyInfo.Times(1);
+			TempInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
+			TempInfo.Range_T = [1 120] * 1e-3;
+			TempInfo.Num_T =  100;
 
 			temp(1,1,:,:) = obj.SimulatedData(:,:);
 
-			[Dist(:,:),Maps.Times,Maps.res] = NNLS_T_Batch_Fitting(temp, MyInfo);
+			[Dist(:,:),Maps.Times,Maps.res] = NNLS_T_Batch_Fitting(temp, TempInfo);
 			threshold = obj.MyInfo.TimeConstRange{obj.MyInfo.NumWaterComp}(2);
 			Maps.MWF = SimClass.Find_MWF(Dist, find(Maps.Times < threshold, 1, 'last' ), 'NNLS');
 		end
@@ -113,6 +130,7 @@ classdef SimClass
 			if nargin < 2
 				temp(:,:) = (obj.SimulatedData(:,:));
 			else
+				temp = zeros(obj.MyInfo.NumData, length(obj.MyInfo.Times));
 				for k = 1:obj.MyInfo.NumData
 					temp(k,:) = awgn((obj.SimulatedData(k,:)), SNR);
 				end
@@ -126,14 +144,14 @@ classdef SimClass
 			Maps.ResC3PM = zeros(obj.MyInfo.NumData,1);
 			Maps.ResMag3PM = zeros(obj.MyInfo.NumData,1);
 			%Maps.Res2PM = zeros(obj.MyInfo.NumData,1);
-			MyInfo.FirstTE = obj.MyInfo.Times(1);
-			MyInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
-			MyInfo.MultiStart = true;
+			TempInfo.FirstTE = obj.MyInfo.Times(1);
+			TempInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
+			TempInfo.MultiStart = true;
 			for k = 1:obj.MyInfo.NumData
-				[Maps.Params3PM(k,:), Maps.Res3PM(k)] = ThreePoolM_NLLS(abs(temp(k,:)),MyInfo);
-				[Maps.ParamsMag3PM(k,:), Maps.ResMag3PM(k)] = Mag3PM(abs(temp(k,:)),MyInfo);
-				[Maps.ParamsC3PM(k,:), Maps.ResC3PM(k)] = Complex3PM(temp(k,:),MyInfo);
-				%[Maps.Params2PM(k,:), Maps.Res2PM(k)] = TwoPoolModel_NLLS(temp(k,:),MyInfo);
+				[Maps.Params3PM(k,:), Maps.Res3PM(k)] = ThreePoolM_NLLS(abs(temp(k,:)), TempInfo);
+				[Maps.ParamsMag3PM(k,:), Maps.ResMag3PM(k)] = Mag3PM(abs(temp(k,:)), TempInfo);
+				[Maps.ParamsC3PM(k,:), Maps.ResC3PM(k)] = Complex3PM(temp(k,:), TempInfo);
+				%[Maps.Params2PM(k,:), Maps.Res2PM(k)] = TwoPoolModel_NLLS(temp(k,:), TempInfo);
 			end
 			Maps.MWF3PM = Maps.Params3PM(:,1).* (Maps.Params3PM(:,1)+Maps.Params3PM(:,4)+Maps.Params3PM(:,6)).^-1;
 			Maps.MWFC3PM = Maps.ParamsC3PM(:,1).* (Maps.ParamsC3PM(:,1)+Maps.ParamsC3PM(:,4)+Maps.ParamsC3PM(:,7)).^-1;
@@ -165,30 +183,44 @@ classdef SimClass
 				output = squeeze(squeeze(sum(Dist(:,1:index),2)./sum(Dist,2)));
 			end
 		end
+		
+		function output = GenerateT2DecayCurves_Delta(Times, T2 , T1, FA, SNR)
+			% This function uses the "GenerateT2DecayCurves" for alternative input option
+			T2Dist.T2Values = T2;
+			T2Dist.Weights = 1;
+			output = GenerateT2DecayCurves(Times,T2Dist,T1,FA, SNR);
+		end
 
-		function output = GenerateT2DecayCurves(Times,T2Val,T1Val,FA, SNR)
+		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA, SNR)
 			if nargin < 5
 				SNR = 0;
 			end
-			T2 = T2Val*(0.95:0.01:1.05);
-			weight = zeros(1,length(T2));
-			weight(T2 == T2Val) = 1;
-			weight = conv(weight, gausswin(length(T2),0.3*length(T2)), 'same');
+			
+			nT2 = length(T2Dist.T2Values);
 			ETL = length(Times);
 			TE = Times(2) - Times(1);
-			output = 0;
-			for k = 1:length(T2)
-				output = output + weight(k) * EPGdecaycurve(ETL,FA,TE,T2(k),T1Val,180);
-			end
+			RefCon = 180; % Predefined
+	
+			basis_decay = Calc_basis_decay(ETL, nT2, FA, TE, T2Dist.T2Values, T1Val, RefCon);
+			
+			output = basis_decay * T2Dist.Weights;
 			% Normalize output
-			output = output / sum(weight(:));
+			output = output / sum(1);
 			if SNR > 0
 				output = awgn(output,SNR);
 			end
 		end
 
-		%function output = GenerateT2StarDecayCurves(T2SVal,Freq)
-
-		%end
+		function basis_decay = Calc_basis_decay(nechs, nT2, alpha, TE, T2_times, T1, RefCon)
+			basis_decay=zeros(nechs,nT2);
+			% Compute the NNLS basis over T2 space
+			if alpha == 0 % this prevents the code from freezing
+				alpha = 180;
+			end
+			for x=1:nT2
+				echo_amp = EPGdecaycurve(nechs, alpha, TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
+				basis_decay(:,x) = echo_amp';
+			end
+		end
 	end
 end
