@@ -305,7 +305,12 @@ end
 
 function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, flip_angles)
   % Fit each basis and  find chi-squared
+  % This fit uses an extra point at 178 degrees to mitigate underestimation arround 180 degrees!
+  
+  flip_angles = [flip_angles(1:nangles-1), 178, flip_angles(nangles)];
+  nangles = nangles + 1;
   chi2_alpha = zeros(1,nangles);
+  
   for a=1:nangles
       [T2_dis_ls, ~, ~] = Nima_UBC_NNLS(basis_angles{a},decay_data, obs_weigts); % Nima: This is to be tested!
       decay_pred=basis_angles{a}*T2_dis_ls;
@@ -313,13 +318,9 @@ function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, f
   end
   % Find the minimum chi-squared and the corresponding angle
   alpha_spline = flip_angles(1):0.001:flip_angles(end);
-  temp_Chi2 = [chi2_alpha, flip(chi2_alpha(1:end-1))];
-  chi2_spline = interp1([flip_angles, (360 - flip(flip_angles(1:end-1)))], temp_Chi2, alpha_spline,'spline'); % Nima : Here is a trick for ya!
+  chi2_spline=interp1(flip_angles,chi2_alpha,alpha_spline,'spline');
   [~,index] = min(chi2_spline);
   alpha = alpha_spline(index);
-  if alpha_spline(index) > 180.5 % Nima: maps everything to under 180; Threshold value is a bit arbitrary
-    alpha = 360 - alpha_spline(index);
-  end
 end
 
 function basis_decay = Calc_basis_decay(nechs, nT2, alpha, TE, T2_times, T1, RefCon)
