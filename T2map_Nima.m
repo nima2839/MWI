@@ -154,6 +154,9 @@ T2_times=logspace(log10(T2Range(1)),log10(T2Range(2)),nT2);
 if faset==0
     flip_angles=linspace(minangle, 180, nangles);
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
+	% Nima: This fit uses an extra point at 178 degrees to mitigate underestimation arround 180 degrees!
+	flip_angles = [flip_angles(1:end-1), 178, flip_angles(end)];
+	nangles = length(flip_angles);
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
     basis_decay=zeros(nechs,nT2);
@@ -193,8 +196,8 @@ parfor row = 1:nrows
     gdn = zeros(ncols,nslices);
     ggm = zeros(ncols,nslices);
     gva = zeros(ncols,nslices);
-    SNR = zeros(ncols,nslices);
-    FNR = zeros(ncols,nslices);
+    %SNR = zeros(ncols,nslices); % Nima
+    %FNR = zeros(ncols,nslices); % Nima
     alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
 	dists = zeros(ncols,nslices,nT2);
 	TempRes = zeros(ncols,nslices,nechs); % Nima
@@ -260,7 +263,7 @@ parfor row = 1:nrows
     %FNRmap(row,:,:) = FNR; % Nima
 	if faset == 0
 		alphamap(row,:,:) = alpha;
-    end
+	end
 	distributions(row,:,:,:) = dists;
 	ResMap(row,:,:,:) = TempRes; % Nima
     mumap(row,:,:) = mus;
@@ -305,10 +308,8 @@ end
 
 function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, flip_angles)
   % Fit each basis and  find chi-squared
-  % This fit uses an extra point at 178 degrees to mitigate underestimation arround 180 degrees!
   
-  flip_angles = [flip_angles(1:nangles-1), 178, flip_angles(nangles)]
-  nangles = nangles + 1
+  
   chi2_alpha = zeros(1,nangles);
   
   for a=1:nangles
