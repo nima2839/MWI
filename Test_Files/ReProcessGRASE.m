@@ -25,7 +25,7 @@ end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s ';
-cd ~/GRASE/GRASE_Results/UBC_Results
+cd ~/GRASE/GRASE_Results/GRASE_UBC_Results
 save(name)
 catch ME
 	disp(ME.message)
