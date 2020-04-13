@@ -5,7 +5,7 @@ cd ~/GRASE/GRASE_To_Do/
 load(name,'tf_mgrase')
 tic
 
-[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2]);
+[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2],'MinRefAngle', 100);
 
 
 MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
@@ -24,7 +24,7 @@ for c = 1 : Zres
 end
 clear MWI MWI_1 tf_mgrase
 runtime=toc;
-Description = 'Threshold = 200; nT2 = 60, T2Range 0.008, 2';
+Description = 'Threshold = 200; nT2 = 60, T2Range 0.008, 2, MinRefAngle = 100 degrees ';
 cd ~/GRASE/GRASE_Results/GRASE_ExtB1_Results/
 save(name)
 catch ME
