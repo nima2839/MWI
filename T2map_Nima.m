@@ -307,8 +307,8 @@ function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, f
   % Fit each basis and  find chi-squared
   % This fit uses an extra point at 178 degrees to mitigate underestimation arround 180 degrees!
   
-  flip_angles = [flip_angles(1:nangles-1), 178, flip_angles(nangles)];
-  nangles = nangles + 1;
+  flip_angles = [flip_angles(1:nangles-1), 178, flip_angles(nangles)]
+  nangles = nangles + 1
   chi2_alpha = zeros(1,nangles);
   
   for a=1:nangles
