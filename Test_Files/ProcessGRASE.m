@@ -38,6 +38,7 @@ for c = 1 : Zres
     end
 end
 
+clear MWI MWI_1 mgrase hfilt2
 runtime=toc;
 cd ~/GRASE/GRASE_Results
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
@@ -63,6 +64,7 @@ for c = 1 : Zres
     end
 end
 
+clear MWI MWI_1 
 runtime=toc;
 cd ~/GRASE/GRASE_Results
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
