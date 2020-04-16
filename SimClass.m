@@ -211,8 +211,8 @@ classdef SimClass
 	
 			basis_decay = SimClass.Calc_basis_decay(ETL, nT2, FA, TE, T2Dist.T2Values, T1Val, RefCon);
 			
-			
-			output = basis_decay * T2Dist.Weights';
+			sbd = size(basis_decay);
+			output = basis_decay * reshape(T2Dist.Weights, [sbd(2), 1]);
 			% Normalize output
 			output = output / sum(1);
 			if SNR > 0
