@@ -113,11 +113,11 @@ classdef SimClass
 			temp(1,1,:,:) = abs(obj.SimulatedData(:,:)) *1e3; % Scale is for thresholding in the code
 
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp, 'SetFlipAngle', obj.MyInfo.FlipAngle,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 			else
-				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp,'MinRefAngle', 60, 'nAngles', 12);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100;%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
-			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
+			Maps.MWF = SimClass.Find_MWF(Dist, 18, 'NNLS');
 		end
 
 		function [Dist, Maps] = UBC_Nima_Fitting(obj, T1)
@@ -127,11 +127,11 @@ classdef SimClass
 			temp(1,1,:,:) = abs(obj.SimulatedData(:,:)) *1e3; % Scale is for thresholding in the code
 
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)), 'T1', T1);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)), 'T1', T1,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 			else
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'MinRefAngle', 60, 'nAngles', 12);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
-			Maps.MWF = SimClass.Find_MWF(Dist, 40, 'NNLS');
+			Maps.MWF = SimClass.Find_MWF(Dist, 18, 'NNLS');
 		end
 
 		function Maps = NLLS_Fitting(obj, SNR)
