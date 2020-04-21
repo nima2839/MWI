@@ -131,9 +131,10 @@ classdef SimClass
 			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
 
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);
+			disp('Yellow');
+				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 			else
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
 			Maps.MWF = SimClass.Find_MWF(Dist, 18, 'NNLS');
 		end
