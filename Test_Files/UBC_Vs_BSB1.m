@@ -1,6 +1,6 @@
 function UBC_Vs_BSB1(Subject)
 disp(['Processing BSB1 on :',Subject])
-try
+%try
   cd ~/GRASE/GRASE_To_Do/
 
   load(Subject, 'tf_mgrase')
@@ -35,7 +35,7 @@ try
   cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
   Description = 'Threshold = 200; FlipAngleMap from B1-map with nominal angle of 156.2, nT2 = 60, T2Range = 8ms to 2 S';
   save(['GRASE_Results_B1_map_', Subject])
-catch ME
-	disp(ME.message)
-	end
+%catch ME
+%	disp(ME.message)
+%	end
 end
