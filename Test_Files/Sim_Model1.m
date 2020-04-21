@@ -5,6 +5,7 @@ cd ~/Simulation/B1_Research/
 load('Models') % predefined models
 
 %%
+tic
 MyInfo.Times = (1:32)*1e-2;
 
 MyInfo.T2Dist.T2Values = time;
@@ -48,7 +49,9 @@ parfor j = 1:nSNR
 	TrueFA_Maps(j,:)= temp_Tmaps;
 end
 clear a temp
+runtime = toc;
 Description = 'second dim is FlipAngle, and first dim is SNR';
 %%
 cd ~/Simulation/
 save('B1_Sim_Result_M1','-v7.3')
+disp('Done!')
