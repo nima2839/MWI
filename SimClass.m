@@ -28,7 +28,7 @@ classdef SimClass
 	end
 	methods
 		function obj = SimClass(MyInfo)
-
+			MyInfo.NumData = MyInfo.NumData + mod(MyInfo.NumData, maxNumCompThreads); % for acceleration purposes
 			if ~isfield(MyInfo, 'TrueFAFlag')
 				MyInfo.TrueFAFlag = false;
 			end
@@ -46,12 +46,13 @@ classdef SimClass
 				if length(MyInfo.TimeConstRange) ~= MyInfo.NumWaterComp || length(MyInfo.FractionRange) ~= MyInfo.NumWaterComp
 					error('Number of water compartments and corresponding range values are inconsistent!');
 				end
-				
-				if ~isfield(MyInfo, 'SNR')
-					MyInfo.SNR = 0;
-				end
 			end
-
+			if ~isfield(MyInfo, 'SNR') 
+				MyInfo.SNR = 100;
+			elseif MyInfo.SNR == 0
+				MyInfo.SNR = 100;
+			end
+			obj.MyInfo = MyInfo;
 			SimulatedData = zeros(MyInfo.NumData,length(MyInfo.Times));
 			
 			if isfield(MyInfo,'FreqRange')
@@ -60,7 +61,7 @@ classdef SimClass
 			tic;
 			if ~isfield(MyInfo, 'T2Dist')
 			Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
-			Compartment_T_Map = zeros(MyInfo.NumWaterComp,1);
+			Compartment_T_Map = zeros(MyInfo.NumWaterComp,MyInfo.NumData);
 			
 				for k = 1:MyInfo.NumWaterComp
 					tempT = SimClass.GenerateRandomValues(MyInfo.TimeConstRange{k}, MyInfo.NumData);
@@ -75,7 +76,7 @@ classdef SimClass
 					end
 					SimulatedData = SimulatedData + reshape(temp, size(SimulatedData'))';
 					Compartment_Fraction_Map{k} = tempFraction;
-					Compartment_T_Map(k) = tempT;
+					Compartment_T_Map(k,:) = tempT;
 				end
 			else
 				Compartment_Fraction_Map = {};
@@ -93,10 +94,10 @@ classdef SimClass
 			if isfield(MyInfo,'FreqRange')
 				obj.Compartment_Freq_Map = Compartment_Freq_Map;
 			end
-			disp(['Total Simulation Time: ', string(SimTime)])
+			%disp(['Total Simulation Time: ', string(SimTime)])
 		end
 
-		function [Dist, Maps] = NNLS_Fitting(obj)
+		function [Dist, Maps] = NNLS_Fitting(obj) % do not use this funtion, this is from the old code!
 			TempInfo.FirstTE = obj.MyInfo.Times(1);
 			TempInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
 			TempInfo.Range_T = [1 120] * 1e-3;
@@ -110,7 +111,7 @@ classdef SimClass
 		end
 
 		function [Dist, Maps] = UBC_Fitting(obj)
-			temp(1,1,:,:) = abs(obj.SimulatedData(:,:)) *1e3; % Scale is for thresholding in the code
+			temp(1,1,:,:) = abs(obj.SimulatedData(:,:));
 
 			if obj.MyInfo.TrueFAFlag
 				[Maps, Dist(:,:), ~] = T2map_SEcorr(temp, 'SetFlipAngle', obj.MyInfo.FlipAngle,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
@@ -124,12 +125,15 @@ classdef SimClass
 			if nargin < 2
 				T1 = ones(1,200);
 			end
-			temp(1,1,:,:) = abs(obj.SimulatedData(:,:)) *1e3; % Scale is for thresholding in the code
+			nT2 = 60;
+			ns = obj.MyInfo.NumData / maxNumCompThreads;
+			ne = length(obj.MyInfo.Times);
+			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
 
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(size(temp)), 'T1', T1,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 			else
-				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist(:,:), ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
 			end
 			Maps.MWF = SimClass.Find_MWF(Dist, 18, 'NNLS');
 		end
