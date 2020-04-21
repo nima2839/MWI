@@ -110,7 +110,7 @@ faset=	~isempty(alphamap);	%p.Results.SetFlipAngle;
 
 if isempty(T1)
 	T1 = ones(1, nT2);
-	Disp('T1 is set to 1 seconds for all!')
+	disp('T1 is set to 1 seconds for all!');
 end
 % nCores=p.Results.nCores;
 % nCores= 4; % in case of error message about Cores;
