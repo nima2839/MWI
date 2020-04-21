@@ -2,7 +2,7 @@ function UBC_Vs_BSB1(Subject)
 disp(['Processing BSB1 on :',Subject])
 try
   cd ~/GRASE/GRASE_To_Do/
-  disp(Subject);
+
   load(Subject, 'tf_mgrase')
 
   cd(['~/GRASE/B1_Maps/',Subject,'/'])
