@@ -8,7 +8,7 @@ tic
 [maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 
 
-MWI = squeeze(squeeze(sum(distributions(:,:,:,1:13),4))./squeeze(sum(distributions(:,:,:,:),4)));
+MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
 [ Xres , Yres , Zres ] = size( MWI );

@@ -38,7 +38,7 @@ for c = 1 : Zres
     end
 end
 
-clear MWI MWI_1 mgrase hfilt2 tf_mgrase
+clear MWI MWI_1 mgrase hfilt2 tf_mgrase mgrase
 runtime=toc;
 cd ~/GRASE/GRASE_Results
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
