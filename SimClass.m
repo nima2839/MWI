@@ -129,7 +129,7 @@ classdef SimClass
 			ns = obj.MyInfo.NumData / maxNumCompThreads;
 			ne = length(obj.MyInfo.Times);
 			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
-
+			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			if obj.MyInfo.TrueFAFlag
 				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);
 			else
@@ -192,7 +192,7 @@ classdef SimClass
 
 		function output = Find_MWF(Dist, index, Mode)
 			if strcmp(Mode, 'NNLS')
-				output = squeeze(squeeze(sum(Dist(:,1:index),2)./sum(Dist,2)));
+				output = squeeze(squeeze(sum(Dist(:,:,:,1:index),4)./sum(Dist,4)));
 			end
 		end
 		
