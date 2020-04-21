@@ -15,7 +15,7 @@ MyInfo.T1Val = ones(1,length(M1));
 MyInfo.T1Val(1:15) = 0.5;
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = qe4;
+MyInfo.NumData = 1e4;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
