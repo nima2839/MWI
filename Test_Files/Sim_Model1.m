@@ -15,11 +15,11 @@ MyInfo.T1Val = ones(1,length(M1));
 MyInfo.T1Val(1:15) = 0.5;
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 1e4;
+MyInfo.NumData = 1e3;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
-FA = 130:180;
+FA = 110:180;
 SNR = [40:2:60, 100];
 nFA = length(FA);
 nSNR = length(SNR);
