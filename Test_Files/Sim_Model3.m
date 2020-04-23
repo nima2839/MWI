@@ -10,7 +10,7 @@ MyInfo.Times = (1:32)*1e-2;
 MyInfo.T2Dist.T2Values = time;
 MyInfo.T2Dist.Weights = M3;
 
-MyInfo.T1Val = ones(1,length(M1));
+MyInfo.T1Val = ones(1,length(M3));
 MyInfo.T1Val(1:15) = 0.5;
 MyInfo.T1Val(33:end) = 4.163;
 MyInfo.FlipAngle = 180;
@@ -18,11 +18,12 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
-FA = 120:180;
+FA = 110:180;
 SNR = [40:2:60, 80];
 nFA = length(FA);
 nSNR = length(SNR);
-
+Dist =  cell(nSNR,nFA);
+Maps = Dist;
 parfor j = 1:nSNR
 	temp = MyInfo;
 	temp.SNR = SNR(j);
