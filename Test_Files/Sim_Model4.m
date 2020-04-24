@@ -24,7 +24,7 @@ MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
 FA = 110:180;
-SNR = [40:2:60, 100];
+SNR = [30,50,100:50:500, 750, 1e3, 1e4];
 nFA = length(FA);
 nSNR = length(SNR);
 Dist =  cell(nSNR,nFA);
@@ -56,6 +56,6 @@ clear a temp
 runtime = toc;
 Description = 'second dim is FlipAngle, and first dim is SNR';
 %%
-cd ~/Simulation/
+cd ~/Simulation/B1_Research/
 save('B1_Sim_Result_M4','-v7.3')
 disp('Done!')
