@@ -3,11 +3,15 @@ function [maps,distributions, T1] = T2map_Nima(image,varargin)
 % Nima Changes:
 %	- Regularization is always enabled in this version!
 %	- A flip angle map can be given as input;
-%	- Flip angles for spline function now go over 180, the results are mirrored to the other side of 180;
-%	- Number of flip angles used for spline func. is kept unchanged, but it can be increased for better accuracy!
-%	- Min flip angle is increased from 50 to 60;
+%	- Min flip angle is increased from 50 to 100;
 %	- Observation Weights has been added;
-% - Add T1 map vector as an input for their corresponding T2 in T2 distribution;
+%	- Add T1 map vector as an input for their corresponding T2 in T2 distribution;
+%	- T1 value is returned in case default values should be set altarnatively;
+%	- Residuals of fit are now saved in maps; To save space this could be set to empty array on the user's end;
+%	- nCores option has been omitted;
+%	- Alternate fitting function is called to work with observation weights;
+%	- Threshold's default value set back to 200; Must be set to zero for simulated data;
+%
 
 %
 % [maps,distributions] = T2map_SEcorr(image,...)
@@ -74,11 +78,11 @@ p.addRequired('image',@(x)isa(x,'double') && ndims(x)==4);
 p.addParamValue('TE',0.01,@(x)isnumeric(x) && isscalar(x) && x>=0.001 && x<=1); % TE modification _J
 %p.addParamValue('T1',1,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=0.001); % Nima : a vector is expected now
 p.addParamValue('RefCon',180,@(x)isnumeric(x) && isscalar(x) && x<=180 && x>=1);
-p.addParamValue('Threshold',0,@(x)isnumeric(x) && isscalar(x)); % 200 to 0; Since we are using synthetic data
+p.addParamValue('Threshold',200,@(x)isnumeric(x) && isscalar(x)); 
 p.addParamValue('Chi2Factor',1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
 p.addParamValue('nT2',200,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=300);
 p.addParamValue('T2Range',[0.015,2],@(x)isnumeric(x) && length(x)==2 && x(2)>x(1) && x(1)>=0.001 && x(2)<=10);
-p.addParamValue('MinRefAngle',50,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
+p.addParamValue('MinRefAngle',100,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
 p.addParamValue('nAngles',8,@(x)isnumeric(x) && isscalar(x) && x>1);
 p.addParamValue('Reg','lcurve',@(x)any(strcmp(x,{'no','chi2','lcurve'})));
 p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
@@ -197,8 +201,8 @@ parfor row = 1:nrows
     gdn = zeros(ncols,nslices);
     ggm = zeros(ncols,nslices);
     gva = zeros(ncols,nslices);
-    %SNR = zeros(ncols,nslices); % Nima
-    %FNR = zeros(ncols,nslices); % Nima
+    SNR = zeros(ncols,nslices); 
+    FNR = zeros(ncols,nslices); 
     alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
 	dists = zeros(ncols,nslices,nT2);
 	TempRes = zeros(ncols,nslices,nechs); % Nima
@@ -251,8 +255,8 @@ parfor row = 1:nrows
                 decay_calc = basis_decay*T2_dis;
                 residuals = decay_calc-decay_data;
 				TempRes(col,slice,:) = residuals; % Nima
-                %FNR(col,slice) = sum(T2_dis)/sqrt(var(residuals)); % Nima
-                %SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); % Nima
+                FNR(col,slice) = sum(T2_dis)/sqrt(var(residuals)); 
+                SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); 
             end
         end
     end
@@ -260,8 +264,8 @@ parfor row = 1:nrows
     gdnmap(row,:,:) = gdn;
     ggmmap(row,:,:) = ggm;
     gvamap(row,:,:) = gva;
-    %SNRmap(row,:,:) = SNR; % Nima
-    %FNRmap(row,:,:) = FNR; % Nima
+    SNRmap(row,:,:) = SNR; 
+    FNRmap(row,:,:) = FNR; 
 	if faset == 0
 		alphamap(row,:,:) = alpha;
 	end
@@ -290,8 +294,8 @@ maps.gdn = gdnmap;
 maps.ggm = ggmmap;
 maps.gva = gvamap;
 maps.alpha = alphamap;
-%maps.FNR = FNRmap; % Nima
-%maps.SNR = SNRmap; % Nima
+maps.FNR = FNRmap; 
+maps.SNR = SNRmap; 
 maps.Residuals = ResMap; % Nima
 if savereg
     maps.mu=mumap;
