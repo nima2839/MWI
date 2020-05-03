@@ -19,12 +19,12 @@ MyInfo.FractionRange{3}= [0.1,0.1];
 
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 5e3;
+MyInfo.NumData = 2e3;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
 FA = 110:180;
-SNR = [100:50:500, 750, 1e3, 1e4];
+SNR = [30,50,100:50:300, 500, 750, 1e3, 1e4];
 nFA = length(FA);
 nSNR = length(SNR);
 Dist =  cell(nSNR,nFA);

@@ -20,7 +20,7 @@ MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
 FA = 110:180;
-SNR = [30,50,100:50:500, 750, 1e3, 1e4];
+SNR = [30,50,100:50:300, 500, 750, 1e3, 1e4];
 nFA = length(FA);
 nSNR = length(SNR);
 Dist =  cell(nSNR,nFA);
