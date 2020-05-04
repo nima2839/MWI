@@ -4,6 +4,7 @@ addpath(genpath('~/GRASE/Postprocessing'))
 cd ~/Simulation/B1_Research/
 load('Models') % predefined models
 
+tic 
 
 MyInfo.Times = (1:32)*1e-2;
 
