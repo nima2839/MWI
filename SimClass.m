@@ -85,7 +85,7 @@ classdef SimClass
 				
 				SimResult = SimClass.GenerateT2DecayCurves(MyInfo.Times, MyInfo.T2Dist, MyInfo.T1Val, MyInfo.FlipAngle);
 				for i = 1:MyInfo.NumData
-					SimulatedData(i,:) = awgn(SimResult(:), MyInfo.SNR, 'measured');
+					SimulatedData(i,:) = awgn(SimResult(:), MyInfo.SNR, 'measured', 'linear');
 				end
 			end
 			SimTime = toc;
@@ -183,7 +183,7 @@ classdef SimClass
 			end
 			output = exp(-t*((1/TimeConstant) - 1i*2*pi*Freq));
 			if SNR > 0
-				output = awgn(output, SNR,'measured');
+				output = awgn(output, SNR,'measured','linear');
 			end
 		end
 
@@ -216,7 +216,7 @@ classdef SimClass
 			% Normalize output
 			output = output / sum(1);
 			if SNR > 0
-				output = awgn(output,SNR,'measured');
+				output = awgn(output,SNR,'measured', 'linear');
 			end
 		end
 
