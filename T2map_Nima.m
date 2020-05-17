@@ -257,7 +257,7 @@ parfor row = 1:nrows
 				TempRes(col,slice,:) = residuals; % Nima
                 FNR(col,slice) = sum(T2_dis)/sqrt(var(residuals)); 
                 %SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); 
-				SNR(col,slice) = sum(decay_data.^2)/sum(residuals.^2); % Nima
+				SNR(col,slice) = sum(decay_calc.^2)/sum(residuals.^2); % Nima
             end
         end
     end
