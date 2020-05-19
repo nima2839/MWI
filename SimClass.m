@@ -18,7 +18,7 @@ classdef SimClass
 			%	T2Dist: This is a struct containing two vectors->
 			%		- T2Values: contains T2 values in the distribution
 			%		- Weights: contain the corresponding weights
-			%
+			%	Method: when T2Dist is not define, simuation method could either be 'Dirac' or 'Gaussian'
 			
 		Dist % Contains distribution weights corresponding to "T2Dist"  option!
 		Compartment_T_Map % TimeConstant values of each water compartment
@@ -39,6 +39,10 @@ classdef SimClass
 			
 			if ~isfield(MyInfo, 'T1Val')
 				error('MyInfo.T1Val needs to be defined!')
+			end
+			
+			if ~isfield(MyInfo, 'Method')
+				MyInfo.Method = 'Gaussian';
 			end
 
 			obj.MyInfo = MyInfo;
@@ -71,9 +75,13 @@ classdef SimClass
 						Compartment_Freq_Map{k} = SimClass.GenerateRandomValues(MyInfo.FreqRange{k}, MyInfo.NumData);
 						temp = cell2mat(arrayfun(@(T,f,a) a * SimClass.CreateDecayCurve(T, MyInfo.Times, f,MyInfo.SNR), tempT, Compartment_Freq_Map{k},tempFraction,'UniformOutput',false));
 					else
-
-						temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Delta(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
-								tempT,tempFraction,'UniformOutput',false));
+						if strcmp(MyInfo.Method, 'Gaussian')
+							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Gaussian(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
+									tempT,tempFraction,'UniformOutput',false));
+						else
+							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Delta(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
+									tempT,tempFraction,'UniformOutput',false));
+						end
 					end
 					SimulatedData = SimulatedData + reshape(temp, size(SimulatedData'))';
 					Compartment_Fraction_Map{k} = tempFraction;
@@ -85,7 +93,7 @@ classdef SimClass
 				
 				SimResult = SimClass.GenerateT2DecayCurves(MyInfo.Times, MyInfo.T2Dist, MyInfo.T1Val, MyInfo.FlipAngle);
 				for i = 1:MyInfo.NumData
-					SimulatedData(i,:) = awgn(SimResult(:), MyInfo.SNR, 'measured', 'linear');
+					SimulatedData(i,:) = SimClass.ADD_Noise(SimResult(:), MyInfo.SNR,sum(MyInfo.T2Dist.Weights(:)));
 				end
 			end
 			SimTime = toc;
@@ -139,13 +147,13 @@ classdef SimClass
 			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:18),4)./sum(Dist,4)));;
 		end
 
-		function Maps = NLLS_Fitting(obj, SNR)
+		function Maps = NLLS_Fitting(obj, SNR) % do not use, old code!
 			if nargin < 2
 				temp(:,:) = (obj.SimulatedData(:,:));
 			else
 				temp = zeros(obj.MyInfo.NumData, length(obj.MyInfo.Times));
 				for k = 1:obj.MyInfo.NumData
-					temp(k,:) = awgn((obj.SimulatedData(k,:)), SNR,'measured');
+					temp(k,:) = SimClass.ADD_Noise((obj.SimulatedData(k,:)), SNR);
 				end
 			end
 			tic
@@ -183,7 +191,7 @@ classdef SimClass
 			end
 			output = exp(-t*((1/TimeConstant) - 1i*2*pi*Freq));
 			if SNR > 0
-				output = awgn(output, SNR,'measured','linear');
+				output = SimClass.ADD_Noise(output, SNR, 1);
 			end
 		end
 
@@ -197,6 +205,18 @@ classdef SimClass
 			T2Dist.T2Values = T2;
 			T2Dist.Weights = 1;
 			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1,FA, SNR);
+		end
+		
+		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA,SNR)
+			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
+			% guassian is truncated within two standard deviation
+			% standard deviation is 10% of mean
+			L = 20;
+			alpha = 2 * (L - 1) / L;
+			T2Dist.T2Values = linspace(0.8 * T2, 1.2 * T2, L);
+			T2Dist.Weights = reshape(gausswin(L, alpha), size(T2Dist.T2Values));
+			
+			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA, SNR);
 		end
 
 		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA, SNR)
@@ -216,7 +236,8 @@ classdef SimClass
 			% Normalize output
 			output = output / sum(1);
 			if SNR > 0
-				output = awgn(output,SNR,'measured', 'linear');
+				% Sum of the weights in the distribution equals to proton density or singal at TE = 0!
+				output = SimClass.ADD_Noise(output, SNR, sum(T2Dist.Weights(:)));
 			end
 		end
 
@@ -229,6 +250,19 @@ classdef SimClass
 			for x=1:nT2
 				echo_amp = EPGdecaycurve(nechs, alpha, TE, T2_times(x), T1(x), RefCon); % Nima : T1 vector is used
 				basis_decay(:,x) = echo_amp';
+			end
+		end
+		
+		function out = ADD_Noise(signal, SNR, ref)
+			% To use a single definition for additive noise throughout the code
+			% if ref is given: SNR = ref/std(noise);
+			% otherwise SNR = power(signal)/power(noise);
+			if nargin < 3
+				out = awgn(signal,SNR,'measured', 'linear');
+			else
+				% in order to match SNR to the define we must square the SNR and then use it in awgn function!
+				noise = ref - awgn(ref * ones(size(signal)), SNR^2,'measured', 'linear');
+				out = signal + noise;
 			end
 		end
 	end
