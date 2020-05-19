@@ -19,12 +19,12 @@ MyInfo.FractionRange{3}= [0.1,0.1];
 
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 2e3;
+MyInfo.NumData = 1e3;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 %%
 FA = 110:180;
-SNR = [30,50,100:50:300, 500, 750, 1e3, 1e4];
+SNR = [30,50,100:50:300, 500, 750, 1e3];
 nFA = length(FA);
 nSNR = length(SNR);
 Dist =  cell(nSNR,nFA);
@@ -54,8 +54,8 @@ parfor j = 1:nSNR
 end
 clear a temp
 runtime = toc;
-Description = 'second dim is FlipAngle, and first dim is SNR';
+Description = 'second dim is FlipAngle, and first dim is SNR, using guasswin instead of spikes';
 %%
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_M4','-v7.3')
+save('B1_Sim_Result_M4_gwin','-v7.3')
 disp('Done!')
