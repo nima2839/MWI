@@ -138,7 +138,10 @@ classdef SimClass
 			Maps.MWF = squeeze(squeeze(sum(Dist(:,1:18),2)./sum(Dist,2)));;
 		end
 
-		function [Dist, Maps] = UBC_Nima_Fitting(obj, T1)
+		function [Dist, Maps] = UBC_Nima_Fitting(obj, T1, Chi2Factor)
+			if nargin < 3
+				Chi2Factor = 1.02;
+			end
 			if nargin < 2
 				T1 = ones(1,200);
 			end
@@ -148,9 +151,11 @@ classdef SimClass
 			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
 			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);
+				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
+						'Chi2Factor',Chi2Factor);
 			else
-				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100);%, 'SetFlipAngle', obj.MyInfo.FlipAngle);
+				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
+						'Chi2Factor',Chi2Factor);
 			end
 			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:18),4)./sum(Dist,4)));;
 		end
