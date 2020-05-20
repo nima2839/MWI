@@ -65,8 +65,8 @@ classdef SimClass
 			end
 			tic;
 			if ~isfield(MyInfo, 'T2Dist')
-			Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
-			Compartment_T_Map = zeros(MyInfo.NumWaterComp,MyInfo.NumData);
+				Compartment_Fraction_Map = cell(MyInfo.NumWaterComp,1);
+				Compartment_T_Map = zeros(MyInfo.NumWaterComp,MyInfo.NumData);
 			
 				for k = 1:MyInfo.NumWaterComp
 					tempT = SimClass.GenerateRandomValues(MyInfo.TimeConstRange{k}, MyInfo.NumData);
@@ -76,16 +76,24 @@ classdef SimClass
 						temp = cell2mat(arrayfun(@(T,f,a) a * SimClass.CreateDecayCurve(T, MyInfo.Times, f,MyInfo.SNR), tempT, Compartment_Freq_Map{k},tempFraction,'UniformOutput',false));
 					else
 						if strcmp(MyInfo.Method, 'Gaussian')
-							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Gaussian(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
+							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Gaussian(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle),...
 									tempT,tempFraction,'UniformOutput',false));
 						else
-							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Delta(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle,MyInfo.SNR),...
+							temp = cell2mat(arrayfun(@(T,a) a * SimClass.GenerateT2DecayCurves_Delta(MyInfo.Times,T,MyInfo.T1Val(k),MyInfo.FlipAngle),...
 									tempT,tempFraction,'UniformOutput',false));
 						end
 					end
 					SimulatedData = SimulatedData + reshape(temp, size(SimulatedData'))';
 					Compartment_Fraction_Map{k} = tempFraction;
 					Compartment_T_Map(k,:) = tempT;
+				end
+				
+				if MyInfo.SNR > 0
+					SimulatedData = reshape(SimulatedData, [MyInfo.NumData, length(MyInfo.Times)]);
+					for i = 1:MyInfo.NumData
+						% It is assumed that signal at TE = 0 has the amplitude equal to 1!
+						SimulatedData(i,:) = SimClass.ADD_Noise(SimulatedData(i,:), MyInfo.SNR, 1);
+					end
 				end
 			else
 				Compartment_Fraction_Map = {};
@@ -200,14 +208,14 @@ classdef SimClass
 		end
 
 		
-		function output = GenerateT2DecayCurves_Delta(Times, T2 , T1, FA, SNR)
+		function output = GenerateT2DecayCurves_Delta(Times, T2 , T1, FA)
 			% This function uses the "GenerateT2DecayCurves" for alternative input option
 			T2Dist.T2Values = T2;
 			T2Dist.Weights = 1;
-			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1,FA, SNR);
+			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1,FA);
 		end
 		
-		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA,SNR)
+		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA)
 			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
 			% guassian is truncated within two standard deviation
 			% standard deviation is 10% of mean
@@ -215,14 +223,12 @@ classdef SimClass
 			alpha = 2 * (L - 1) / L;
 			T2Dist.T2Values = linspace(0.8 * T2, 1.2 * T2, L);
 			T2Dist.Weights = reshape(gausswin(L, alpha), size(T2Dist.T2Values));
-			
-			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA, SNR);
+			% Normalizing the weights:
+			T2Dist.Weights = T2Dist.Weights / sum(T2Dist.Weights(:));
+			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA);
 		end
 
-		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA, SNR)
-			if nargin < 5
-				SNR = 0;
-			end
+		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA)
 			
 			nT2 = length(T2Dist.T2Values);
 			ETL = length(Times);
@@ -235,10 +241,6 @@ classdef SimClass
 			output = basis_decay * reshape(T2Dist.Weights, [sbd(2), 1]);
 			% Normalize output
 			output = output / sum(1);
-			if SNR > 0
-				% Sum of the weights in the distribution equals to proton density or singal at TE = 0!
-				output = SimClass.ADD_Noise(output, SNR, sum(T2Dist.Weights(:)));
-			end
 		end
 
 		function basis_decay = Calc_basis_decay(nechs, nT2, alpha, TE, T2_times, T1, RefCon)
@@ -260,8 +262,9 @@ classdef SimClass
 			if nargin < 3
 				out = awgn(signal,SNR,'measured', 'linear');
 			else
-				% in order to match SNR to the define we must square the SNR and then use it in awgn function!
-				noise = ref - awgn(ref * ones(size(signal)), SNR^2,'measured', 'linear');
+				% in order to match SNR to the given definition power SNR must be calculated!
+				n = length(signal);
+				noise = ref - awgn(ref * ones(size(signal)), n*SNR^2 /(n-1),'measured', 'linear');
 				out = signal + noise;
 			end
 		end
