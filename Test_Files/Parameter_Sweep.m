@@ -12,7 +12,7 @@ tic
 for i = 1:length(Chi2Factors)
 	for j = 1:length(MWFs)
 		Models{i,j} = Template_Model(MWFs(j), Chi2Factors(i));
-		disp(strcat(string((i+j)/ (length(Chi2Factors) + length(MWFs))) + "% ..."))
+		disp(strcat(string((i+j)/ (length(Chi2Factors) + length(MWFs))) + '% ...'))
 	end
 end
 
