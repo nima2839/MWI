@@ -8,12 +8,12 @@ tic
 
 MyInfo.NumWaterComp = 3;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [3 25]*1e-3;
-MyInfo.TimeConstRange{2} = [60 80]*1e-3;
+MyInfo.TimeConstRange{1} = [3 10]*1e-3;
+MyInfo.TimeConstRange{2} = [70 80]*1e-3;
 MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 MyInfo.T1Val = [.6 1 4.163];
-MyInfo.FractionRange{1}= [0.07,0.07];
-MyInfo.FractionRange{2}= [0.83,0.83];
+MyInfo.FractionRange{1}= [0.015,0.015];
+MyInfo.FractionRange{2}= [0.75,0.75];
 MyInfo.FractionRange{3}= [0.1,0.1];
 
 
@@ -57,5 +57,5 @@ runtime = toc;
 Description = 'second dim is FlipAngle, and first dim is SNR, using guasswin instead of spikes';
 %%
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_M4_gwin','-v7.3')
+save('B1_Sim_Result_M4_gwin_HMWF','-v7.3')
 disp('Done!')
