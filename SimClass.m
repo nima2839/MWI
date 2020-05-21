@@ -157,7 +157,7 @@ classdef SimClass
 				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
 						'Chi2Factor',Chi2Factor);
 			end
-			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:18),4)./sum(Dist,4)));;
+			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:13),4)./sum(Dist,4))); % Threshold is set to 30 ms!
 		end
 
 		function Maps = NLLS_Fitting(obj, SNR) % do not use, old code!
