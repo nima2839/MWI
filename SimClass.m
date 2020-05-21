@@ -142,14 +142,17 @@ classdef SimClass
 			if nargin < 3
 				Chi2Factor = 1.02;
 			end
-			if nargin < 2
-				T1 = ones(1,200);
-			end
+			
 			nT2 = 60;
 			ns = obj.MyInfo.NumData / maxNumCompThreads;
 			ne = length(obj.MyInfo.Times);
 			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
 			Dist = zeros(maxNumCompThreads,1,ns,nT2);
+			
+			if nargin < 2
+				T1 = ones(1,nT2);
+			end
+			
 			if obj.MyInfo.TrueFAFlag
 				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
 						'Chi2Factor',Chi2Factor);
