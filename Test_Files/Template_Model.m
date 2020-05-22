@@ -6,12 +6,7 @@ if nargin < 3
 end
 IE = 1 - MWF - CSF; % Fraction of intra-extra cellular water
 
-if CSF > 0
-	MyInfo.NumWaterComp = 3;
-else
-	MyInfo.NumWaterComp = 2;
-end
-
+MyInfo.NumWaterComp = 3;
 MyInfo.Times = (1:32)*1e-2;
 MyInfo.TimeConstRange{1} = [3 10]*1e-3;
 MyInfo.TimeConstRange{2} = [70 80]*1e-3;
