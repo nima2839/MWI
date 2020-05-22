@@ -2,7 +2,7 @@
 addpath(genpath('~/MWI'))
 addpath(genpath('~/GRASE/Postprocessing'))
 
-Chi2Factors = [1.005, 1.010, 1.015, 1.02];
+Chi2Factors = [1.02, 1.025];
 MWFs = (1:2:21) / 100;
 
 Models = cell(length(Chi2Factors), length(MWFs));
