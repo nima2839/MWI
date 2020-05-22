@@ -53,7 +53,6 @@ parfor j = 1:nSNR
 	Maps(j,:) = temp_maps;
 	TrueFA_Dist(j,:) = temp_Tdist;
 	TrueFA_Maps(j,:)= temp_Tmaps;
-	disp(j)
 end
 
 out.MyInfo = MyInfo;

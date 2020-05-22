@@ -18,5 +18,5 @@ end
 
 runtime = toc;
 
-save('B1_Sim_Result_M5','-v7.3')
+save('B1_Sim_Result_PS','-v7.3')
 disp('All Done!')
