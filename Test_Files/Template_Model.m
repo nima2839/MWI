@@ -1,19 +1,21 @@
-function out = Template_Model(MWF, Chi2Factor, TimeConstRange)
+function out = Template_Model(MWF, Chi2Factor, CSF)
 % to use a template for simulation results of SimClass
 
-CSF = 0.1; % Fraction of CSF
-
+if nargin < 3
+	CSF = 0.1; % Fraction of CSF
+end
 IE = 1 - MWF - CSF; % Fraction of intra-extra cellular water
 
-MyInfo.NumWaterComp = 3;
-MyInfo.Times = (1:32)*1e-2;
-if nargin < 3
-	MyInfo.TimeConstRange{1} = [3 10]*1e-3;
-	MyInfo.TimeConstRange{2} = [70 80]*1e-3;
-	MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
+if CSF > 0
+	MyInfo.NumWaterComp = 3;
 else
-	MyInfo.TimeConstRange = TimeConstRange
+	MyInfo.NumWaterComp = 2;
 end
+
+MyInfo.Times = (1:32)*1e-2;
+MyInfo.TimeConstRange{1} = [3 10]*1e-3;
+MyInfo.TimeConstRange{2} = [70 80]*1e-3;
+MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FractionRange{1}= [MWF, MWF];
 MyInfo.FractionRange{2}= [IE, IE];
