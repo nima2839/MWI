@@ -1,7 +1,7 @@
 classdef SimClass
 	properties
 		MyInfo % Contains necessary info, this is user defined property
-			% 	Note: all range values must be a vector of size 2, even if the corresponding is a constant value!
+			% 	Note: all fields that require range values, must be a vector of size 2, even if the corresponding is a constant value!
 			%	Fields:
 			%	NumData: Number of data point to be simulated
 			%	Times: A vector containing all the echo times
@@ -20,7 +20,7 @@ classdef SimClass
 			%		- Weights: contain the corresponding weights
 			%	Method: when T2Dist is not define, simuation method could either be 'Dirac' or 'Gaussian'
 			
-		Dist % Contains distribution weights corresponding to "T2Dist"  option!
+		%Dist % Contains distribution weights corresponding to "T2Dist"  option! -> semms extra!
 		Compartment_T_Map % TimeConstant values of each water compartment
 		Compartment_Freq_Map
 		Compartment_Fraction_Map
@@ -52,10 +52,7 @@ classdef SimClass
 				end
 			end
 			if ~isfield(MyInfo, 'SNR') 
-				MyInfo.SNR = 100;
-			elseif MyInfo.SNR == 0
-				MyInfo.SNR = 100;
-				disp('Default SNR is set to 100!');
+				MyInfo.SNR = 0;
 			end
 			obj.MyInfo = MyInfo;
 			SimulatedData = zeros(MyInfo.NumData,length(MyInfo.Times));
