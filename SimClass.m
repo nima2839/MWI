@@ -28,6 +28,9 @@ classdef SimClass
 	end
 	methods
 		function obj = SimClass(MyInfo)
+			if strcmp(MyInfo, "Dummy")
+				return;
+			end
 			MyInfo.NumData = MyInfo.NumData + mod(MyInfo.NumData, maxNumCompThreads); % for acceleration purposes
 			if ~isfield(MyInfo, 'TrueFAFlag')
 				MyInfo.TrueFAFlag = false;
