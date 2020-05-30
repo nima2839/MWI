@@ -1,27 +1,14 @@
-function out = Template_Model(MWF, Chi2Factor, CSF)
+function out = Template_Model(MyInfo)
 % to use a template for simulation results of SimClass
+% Fully costumized!
+% this shoulde be renamed to Parameter sweep(?)
 
-if nargin < 3
-	CSF = 0.1; % Fraction of CSF
+% costumized to its core!
+L = 20; % this is from SimClass.Create_Guassian_Dist()
+T1Val = [];
+for i = 1:MyInfo.NumWaterComp
+	T1Val = [T1Val, MyInfo.T1Val(1) * ones(1,L)];
 end
-IE = 1 - MWF - CSF; % Fraction of intra-extra cellular water
-
-MyInfo.NumWaterComp = 3;
-MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [3 10]*1e-3;
-MyInfo.TimeConstRange{2} = [70 80]*1e-3;
-MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
-MyInfo.T1Val = [.6 1 4.163];
-MyInfo.FractionRange{1}= [MWF, MWF];
-MyInfo.FractionRange{2}= [IE, IE];
-MyInfo.FractionRange{3}= [CSF, CSF];
-
-
-
-MyInfo.FlipAngle = 180;
-MyInfo.NumData = 500;
-MyInfo.TrueFAFlag = false;
-MyInfo.SNR = 0;
 %%
 FA = 110:180;
 SNR = [50,100:50:300, 500, 750, 1e3];
@@ -31,32 +18,61 @@ Dist =  cell(nSNR,nFA);
 Maps = Dist;
 TrueFA_Dist = Dist;
 TrueFA_Maps = Dist;
+
+MyInfo.TrueFAFlag = false;
+
 parfor j = 1:nSNR
+	Noise = Create_Noise(length(MyInfo.Times), MyInfo.NumData, SNR(j));
+	
 	temp = MyInfo;
-	temp.SNR = SNR(j);
-	temp_dist = cell(1,nFA);
+	%temp.SNR = SNR(j);
+	%temp_dist = cell(1,nFA);
 	temp_maps = cell(1,nFA);
-	temp_Tdist = cell(1,nFA);
+	%temp_Tdist = cell(1,nFA);
 	temp_Tmaps = cell(1,nFA);
 	for i  = 1:nFA
 		temp.FlipAngle = FA(i);
 		temp.TrueFAFlag = false;
+		temp.SNR = 0; % to add costumized noise
 		a = SimClass(temp);
-		[temp_dist{1,i}, temp_maps{1,i}] = UBC_Nima_Fitting(a);
-		a.MyInfo.TrueFAFlag = true;
-		[temp_Tdist{1,i}, temp_Tmaps{1,i}] = UBC_Nima_Fitting(a, ones(1,60), Chi2Factor);
+		SimulatedData = a.SimulatedData + Noise;
+		%temp_dist{1,i}
+		[~, temp_maps{1,i}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
+		temp.TrueFAFlag = true;
+		%temp_Tdist{1,i}
+		[~, temp_Tmaps{1,i}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
 	end
-	Dist(j,:) = temp_dist;
+	%Dist(j,:) = temp_dist;
 	Maps(j,:) = temp_maps;
-	TrueFA_Dist(j,:) = temp_Tdist;
+	%TrueFA_Dist(j,:) = temp_Tdist;
 	TrueFA_Maps(j,:)= temp_Tmaps;
 end
+
 
 out.MyInfo = MyInfo;
 out.FA = FA;
 out.SNR = SNR;
-out.Dist = Dist;
+
+%out.Dist = Dist; % to save storage space!
 out.Maps = Maps;
-out.TrueFA_Dist = TrueFA_Dist;
+%out.TrueFA_Dist = TrueFA_Dist; 
 out.TrueFA_Maps = TrueFA_Maps;
 end
+
+function out = Create_Noise(ETL, NumData, SNR)
+	out = zeros(NumData, ETL);
+	for i = 1:NumData
+		out(i,:) = SimClass.ADD_Noise(zeros(1,32), SNR, 1);
+	end
+end
+
+%function out = Create_Distributions(MyInfo)
+%	% returns an array of structs -> T2Dist
+%	for i = 1:NumData
+%		T2Dist.T2Values = [];
+%		for k = 1:MyInfo.NumWaterComp
+%			temp = 
+%		end
+%		out(i) = T2Dist;
+%	end
+%end
