@@ -231,11 +231,11 @@ classdef SimClass
 		
 		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA)
 			% uses truncated gaussian as distribution
-			T2Dist = Create_Guassian_Dist(T2);
+			T2Dist = SimClass.Create_Guassian_Dist(T2);
 			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA);
 		end
 		
-		function out = Create_Guassian_Dist(Mean)
+		function out = Create_Guassian_Dist(T2)
 			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
 			% guassian is truncated within two standard deviation
 			% standard deviation is 10% of mean
