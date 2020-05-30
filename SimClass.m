@@ -138,30 +138,7 @@ classdef SimClass
 			Maps.MWF = squeeze(squeeze(sum(Dist(:,1:18),2)./sum(Dist,2)));;
 		end
 
-		function [Dist, Maps] = UBC_Nima_Fitting(obj, T1, Chi2Factor)
-			if nargin < 3
-				Chi2Factor = 1.02;
-			end
-			
-			nT2 = 60;
-			ns = obj.MyInfo.NumData / maxNumCompThreads;
-			ne = length(obj.MyInfo.Times);
-			temp = reshape(abs(obj.SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
-			Dist = zeros(maxNumCompThreads,1,ns,nT2);
-			
-			if nargin < 2
-				T1 = ones(1,nT2);
-			end
-			
-			if obj.MyInfo.TrueFAFlag
-				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', obj.MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
-						'Chi2Factor',Chi2Factor);
-			else
-				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
-						'Chi2Factor',Chi2Factor);
-			end
-			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:13),4)./sum(Dist,4))); % Threshold is set to 30 ms!
-		end
+
 
 		function Maps = NLLS_Fitting(obj, SNR) % do not use, old code!
 			if nargin < 2
@@ -199,6 +176,35 @@ classdef SimClass
 
 	end
 	methods(Static = true)
+	
+		function [Dist, Maps] = UBC_Nima_Fitting(SimulatedData, MyInfo)
+			% MyInfo is same as the object with the following exrta options:
+			% 	Chi2Factor
+			%	T1: reference vevtor for T1 values
+			if ~isfield(MyInfo, 'Chi2Factor')
+				MyInfo.Chi2Factor = 1.02;
+			end
+			
+			nT2 = 60;
+			ns = MyInfo.NumData / maxNumCompThreads;
+			ne = length(MyInfo.Times);
+			temp = reshape(abs(SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
+			Dist = zeros(maxNumCompThreads,1,ns,nT2);
+			
+			if ~isfield(MyInfo, 'T1')
+				MyInfo.T1 = ones(1,nT2);
+			end
+			
+			if MyInfo.TrueFAFlag
+				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
+						'Chi2Factor',MyInfo.Chi2Factor);
+			else
+				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
+						'Chi2Factor',MyInfo.Chi2Factor);
+			end
+			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:13),4)./sum(Dist,4))); % Threshold is set to 30 ms!
+		end
+	
 		function output = CreateDecayCurve(TimeConstant,t,Freq,SNR)
 			if nargin < 3
 				Freq = 0;
@@ -224,17 +230,27 @@ classdef SimClass
 		end
 		
 		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA)
+			% uses truncated gaussian as distribution
+			T2Dist = Create_Guassian_Dist(T2);
+			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA);
+		end
+		
+		function out = Create_Guassian_Dist(Mean)
 			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
 			% guassian is truncated within two standard deviation
 			% standard deviation is 10% of mean
+			% out is a struct similar to T2Dist
+
 			L = 20;
 			alpha = 2 * (L - 1) / L;
 			T2Dist.T2Values = linspace(0.8 * T2, 1.2 * T2, L);
 			T2Dist.Weights = reshape(gausswin(L, alpha), size(T2Dist.T2Values));
+			T2Dist.Weights = T2Dist.Weights / sum(T2Dist.Weights(:));
 			% Normalizing the weights:
 			T2Dist.Weights = T2Dist.Weights / sum(T2Dist.Weights(:));
-			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA);
+			out = T2Dist;
 		end
+		
 
 		function output = GenerateT2DecayCurves(Times,T2Dist,T1Val,FA)
 			
