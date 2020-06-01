@@ -2,12 +2,12 @@ function Summerize_Sim_Results(filename)
 	% A costumized summary of SimClass results
 
 	Models = load(filename, 'Models');
-	SimRes.Models = cell(size(Models);
+	Sim.Models = cell(size(Models));
 	Sim.FA = Models{1}.FA;
 	Sim.SNR = Models{1}.SNR;
 	nSNR = length(Models{1}.SNR);
 	nFA = length(Models{1}.FA);
-	parfor M = 1:length(Models)
+	for M = 1:length(Models)
 		
 		Sim.Models{M}.mMWF = zeros(nSNR , nFA); 
 		Sim.Models{M}.sdMWF = mMWF;
@@ -33,6 +33,6 @@ function Summerize_Sim_Results(filename)
 			end
 		end
 	end
-	save(strcat('Summerized_',filename),'-v7.3');
-	disp('Summerized!!!')
+	save(strcat('Summerized_',filename),'Sim','-v7.3');
+	disp('Summerized!!!');
 end
