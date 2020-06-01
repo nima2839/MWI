@@ -1,7 +1,7 @@
 function Summerize_Sim_Results(filename)
 	% A costumized summary of SimClass results
 
-	Models = load(filename, 'Models');
+	load(filename, 'Models');
 	Sim.Models = cell(size(Models));
 	Sim.FA = Models{1}.FA;
 	Sim.SNR = Models{1}.SNR;
