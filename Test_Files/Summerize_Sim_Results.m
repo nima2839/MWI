@@ -26,7 +26,7 @@ function Summerize_Sim_Results(filename)
 				Sim.Models{M}.T_mMWF(i,j) = mean(Models{M}.TrueFA_Maps{i,j}.MWF(:));
 				Sim.Models{M}.T_sdMWF(i,j) = std((Models{M}.TrueFA_Maps{i,j}.MWF(:)));
 				
-				Sim.Models{M}.mAlpha (i,j) = mean(Models{M}.Maps{i,j}. (:));
+				Sim.Models{M}.mAlpha (i,j) = mean(Models{M}.Maps{i,j}.alpha(:));
 				Sim.Models{M}.sdAlpha (i,j) = std((Models{M}.Maps{i,j}.alpha(:) ));
 				Sim.Models{M}.T_mAlpha (i,j) = mean(Models{M}.TrueFA_Maps{i,j}.alpha(:));
 				Sim.Models{M}.T_sdAlpha (i,j) = std((Models{M}.TrueFA_Maps{i,j}.alpha(:)));
