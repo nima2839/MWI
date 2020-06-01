@@ -10,14 +10,14 @@ function Summerize_Sim_Results(filename)
 	for M = 1:length(Models)
 		
 		Sim.Models{M}.mMWF = zeros(nSNR , nFA); 
-		Sim.Models{M}.sdMWF = mMWF;
-		Sim.Models{M}.T_mMWF = mMWF;
-		Sim.Models{M}.T_sdMWF = mMWF;
+		Sim.Models{M}.sdMWF = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_mMWF = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_sdMWF = zeros(nSNR , nFA); ;
 		
 		Sim.Models{M}.mAlpha = zeros(nSNR , nFA); 
-		Sim.Models{M}.sdAlpha = mAlpha;
-		Sim.Models{M}.T_mAlpha = mAlpha;
-		Sim.Models{M}.T_sdAlpha = mAlpha;
+		Sim.Models{M}.sdAlpha = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_mAlpha = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_sdAlpha = zeros(nSNR , nFA); ;
 
 		for i = 1:nSNR		
 			for j = 1:nFA
