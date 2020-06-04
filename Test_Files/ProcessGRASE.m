@@ -4,19 +4,25 @@ tic;
 
 
 cd ~/GRASE/GRASE_To_Do
-load(FileName, 'mgrase')
+load(FileName, 'tf_mgrase','mgrase')
 
-fs = 1/3;
-[ys xs zs es]=size(mgrase)
-tf_mgrase = zeros(ys,xs,zs,es);
-hfilt2=tukeywin(ys,fs)*tukeywin(xs,fs)';
+if ~exist('tf_mgrase')
+  if ~exist('mgrase')
+    disp(stract("Processing **",FileName,"** failed: could not load data!"));
+    return;
+  end
+  fs = 1/3;
+  [ys xs zs es]=size(mgrase);
+  tf_mgrase = zeros(ys,xs,zs,es);
+  hfilt2=tukeywin(ys,fs)*tukeywin(xs,fs)';
 
-for i = 1:es
-    for j = 1:zs
+  for i = 1:es
+      for j = 1:zs
 
-        tf_mgrase(:,:,j,i) = abs(ifft2c(fft2c(mgrase(:,:,j,i)).*hfilt2));
+          tf_mgrase(:,:,j,i) = abs(ifft2c(fft2c(mgrase(:,:,j,i)).*hfilt2));
 
-    end
+      end
+  end
 end
 
 [maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
