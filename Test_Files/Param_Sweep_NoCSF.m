@@ -5,7 +5,7 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = 15%(1:30) / 100;
+MWFs = .15%(1:30) / 100;
 
 
 
