@@ -89,6 +89,9 @@ p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
 p.addParamValue('nCores',4,@(x)isnumeric(x) && isscalar(x) && x>=1 && x<=8);
 p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 
+% Nima: Setting Observation Weights
+p.addParamValue('Observation_Weights', [], @(x)isnumeric(x) && ndims(x) == 2)
+
 % Nima:Set FlipAngleMap
 p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==3);
 p.addParamValue('T1', [], @(x)isa(x,'double'));
@@ -116,6 +119,10 @@ if isempty(T1)
 	T1 = ones(1, nT2);
 	disp('T1 is set to 1 seconds for all!');
 end
+
+
+
+
 % nCores=p.Results.nCores;
 % nCores= 4; % in case of error message about Cores;
 
@@ -129,6 +136,12 @@ saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
 % tstart=tic;
 % Find size of the data
 [nrows,ncols,nslices,nechs] = size(image);
+
+% Nima: Setting Observation Weights
+obs_weights = p.Results.Observation_Weights;
+if isempty(obs_weights)
+	obs_weights = ones(1,nechs);
+end
 
 % Initialize map matrices
 gdnmap = zeros(nrows,ncols,nslices);
@@ -221,13 +234,13 @@ parfor row = 1:nrows
             if image(row,col,slice,1) > Threshold
                 % Extract decay curve from the pixel
                 decay_data = squeeze(image(row,col,slice,:));
-                obs_weigts = ones(size(decay_data)); % Nima: set observation weights here
-                %obs_weigts(1:10) = 1.5;
+				%obs_weights = ones(size(decay_data)); % Nima: set observation weights here
+                %obs_weights(1:10) = 1.5;
                 if faset == 0
                     %======================================================
                     % Find optimum flip angle
                     %======================================================
-                    alpha(col,slice) = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, flip_angles);
+                    alpha(col,slice) = Estimate_Alpha(basis_angles, nangles, decay_data, reshape(obs_weights, size(decay_data)), flip_angles);
                 %else
                 %    alpha(col,slice) = alphamap(row,col,slice);
                 end
@@ -243,7 +256,7 @@ parfor row = 1:nrows
                 % Calculate T2 distribution and global parameters
                 %==========================================================
                 % Find distribution depending on regularization routine
-                [T2_dis,mu,chi2] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weigts, Chi2Factor);
+                [T2_dis,mu,chi2] = Nima_UBC_NNLS(basis_decay, decay_data, reshape(obs_weights, size(decay_data)), Chi2Factor);
 
                 dists(col,slice,:) = T2_dis;
                 mus(col,slice) = mu;
@@ -312,14 +325,14 @@ end
 
 end
 
-function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weigts, flip_angles)
+function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weights, flip_angles)
   % Fit each basis and  find chi-squared
   
   
   chi2_alpha = zeros(1,nangles);
   
   for a=1:nangles
-      [T2_dis_ls, ~, ~] = Nima_UBC_NNLS(basis_angles{a},decay_data, obs_weigts); % Nima: This is to be tested!
+      [T2_dis_ls, ~, ~] = Nima_UBC_NNLS(basis_angles{a},decay_data, obs_weights); % Nima: This is to be tested!
       decay_pred=basis_angles{a}*T2_dis_ls;
       chi2_alpha(a)=sum((decay_data-decay_pred).^2);
   end
