@@ -3,7 +3,11 @@ disp(['Processing BSB1 on :',Subject])
 try
   cd ~/GRASE/GRASE_To_Do/
 
-  load(Subject, 'tf_mgrase')
+  load(Subject, 'tf_mgrase','mgrase')
+  
+  if ~exist('tf_mgrase')
+    tf_mgrase = mgrase;
+  end
 
   cd(['~/GRASE/B1_Maps/',Subject,'/'])
 
