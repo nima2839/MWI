@@ -192,7 +192,9 @@ classdef SimClass
 			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			
 			ow = ones(1,ne);
-			ow(1:5) = 5;
+			ow(1:5) = 1.5;
+			ow(6:10) = 1.25;
+			
 			if isfield(MyInfo, 'Observation_Weights')
 				ow = MyInfo.Observation_Weights;
 			end
