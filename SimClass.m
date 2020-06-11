@@ -191,9 +191,6 @@ classdef SimClass
 			temp = reshape(abs(SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
 			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			
-			ow = ones(1,ne);
-			ow(1:5) = 1.5;
-			ow(6:10) = 1.25;
 			
 			if isfield(MyInfo, 'Observation_Weights')
 				ow = MyInfo.Observation_Weights;
@@ -205,7 +202,7 @@ classdef SimClass
 			
 			if MyInfo.TrueFAFlag
 				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
-						'Chi2Factor',MyInfo.Chi2Factor, 'Observation_Weights', ow);
+						'Chi2Factor',MyInfo.Chi2Factor);
 			else
 				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
 						'Chi2Factor',MyInfo.Chi2Factor);
