@@ -4,8 +4,8 @@ addpath(genpath('~/GRASE/Postprocessing'))
 clear
 clc
 
-Chi2Factors = 1.02;
-MWFs = (1:30) / 100;
+Chi2Factors = 1.01;
+MWFs = (1:3:30) / 100;
 
 
 
@@ -39,6 +39,6 @@ end
 
 runtime = toc;
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_PS_NoCSF','-v7.3')
+save('B1_Sim_Result_PS_AltChi2_NoCSF','-v7.3')
 disp('All Done!')
 clear
