@@ -27,8 +27,8 @@ FAdiff = -5:0.1:5;
 
 Results = cell(length(FA), length(FAdiff));
 
-% First, delineate what shoud be reco]rded and then apply the codes accordingly!
-Noise = Create_Noise(32, 500, MyInfo.SNR);
+MyInfo.NumData = MyInfo.NumData + mod(MyInfo.NumData, maxNumCompThreads);
+Noise = Create_Noise(32, MyInfo.NumData, MyInfo.SNR);
 
 tic
 for i = 1:length(FA)
