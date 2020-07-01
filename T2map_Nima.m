@@ -11,6 +11,7 @@ function [maps,distributions, T1] = T2map_Nima(image,varargin)
 %	- nCores option has been omitted;
 %	- Alternate fitting function is called to work with observation weights;
 %	- Threshold's default value set back to 200; Must be set to zero for simulated data;
+%	- Ratio of second echo to the first echo of the fitted curve is now recorded in the maps output;
 %
 
 %
@@ -147,8 +148,10 @@ end
 gdnmap = zeros(nrows,ncols,nslices);
 ggmmap = zeros(nrows,ncols,nslices);
 gvamap = zeros(nrows,ncols,nslices);
-%SNRmap = zeros(nrows,ncols,nslices); % Nima
-%FNRmap = zeros(nrows,ncols,nslices); % Nima
+SNRmap = zeros(nrows,ncols,nslices); 
+FNRmap = zeros(nrows,ncols,nslices); 
+E2_E1map = zeros(nrows,ncols,nslices); % Nima: Ratio of second echo to first in the fitter curve
+
 if faset == 0
 	alphamap = zeros(nrows,ncols,nslices);
 end
@@ -216,6 +219,7 @@ parfor row = 1:nrows
     gva = zeros(ncols,nslices);
     SNR = zeros(ncols,nslices); 
     FNR = zeros(ncols,nslices); 
+	E2_E1 = zeros(ncols,nslices); % Nima
     alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
 	dists = zeros(ncols,nslices,nT2);
 	TempRes = zeros(ncols,nslices,nechs); % Nima
@@ -271,6 +275,7 @@ parfor row = 1:nrows
                 FNR(col,slice) = sum(T2_dis)/std(residuals); 
                 %SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); 
 				SNR(col,slice) = sum(decay_calc.^2)/sum(residuals.^2); % Nima
+				E2_E1(col, slice) = decay_calc(2)/decay_calc(1); % Nima
             end
         end
     end
@@ -280,6 +285,7 @@ parfor row = 1:nrows
     gvamap(row,:,:) = gva;
     SNRmap(row,:,:) = SNR; 
     FNRmap(row,:,:) = FNR; 
+	E2_E1map(row,:,:) = E2_E1; % Nima
 	if faset == 0
 		alphamap(row,:,:) = alpha;
 	end
@@ -311,6 +317,7 @@ maps.alpha = alphamap;
 maps.FNR = FNRmap; 
 maps.SNR = SNRmap; 
 maps.Residuals = ResMap; % Nima
+maps.E2_E1 = E2_E1map; % Nima
 if savereg
     maps.mu=mumap;
     maps.chi2factor=chi2map;
