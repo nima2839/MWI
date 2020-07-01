@@ -22,7 +22,7 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
-FA = 130:160;
+FA = 110:180;
 FAdiff = -5:0.1:5;
 
 Results = cell(length(FA), length(FAdiff));
