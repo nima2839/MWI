@@ -31,7 +31,9 @@ classdef SimClass
 			if strcmp(MyInfo, "Dummy")
 				return;
 			end
-			MyInfo.NumData = MyInfo.NumData + mod(MyInfo.NumData, maxNumCompThreads); % for acceleration purposes
+			if mod(MyInfo.NumData, maxNumCompThreads)
+				MyInfo.NumData = MyInfo.NumData + maxNumCompThreads - mod(MyInfo.NumData, maxNumCompThreads); % for acceleration purposes
+			end
 			if ~isfield(MyInfo, 'TrueFAFlag')
 				MyInfo.TrueFAFlag = false;
 			end

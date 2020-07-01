@@ -27,7 +27,7 @@ FAdiff = -5:0.1:5;
 
 Results = cell(length(FA), length(FAdiff));
 
-MyInfo.NumData = MyInfo.NumData + mod(MyInfo.NumData, maxNumCompThreads);
+MyInfo.NumData = MyInfo.NumData - mod(MyInfo.NumData, maxNumCompThreads);
 Noise = Create_Noise(32, MyInfo.NumData, MyInfo.SNR);
 
 tic
