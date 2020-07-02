@@ -20,9 +20,9 @@ MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
-MyInfo.SNR = 1e4;
+MyInfo.SNR = 1e2;
 
-FA = 110:180;
+FA = 130:160;
 FAdiff = -5:0.1:5;
 
 Results = cell(length(FA), length(FAdiff));
@@ -49,7 +49,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_SNR100','Results','FA','FAdiff','MyInfo')
 
 
 
