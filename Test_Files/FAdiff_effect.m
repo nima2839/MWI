@@ -49,7 +49,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_SNR100','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results','Results','FA','FAdiff','MyInfo')
 
 
 
