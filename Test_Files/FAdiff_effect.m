@@ -2,18 +2,18 @@
 
 Chi2Factors = 1.02;
 
-MWF = 0.15;
+MWF = 1;
 CSF = 0;
 IE = 1 - MWF - CSF;
 
-MyInfo.NumWaterComp = 2;
+MyInfo.NumWaterComp = 1;
 MyInfo.Times = (1:32)*1e-2;
 MyInfo.TimeConstRange{1} = [5 20]*1e-3;
-MyInfo.TimeConstRange{2} = [70 80]*1e-3;
+%MyInfo.TimeConstRange{2} = [70 80]*1e-3;
 %MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 
 MyInfo.FractionRange{1}= [MWF, MWF];
-MyInfo.FractionRange{2}= [IE, IE];
+%MyInfo.FractionRange{2}= [IE, IE];
 %MyInfo.FractionRange{3}= [CSF, CSF];
 
 MyInfo.T1Val = [.6 1 4.163];
@@ -49,7 +49,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_NoCSF','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_100MWF','Results','FA','FAdiff','MyInfo')
 
 
 
