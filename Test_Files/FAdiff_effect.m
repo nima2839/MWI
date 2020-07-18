@@ -22,7 +22,7 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
-FA = 110:10:160;
+FA = [110:1:160, 165:5:180];
 FAdiff = -20:0.5:20;
 
 Results = cell(length(FA), length(FAdiff));
@@ -39,17 +39,17 @@ for i = 1:length(FA)
 	for j = 1:length(FAdiff)
 		MyInfo.FlipAngle = FA(i) + FAdiff(j);
 		[~, TempMaps] = SimClass.UBC_Nima_Fitting(SimulatedData, MyInfo);
-		%Maps.MWF = mean(TempMaps.MWF(:));
-		%Maps.E2_E1 = mean(TempMaps.E2_E1(:));
-		%Maps.T_E2_E1 = T_E2_E1;
-		Results{i,j} = TempMaps;
+		Maps.MWF = mean(TempMaps.MWF(:));
+		Maps.E2_E1 = mean(TempMaps.E2_E1(:));
+		Maps.T_E2_E1 = T_E2_E1;
+		%Results{i,j} = TempMaps;
 	end
 	disp(strcat(string(100*i/length(FA)),'%'));
 end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_Residuals','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_symmetry_check','Results','FA','FAdiff','MyInfo')
 
 
 
