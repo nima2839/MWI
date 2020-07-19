@@ -42,7 +42,7 @@ for i = 1:length(FA)
 		Maps.MWF = mean(TempMaps.MWF(:));
 		Maps.E2_E1 = mean(TempMaps.E2_E1(:));
 		Maps.T_E2_E1 = T_E2_E1;
-		%Results{i,j} = TempMaps;
+		Results{i,j} = Maps;
 	end
 	disp(strcat(string(100*i/length(FA)),'%'));
 end
