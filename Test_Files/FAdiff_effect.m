@@ -13,7 +13,7 @@ MyInfo.TimeConstRange{2} = [70 80]*1e-3;
 %MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 
 MyInfo.FractionRange{1}= [MWF, MWF];
-%MyInfo.FractionRange{2}= [IE, IE];
+MyInfo.FractionRange{2}= [IE, IE];
 %MyInfo.FractionRange{3}= [CSF, CSF];
 
 MyInfo.T1Val = [.6 1 4.163];
