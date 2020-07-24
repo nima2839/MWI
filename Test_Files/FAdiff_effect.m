@@ -20,7 +20,7 @@ MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
-MyInfo.SNR = 1e4;
+MyInfo.SNR = 1e2;
 
 FA = [110:1:160, 165:5:180];
 FAdiff = -20:0.5:20;
@@ -49,7 +49,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_NoCSF','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_NoCSF_100SNR','Results','FA','FAdiff','MyInfo')
 
 
 
