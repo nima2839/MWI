@@ -13,7 +13,7 @@ classdef SPM_Handler
 			%	ref : Path of reference file (remains stationary)
 			%	source: Path of source file (jiggled to match the ref)
 			%	Other: Path of all other files, concatenated by [], not by strcat!
-			%		and they must have single quatations arround each path!
+			%		and they must have single quotation arround each path in addition to double quotation!
 			% On Failure out is the excption file, and on success it reurns 0;
 			%
 			%-------------------------------------------------------------------
@@ -123,7 +123,7 @@ classdef SPM_Handler
 			spm_jobman('run', [pwd, '/', FileName]);
 			
 			% clearing Job file
-			%delete(FileName);
+			delete(FileName);
 		end
 		
 		function Write_To_File(FileName, text, permission)
