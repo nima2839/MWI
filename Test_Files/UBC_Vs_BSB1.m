@@ -9,7 +9,7 @@ try
     tf_mgrase = mgrase;
   end
 
-  cd(['~/GRASE/B1_Maps/',Subject,'/'])
+  cd(strcat('~/GRASE/B1_Maps/',Subject,'/'))
 
   FlipAngleMap = (156.2 * double(niftiread('rB1_Phase.nii'))) / (800);
   FlipAngleMap = flip(permute(FlipAngleMap,[2 1 3]),1);
