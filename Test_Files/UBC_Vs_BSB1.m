@@ -38,7 +38,7 @@ try
 
   cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
   Description = 'Threshold = 200; FlipAngleMap from B1-map with nominal angle of 156.2, nT2 = 60, T2Range = 8ms to 2 S';
-  save(['GRASE_Results_B1_map_', Subject])
+  save(strcat('GRASE_Results_B1_map_', Subject))
 catch ME
 	disp(ME.message)
 	end
