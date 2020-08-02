@@ -123,7 +123,7 @@ classdef SPM_Handler
 			spm_jobman('run', [pwd, '/', FileName]);
 
 			% clearing Job file
-			%delete(FileName);
+			delete(FileName);
 		end
 
 		function Write_To_File(FileName, text, permission)
