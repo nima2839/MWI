@@ -1,4 +1,8 @@
-function UBC_Vs_BSB1(Subject)
+function UBC_Vs_BSB1(Subject, Nominal_Angle)
+
+if nargin < 2
+	Nominal_Angle = 156.2;
+end
 disp(['Processing BSB1 on :',Subject])
 try
   cd ~/GRASE/GRASE_To_Do/
@@ -11,7 +15,7 @@ try
 
   cd(strcat('~/GRASE/B1_Maps/',Subject,'/'))
 
-  FlipAngleMap = (156.2 * double(niftiread('rB1_Phase.nii'))) / (800);
+  FlipAngleMap = (Nominal_Angle * double(niftiread('rB1_Phase.nii'))) / (800);
   FlipAngleMap = flip(permute(FlipAngleMap,[2 1 3]),1);
   tic
   [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200, 'T2Range', [0.008, 2], 'FlipAngleMap', FlipAngleMap,'nT2', 60);
