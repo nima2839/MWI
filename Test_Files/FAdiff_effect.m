@@ -2,7 +2,7 @@
 
 Chi2Factors = 1.02;
 
-MWF = .15;
+MWF = .05;
 CSF = 0;
 IE = 1 - MWF - CSF;
 
@@ -23,7 +23,7 @@ MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
 FA = [110:10:160];%, 165:5:180];
-FAdiff = 0:1:20;
+FAdiff = -20:1:20;
 
 Results = cell(length(FA), length(FAdiff));
 
