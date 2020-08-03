@@ -94,7 +94,7 @@ classdef SPM_Handler
 			% Reads file names to add to use in Job file
 			% n input is the number of files in directory
 			FileNames = "";
-			files = dir([ReadDir,'/*.dcm']);
+			files = dir(strcat(ReadDir,'/*.dcm'));
 			if n == 0
 				n = length(files);
 			end
