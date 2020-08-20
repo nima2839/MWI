@@ -1,4 +1,4 @@
-cd GRE/GRE_To_Do/
+cd ~/GRE/GRE_To_Do/
 load Feb20_GRE_20cont_Monopolar.mat
 
 myinfo.Mask = Info;
@@ -33,6 +33,6 @@ test4 = Calc_3PM(test);
 disp('Saving results...')
 test.Description = 'Calculating 8Param C3PM! LFGC!Tukey alpha = 0.25!4seed test!';
 test.RunTime = toc;
-
+cd ~/GRE/GRE_Results/
 save('20Cont_192_Monopolar_Tukey_MultiSeed');
 disp('Done!')
