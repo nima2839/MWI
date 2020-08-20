@@ -1,7 +1,7 @@
 cd ~/GRE/GRE_To_Do/
 load Feb20_GRE_20cont_Monopolar.mat
 
-myinfo.Mask = Info;
+
 
 sd = size(Mag);
 K = Tukey3D(sd(1),sd(2),sd(3),0.25);
@@ -9,11 +9,11 @@ complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
 for i = 1:sd(4)
-	filtered(:,:,:,i) =  Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
 
 tic
-test = TestClass(abs(filtered),angle(filtered),myinfo);
+test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 %for i = 1:sd(4)
 %	adfiltered(:,:,:,i) = imdiffusefilt(test.LFGC(:,:,:,i),'NumberOfIterations',6);
