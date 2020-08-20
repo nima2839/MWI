@@ -82,7 +82,7 @@ classdef TestClass
           obj.Flag_UseLFGC = true;
        end
 
-       function obj = Calc_3PM(obj)
+       function obj = Calc_3PM(obj,X0)
            np = obj.SizeData(1);
            nv = obj.SizeData(2);
            ns = obj.SizeData(3);
@@ -96,9 +96,11 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),8]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 = [0.1,   60,	  0,	0.7,	30,	0.2,	25,	   0];
-	         lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0];
-	         ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25];
+		   if nargin < 2
+				X0 = [0.1,   60,	  5,	0.6,	15,	0.3,	25,	   0];
+		   end
+	       lb = [0,     40,	 0,	0,	  1,	0,	  0.1,	0];
+	       ub = [2,	  500,	25,	2,	  40,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -109,7 +111,7 @@ classdef TestClass
                tempP = zeros(nv,ns,8);
                tempR = zeros(nv,ns);
                 for j = 1:nv
-                    for k = 1:ns
+                    for k = 24%1:ns
                         if mask(i,j,k) > 0
                             tmp = squeeze(mag(i,j,k,:));
                          	tmpd = tmp;	%tmp(ei);
