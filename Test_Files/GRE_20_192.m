@@ -33,6 +33,6 @@ test4 = Calc_3PM(test);
 disp('Saving results...')
 test.Description = 'Calculating 8Param C3PM! LFGC!Tukey alpha = 0.25!4seed test!';
 test.RunTime = toc;
-data = GetAllData(test);
-save('20Cont_192_Monopolar_Tukey_ADF_C3PM_s21','data');
+
+save('20Cont_192_Monopolar_Tukey_MultiSeed');
 disp('Done!')
