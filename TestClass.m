@@ -111,7 +111,7 @@ classdef TestClass
                tempP = zeros(nv,ns,8);
                tempR = zeros(nv,ns);
                 for j = 1:nv
-                    for k = 13:16%1:ns
+                    for k = 16%1:ns
                         if mask(i,j,k) > 0
                             tmp = squeeze(mag(i,j,k,:));
                          	tmpd = tmp;	%tmp(ei);
