@@ -41,7 +41,7 @@ X0 = [0.1,   60,	  5,	0.6,	15,	0.3,	25,	   0];
 test4 = Calc_3PM(test);
 MWF{4} = test4.MWF_3PM;
 Res{4} = test4.Res_3PM;
-clear test4
+
 disp('Saving results...')
 test.Description = 'Calculating 8Param C3PM! LFGC!Tukey alpha = 0.25!4seed test!';
 RunTime = toc;
