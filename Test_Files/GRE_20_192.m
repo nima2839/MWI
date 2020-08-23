@@ -13,7 +13,7 @@ for i = 1:sd(4)
 end
 
 tic
-test = TestClass(abs(filtered),angle(filtered),Info);
+test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.03),angle(filtered),Info);
 test = CalcLFGC(test);
 %for i = 1:sd(4)
 %	adfiltered(:,:,:,i) = imdiffusefilt(test.LFGC(:,:,:,i),'NumberOfIterations',6);
@@ -49,5 +49,5 @@ Mag = test.Mag;
 LFGC = test.LFGC;
 clear test filtered
 cd ~/GRE/GRE_Results/
-save('20Cont_192_Monopolar_Tukey_MultiSeed');
+save('20Cont_192_Monopolar_NESMA_Tukey_MultiSeed');
 disp('Done!')
