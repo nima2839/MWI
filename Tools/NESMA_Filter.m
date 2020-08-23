@@ -21,15 +21,13 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 	%Iterate through first three dimonsions
 	parfor i = 1:length(Mask)
 		if Mask(i)
-		Out(i,:) = Apply_Filt(Data(i,:));
+		Diff = bsxfun(@minus, Data, Data(i,:));
+		RMD = sum(abs(Diff),2);
+		idx = find((RMD < Threshold) & (Mask > 0));
+		Out(i,:) = sum(Data(idx,:),1)./length(idx);
 		end
 	end
 	Out = reshape(Out,sd);
-	function output = Apply_Filt(a)
-		Diff = bsxfun(@minus, Data,a);
-		RMD = sum(abs(Diff),2);
-		idx = find((RMD < Threshold) & (Mask > 0));
-		output = sum(Data(idx,:),1)./length(idx);
-	end
+
 end
 
