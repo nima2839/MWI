@@ -17,14 +17,18 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 	Data = reshape(Data, sd(1)*sd(2)*sd(3),sd(4));
 	Mask = reshape(Mask, sd(1)*sd(2)*sd(3),1);
 	Out = zeros(size(Data));
-	
+	p = floor(length(Mask)*0.01);
 	%Iterate through first three dimonsions
-	parfor i = 1:length(Mask)
+	for i = 1:length(Mask)
 		if Mask(i)
-		Diff = bsxfun(@minus, Data, Data(i,:));
-		RMD = sum(abs(Diff),2);
-		idx = find((RMD < Threshold) & (Mask > 0));
-		Out(i,:) = sum(Data(idx,:),1)./length(idx);
+			Diff = bsxfun(@minus, Data, Data(i,:));
+			RMD = sum(abs(Diff),2);
+			idx = find((RMD < Threshold) & (Mask > 0));
+			Out(idx,:) = repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
+			Mask(idx) = 0;	
+		end
+		if mod(i,p) == 0
+			disp(strcat(string(100*i/length(Mask)),"%"));
 		end
 	end
 	Out = reshape(Out,sd);

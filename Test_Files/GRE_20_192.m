@@ -1,19 +1,19 @@
 cd ~/GRE/GRE_To_Do/
-load Feb20_GRE_20cont_Monopolar.mat
+load NESMA_Data.mat
 
 
 
 sd = size(Mag);
 K = Tukey3D(sd(1),sd(2),sd(3),0.25);
-complex_data = Mag.*exp(1i*Phase);
-clear Mag Phase
+complex_data = filtered.*exp(1i*Phase);
+clear Mag Phase filtered
 
 for i = 1:sd(4)
-	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
+	Tukey_filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
 
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.03),angle(filtered),Info);
+test = TestClass(abs(Tukey_filtered),angle(Tukey_filtered),Info);
 test = CalcLFGC(test);
 %for i = 1:sd(4)
 %	adfiltered(:,:,:,i) = imdiffusefilt(test.LFGC(:,:,:,i),'NumberOfIterations',6);
