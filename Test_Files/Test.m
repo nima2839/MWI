@@ -13,7 +13,7 @@ for i = 1:sd(4)
 end
 
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.03),angle(filtered),Info);
+test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.02),angle(filtered),Info);
 test = CalcLFGC(test);
 
 
