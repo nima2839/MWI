@@ -8,12 +8,14 @@ K = Tukey3D(sd(1),sd(2),sd(3),0.3);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
+disp('Applying Tukey filter!')
 for i = 1:sd(4)
 	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
 
+disp('Process started!')
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, 5,0.05),angle(filtered),Info);
+test = TestClass(NESMA_Filter(abs(filtered),Info.Mask,false, 5,0.05),angle(filtered),Info);
 test = CalcLFGC(test);
 
 
