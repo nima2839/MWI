@@ -1,24 +1,30 @@
-load 7gre.mat
+cd ~/GRE/GRE_To_Do/
+load NMT3_2DGRE_18Cont_Monopolar.mat
 
-Mask = double(Mask);
-myinfo.Mask = Mask;
-myinfo.Method = 1;	% Du method
-myinfo.FirstTE = 3.69e-3;
-myinfo.EchoSpacing = 5.13e-3;
-myinfo.Vox = [1 1 1.5] * 1e-3;
 
-disp('Applying Mask!...')
-tic
-for i = 1:7
-	maskedMag(:,:,:,i) = Mask.*Mag(:,:,:,i);
+
+sd = size(Mag);
+K = Tukey3D(sd(1),sd(2),sd(3),0.25);
+complex_data = Mag.*exp(1i*Phase);
+clear Mag Phase
+
+for i = 1:sd(4)
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
-toc
-test = TestClass(Mag(:,:,20:60,:),Mag(:,:,20:60,:),myinfo);
-test = Calc_SC(test,2); % LOG method
-test = Calc_2PM(test);
+
+tic
+test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.05),angle(filtered),Info);
+test = CalcLFGC(test);
+
+
+X0 = [0.1,   80,	  5,	0.6,	15,	0.3,	25,	   0];
+test = Calc_3PM(test);
+
+
 disp('Saving results...')
-test.Description = 'Calculating MWF! 8Param 3PM! Silices 20:60, 7 Echos, no LFGC!';
-test.RunTime = toc;
-data = GetAllData(test);
-save('7GRE_MWI','data');
+test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.25!4seed test!';
+RunTime = toc;
+
+cd ~/GRE/GRE_Results/
+save('18Cont_2DMonopolar_NESMA');
 disp('Done!')
