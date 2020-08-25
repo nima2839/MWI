@@ -104,7 +104,9 @@ classdef TestClass
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
-           end
+           else
+		       RC = X0(5)*ones(size(res));
+		   end
            tic
            disp('3PM Started..!')
            parfor i = 1:np
