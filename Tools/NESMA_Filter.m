@@ -24,7 +24,7 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 			Diff = bsxfun(@minus, Data, Data(i,:));
 			RMD = sum(abs(Diff),2)./ sum(Data(i,:));
 			idx = find((RMD < Threshold) & (Mask > 0));
-			Out(idx,:) = repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
+			Out(i,:) = sum(Data(idx,:),1)./length(idx);%repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
 			%Mask(idx) = 0;	
 		end
 		if mod(i,p) == 0
