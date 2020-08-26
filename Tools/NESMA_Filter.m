@@ -19,7 +19,7 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 	Out = zeros(size(Data));
 	p = floor(length(Mask)*0.01);
 	%Iterate through first three dimonsions
-	for i = 1:length(Mask)
+	parfor i = 1:length(Mask)
 		if Mask(i)
 			Diff = bsxfun(@minus, Data, Data(i,:));
 			RMD = sum(abs(Diff),2)./ sum(Data(i,:));
