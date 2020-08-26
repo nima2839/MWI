@@ -13,11 +13,11 @@ for i = 1:sd(4)
 end
 
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask, true,0.02),angle(filtered),Info);
+test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 
 
-X0 = [0.1,   60,	  5,	0.6,	15,	0.3,	25,	   0];
+X0 = [0.1,   80,	  0,	0.6,	15,	0.3,	25,	   0];
 test = Calc_3PM(test);
 
 
@@ -26,5 +26,5 @@ test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.3';
 RunTime = toc;
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NESMA');
+save('18Cont_2DMonopolar_InitialValue');
 disp('Done!')
