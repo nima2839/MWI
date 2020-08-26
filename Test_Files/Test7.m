@@ -15,7 +15,7 @@ end
 
 disp('Process started!')
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask,false, 0.05),angle(filtered),Info);
+test = TestClass(NESMA_Filter(abs(filtered),Info.Mask,false, 0.02),angle(filtered),Info);
 test = CalcLFGC(test);
 
 
