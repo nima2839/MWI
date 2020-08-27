@@ -7,15 +7,15 @@ sd = size(Mag);
 K = Tukey3D(sd(1),sd(2),sd(3),0.25);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
-filtered  = complex_data;
-%for i = 1:sd(4)
-%	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
-%end
+
+for i = 1:sd(4)
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
+end
 
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-test.Mag(:,:,17:19,:) = NESMA_Filter(test.Mag(:,:,17:19,:),Info.Mask(:,:,17:19),true, 0.025);
+test.Mag(:,:,17:25,:) = NESMA_Filter(test.Mag(:,:,17:25,:),Info.Mask(:,:,17:25),true, 0.025);
 test = CalcLFGC(test);
 
 %test1 = Calc_Multi_Seed(test);
