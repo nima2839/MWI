@@ -15,11 +15,11 @@ end
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-test.Mag(:,:,16,:) = NESMA_Filter(reshape(test.Mag(:,:,16,:), [sd(1:2),1,sd(4)]),Info.Mask(:,:,16),true, 0.05);
+%test.Mag(:,:,16,:) = NESMA_Filter(reshape(test.Mag(:,:,16,:), [sd(1:2),1,sd(4)]),Info.Mask(:,:,16),true, 0.03);
 test = CalcLFGC(test);
 
-test = Calc_Multi_Seed(test);
-
+test1 = Calc_Multi_Seed(test);
+test2 = Calc_3PM(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.3';
