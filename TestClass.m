@@ -113,7 +113,7 @@ classdef TestClass
                tempP = zeros(nv,ns,8);
                tempR = zeros(nv,ns);
                 for j = 1:nv
-                    for k = 1:ns
+                    for k = 16%1:ns
                         if mask(i,j,k) > 0
                             tmp = squeeze(mag(i,j,k,:));
                          	tmpd = tmp;	%tmp(ei);
@@ -135,6 +135,31 @@ classdef TestClass
            toc
        end
 
+		function obj = Calc_Multi_Seed(obj)
+			tic
+			sd = obj.SizeData;
+			Seed{1} = [0.1,   60,	  0,	0.6,	20,	0.3,	25,	   0];
+			Seed{2} = [0.1,   80,	  0,	0.6,	20,	0.3,	25,	   0];
+			Seed{3} = [0.1,   120,	  0,	0.6,	20,	0.3,	25,	   0];
+			Seed{4} = [0.1,   200,	  0,	0.6,	20,	0.3,	25,	   0];
+			Params = zeros([sd(1)*sd(2)*sd(3),8]);
+			Res = inf*ones(sd(1)*sd(2)*sd(3),1);
+			for i = 1:4
+				disp(strcat("Processing Seed#",string(i)));
+				temp = Calc_3PM(obj, Seed{i});
+				temp_Params = reshape(temp.Params_3PM, [sd(1)*sd(2)*sd(3), size(temp.Params_3PM,4)])
+				temp_Res = reshape(temp.Res_3PM, [sd(1)*sd(2)*sd(3),1]);
+				idx = find(temp_Res < Res);
+				Res(idx) = temp_Res(idx);
+				Params(idx,:) = temp_Params(idx,:);
+			end
+			obj.Params_3PM = reshape(Params, [sd(1:3),8])
+			obj.Res_3PM = reshape(Res, [sd(1:3)]);
+			obj.MWF_3PM = obj.Params_3PM(:,:,:,1).*((obj.Params_3PM(:,:,:,1) + obj.Params_3PM(:,:,:,4) + obj.Params_3PM(:,:,:,6)).^-1);
+			disp('Multi-seed process finished!')
+			toc
+		end
+		
        function obj = Calc_S3PM(obj)
            np = obj.SizeData(1);
            nv = obj.SizeData(2);
