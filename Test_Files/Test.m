@@ -24,7 +24,7 @@ test = Calc_3PM(test);
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.3';
 RunTime = toc;
-
+MWF = test.MWF_3PM;
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NESMA');
+save('18Cont_2DMonopolar_NESMA','MWF');
 disp('Done!')
