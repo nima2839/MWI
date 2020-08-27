@@ -20,7 +20,7 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 	Data = reshape(Data, sd(1)*sd(2)*sd(3),sd(4));
 	Mask = reshape(Mask, sd(1)*sd(2)*sd(3),1);
 	Out = zeros(size(Data));
-	p = floor(length(Mask)*0.01);
+	p = floor(length(Mask)*0.1);
 	%Iterate through first three dimonsions
 	parfor i = 1:length(Mask)
 		if Mask(i)
