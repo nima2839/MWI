@@ -15,8 +15,8 @@ end
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-test.Mag(:,:,17:22,:) = NESMA_Filter(test.Mag(:,:,17:22,:),Info.Mask(:,:,17:22),true, 0.015);
-test = CalcLFGC(test);
+test.Mag(:,:,17:22,:) = NESMA_Filter(test.Mag(:,:,17:22,:),Info.Mask(:,:,17:22),true, 0.01);
+%test = CalcLFGC(test);
 
 test1 = Calc_Multi_Seed(test);
 test2 = Calc_3PM(test);
