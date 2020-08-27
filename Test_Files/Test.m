@@ -4,7 +4,7 @@ load NMT3_2DGRE_18Cont_Monopolar.mat
 
 
 sd = size(Mag);
-K = Tukey3D(sd(1),sd(2),sd(3),0.3);
+K = Tukey3D(sd(1),sd(2),sd(3),0.25);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
@@ -13,7 +13,9 @@ for i = 1:sd(4)
 end
 
 tic
-test = TestClass(NESMA_Filter(abs(filtered),Info.Mask,true, 0.02),angle(filtered),Info);
+
+test = TestClass(abs(filtered),angle(filtered),Info);
+test.Mag(:,:,16,:) = NESMA_Filter(reshape(test.Mag(:,:,16,:), [sd(1:2),1,sd(4)]),Info.Mask(:,:,16),true, 0.03);
 test = CalcLFGC(test);
 
 test = Calc_Multi_Seed(test);
