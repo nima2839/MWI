@@ -18,14 +18,14 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test.Mag(:,:,17:22,:) = NESMA_Filter(test.Mag(:,:,17:22,:),Info.Mask(:,:,17:22),true, 0.01);
 %test = CalcLFGC(test);
 
-%test1 = Calc_Multi_Seed(test);
-test2 = Calc_3PM(test);
+%test2 = Calc_Multi_Seed(test);
+test1 = Calc_3PM(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.3';
 RunTime = toc;
 MWF = test1.MWF_3PM;
-MWF_MS = test2.MWF_3PM;
+%MWF_MS = test2.MWF_3PM;
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NESMA','MWF', 'MWF_MS');
+save('18Cont_2DMonopolar_NESMA','MWF');%, 'MWF_MS');
 disp('Done!')
