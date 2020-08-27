@@ -147,7 +147,7 @@ classdef TestClass
 			for i = 1:4
 				disp(strcat("Processing Seed#",string(i)));
 				temp = Calc_3PM(obj, Seed{i});
-				temp_Params = reshape(temp.Params_3PM, [sd(1)*sd(2)*sd(3), size(temp.Params_3PM,4)])
+				temp_Params = reshape(temp.Params_3PM, [sd(1)*sd(2)*sd(3), size(temp.Params_3PM,4)]);
 				temp_Res = reshape(temp.Res_3PM, [sd(1)*sd(2)*sd(3),1]);
 				idx = find(temp_Res < Res);
 				Res(idx) = temp_Res(idx);
