@@ -17,13 +17,13 @@ end
 try
 	if max(Data(:)) ~= 0
 		ND = Data/max(Data(:));
-		Model = @(X)abs((X(1)*	exp(-t.*(X(2)+ 1i*2*pi*X(3))) + ...
-		                 X(4)*	exp(-t.* X(5)) + ...
-		                (X(6))*	exp(-t.*(X(7)+ 1i*2*pi*X(8))))) -ND;
+		Model = @(X)abs((X(1)*	exp(-t.*((1/X(2))+ 1i*2*pi*X(3))) + ...
+		                 X(4)*	exp(-t.* (1/X(5))) + ...
+		                (X(6))*	exp(-t.*((1/X(7))+ 1i*2*pi*X(8))))) -ND;
 		if nargin < 3
-			X0 = [0.1,   60,	  0,	0.6,	15,	0.3,	20,	   0];
-			lb = [0,     50,	 -70,	0,	  5,	0,	  0.1,	-30];
-			ub = [2,	  1000,	70,	2,	  50,	2,	  50,	   30];
+			X0 = [0.1,   1/60,	  0,	0.6,	1/15,	0.3,	1/20,	   0];
+			lb = [0,     1/50,	 -70,	0,	  1/5,	0,	  10,	-30];
+			ub = [2,	  1/1000,	70,	2,	  1/50,	2,	  1/50,	   30];
 		end
 		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-12,'MaxIter',1e3,'TolX',1e-8,'Display','off');
 		options.MaxFunEvals = 1e3;
