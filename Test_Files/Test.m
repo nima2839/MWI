@@ -7,10 +7,10 @@ sd = size(Mag);
 K = Tukey3D(sd(1),sd(2),sd(3),0.25);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
-
-for i = 1:sd(4)
-	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
-end
+filtered  = complex_data;
+%for i = 1:sd(4)
+%	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
+%end
 
 tic
 
