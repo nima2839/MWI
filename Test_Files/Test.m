@@ -15,16 +15,17 @@ end
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-test.Mag(:,:,17:22,:) = NESMA_Filter(test.Mag(:,:,17:22,:),Info.Mask(:,:,17:22),true, 0.02);
+test.Mag(:,:,17:22,:) = NESMA_Filter(test.Mag(:,:,17:22,:),Info.Mask(:,:,17:22),true, 0.015);
 test = CalcLFGC(test);
 
-%test1 = Calc_Multi_Seed(test);
-test = Calc_3PM(test);
+test1 = Calc_Multi_Seed(test);
+test2 = Calc_3PM(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.3';
 RunTime = toc;
-MWF = test.MWF_3PM;
+MWF = test1.MWF_3PM;
+MWF_MS = test2.MWF_3PM;
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NESMA','MWF');
+save('18Cont_2DMonopolar_NESMA','MWF', 'MWF_MS');
 disp('Done!')
