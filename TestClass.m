@@ -153,10 +153,10 @@ classdef TestClass
 				Res(idx) = temp_Res(idx);
 				Params(idx,:) = temp_Params(idx,:);
 			end
-			obj.Params_3PM = reshape(Params, [sd(1:3),8])
+			obj.Params_3PM = reshape(Params, [sd(1:3),8]);
 			obj.Res_3PM = reshape(Res, [sd(1:3)]);
 			obj.MWF_3PM = obj.Params_3PM(:,:,:,1).*((obj.Params_3PM(:,:,:,1) + obj.Params_3PM(:,:,:,4) + obj.Params_3PM(:,:,:,6)).^-1);
-			disp('Multi-seed process finished!')
+			disp('Multi-seed process finished!');
 			toc
 		end
 		
