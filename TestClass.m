@@ -97,10 +97,10 @@ classdef TestClass
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
 		   if nargin < 2
-				X0 = [0.1,   60,	  5,	0.6,	15,	0.3,	25,	   0];
+				X0 = [0.1,   10e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
 		   end
-	       lb = [0,     40,	 0,	0,	  1,	0,	  0.1,	0];
-	       ub = [2,	  500,	25,	2,	  40,	2,	  40,	   25];
+	       lb = [0,     1e-3,	 -25,	0,	  20e-3,	0,	  20e-3,	-25];
+	       ub = [2,	  20e-3,	25,	2,	  1,	2,	  1,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -138,10 +138,10 @@ classdef TestClass
 		function obj = Calc_Multi_Seed(obj)
 			tic
 			sd = obj.SizeData;
-			Seed{1} = [0.1,   60,	  0,	0.6,	20,	0.3,	25,	   0];
-			Seed{2} = [0.1,   80,	  0,	0.6,	20,	0.3,	25,	   0];
-			Seed{3} = [0.1,   120,	  0,	0.6,	20,	0.3,	25,	   0];
-			Seed{4} = [0.1,   200,	  0,	0.6,	20,	0.3,	25,	   0];
+			Seed{1} = [0.1,   6e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
+			Seed{2} = [0.1,   10e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
+			Seed{3} = [0.1,   14e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
+			Seed{4} = [0.1,   18e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
 			Params = zeros([sd(1)*sd(2)*sd(3),8]);
 			Res = inf*ones(sd(1)*sd(2)*sd(3),1);
 			for i = 1:4
