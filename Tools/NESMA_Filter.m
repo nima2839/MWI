@@ -3,7 +3,9 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 % 2020/08/22
 % Ref for code:
 % Bouhrara M, Reiter DA, Maring MC, Bonny JM, Spencer RG. Use of the NESMA Filter to Improve Myelin Water Fraction Mapping with Brain MRI. J Neuroimaging. 2018;28(6):640-649. doi:10.1111/jon.12537
-    if nargin < 3
+    tic;
+	disp('NESMA filtering started!');
+	if nargin < 3
 		Normalize_Flag = false;
     end
     if nargin < 4
@@ -11,6 +13,7 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
     end
 
 	if Normalize_Flag
+		disp('Normalizing Data!');
 		Data = Data./repmat(sum(abs(Data),4), [1,1,1,size(Data,4)]);	
 	end
 	sd = size(Data);
@@ -28,10 +31,11 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 			%Mask(idx) = 0;	
 		end
 		if mod(i,p) == 0
-			disp(strcat(string(100*i/length(Mask)),"%"));
+			disp(strcat("."));
 		end
 	end
 	Out = reshape(Out,sd);
-
+	toc
+	disp('NESMA finished!');
 end
 
