@@ -4,7 +4,7 @@ load NMT3_2DGRE_18Cont_Monopolar.mat
 
 
 sd = size(Mag);
-K = Tukey3D(sd(1),sd(2),sd(3),0.25);
+K = repmat(Tukey3D(sd(1),sd(2),1,0.25),[1,1,sd(3)]);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
