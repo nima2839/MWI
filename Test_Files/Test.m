@@ -9,15 +9,15 @@ complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
 for i = 1:sd(4)
-	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K))./Mag_Bias ;
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i)./Mag_Bias)).*K)) ;
 end
 
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-idx = 12:18;
-test.Mag(:,:,idx,:) = NESMA_Filter(test.Mag(:,:,idx,:),Info.Mask(:,:,idx),false, 0.015);
-%test = CalcLFGC(test);
+idx = 15:17;
+test.Mag(:,:,idx,:) = NESMA_Filter(test.Mag(:,:,idx,:),Info.Mask(:,:,idx),false, 0.02);
+test = CalcLFGC(test);
 
 %test2 = Calc_Multi_Seed(test);
 test1 = Calc_3PM(test);
