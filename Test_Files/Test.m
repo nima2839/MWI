@@ -17,7 +17,7 @@ tic
 test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 idx = 5:25;
-test.LFGC(:,:,idx,:) = NESMA_Filter(test.LFGC(:,:,idx,:),Info.Mask(:,:,idx),false, 0.02);
+test.LFGC(:,:,idx,:) = NESMA_Filter(test.LFGC(:,:,idx,:),Info.Mask(:,:,idx),false, 0.01);
 
 test2 = Calc_Multi_Seed(test);
 test1 = Calc_3PM(test);
@@ -28,5 +28,5 @@ RunTime = toc;
 MWF = test1.MWF_3PM;
 MWF_MS = test2.MWF_3PM;
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NESMA','MWF', 'MWF_MS','test1','test2');
+save('18Cont_2DMonopolar_NESMA_MS_2','MWF', 'MWF_MS','test1','test2');
 disp('Done!')
