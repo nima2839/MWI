@@ -3,30 +3,27 @@ disp(['ReProcessGRASE on: ',name])
 try
 cd ~/GRASE/GRASE_To_Do/
 load(name,'tf_mgrase')
+cd ~/GRASE/GRASE_Results/
+load(strcat('GRASE_Results_',name), 'maps')
+alpha = maps.alpha;
+clear maps
+alpha(isnan(alpha)) = 0;
+K = Tukey3D(9,9,5, 1);
+alpha = convn(alpha,K, 'same');
 tic
 
-[maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'nT2', 60,'T2Range', [0.008, 2], 'MinRefAngle', 100);
+[maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'FlipAngleMap', alpha);
 
 
-MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
+Final_MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
-MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
-[ Xres , Yres , Zres ] = size( MWI );
-Final_MWI = zeros( size( MWI ) ) ;
-for c = 1 : Zres
-    for a = 1 : Xres
-        for b = 1 : Yres
-            if MWI_1( a , b , c ) == 1
-                Final_MWI( a , b , c ) = MWI( a , b , c ) ;
-            end
-        end
-    end
-end
-clear MWI MWI_1 tf_mgrase
+Final_MWI(isnan(Final_MWI)) = 0 ;
+
+
 runtime=toc;
-Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
-cd ~/GRASE/GRASE_Results/GRASE_UBC_Results
-save(name)
+Description = 'Alpha map is convolved with Tukey3D(9,9,5, 1) -> Hanning window!';
+cd ~/GRASE/GRASE_Results/Filtered_B1_Map_Results
+save(strcat('Filtered_B1_Map_Results_',name))
 catch ME
 	disp(ME.message)
 	end
