@@ -12,7 +12,7 @@ K = Tukey3D(9,9,5, 1);
 alpha = convn(alpha,K, 'same');
 tic
 
-[maps,distributions,~] = T2map_SEcorr(tf_mgrase, 'Threshold', 200,'FlipAngleMap', alpha);
+[maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'FlipAngleMap', alpha);
 
 
 Final_MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
