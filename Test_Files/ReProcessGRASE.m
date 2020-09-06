@@ -9,7 +9,7 @@ alpha = maps.alpha;
 clear maps
 alpha(isnan(alpha)) = 0;
 K = Tukey3D(9,9,5, 1);
-alpha = convn(alpha,K, 'same');
+alpha = convn(alpha,K, 'same')./sum(K(:));
 tic
 
 [maps,distributions,~] = T2map_Nima(tf_mgrase, 'Threshold', 200,'FlipAngleMap', alpha);
