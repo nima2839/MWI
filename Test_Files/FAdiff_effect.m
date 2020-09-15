@@ -22,7 +22,7 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
-FA = [110:10:160];%, 165:5:180];
+FA = [170];%, 165:5:180];
 FAdiff = -20:1:20;
 
 Results = cell(length(FA), length(FAdiff));
@@ -50,7 +50,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_NoCSF_Dist','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_NoCSF_Dist_170','Results','FA','FAdiff','MyInfo')
 
 
 
