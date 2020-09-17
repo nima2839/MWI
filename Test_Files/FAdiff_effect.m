@@ -8,8 +8,8 @@ IE = 1 - MWF - CSF;
 
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [5 20]*1e-3;
-MyInfo.TimeConstRange{2} = [70 80]*1e-3;
+MyInfo.TimeConstRange{1} = [15 15]*1e-3;
+MyInfo.TimeConstRange{2} = [75 75]*1e-3;
 %MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 
 MyInfo.FractionRange{1}= [MWF, MWF];
@@ -22,8 +22,8 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
-FA = [130,150,170];%, 165:5:180];
-FAdiff = -20:1:20;
+FA = [130:10:180];%, 165:5:180];
+FAdiff = [-10,5,0,5,10,20];
 
 Results = cell(length(FA), length(FAdiff));
 
@@ -50,7 +50,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_NoCSF_Dist_170','Results','FA','FAdiff','MyInfo')
+save('FAdiff_Effect_Results_NoCSF_Dist_fixedT2','Results','FA','FAdiff','MyInfo')
 
 
 
