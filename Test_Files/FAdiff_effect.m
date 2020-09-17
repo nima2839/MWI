@@ -8,8 +8,8 @@ IE = 1 - MWF - CSF;
 
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [15 15]*1e-3;
-MyInfo.TimeConstRange{2} = [75 75]*1e-3;
+MyInfo.TimeConstRange{1} = [10 10]*1e-3;
+MyInfo.TimeConstRange{2} = [80 80]*1e-3;
 %MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 
 MyInfo.FractionRange{1}= [MWF, MWF];
@@ -23,7 +23,7 @@ MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
 FA = [130:10:180];%, 165:5:180];
-FAdiff = [-10,5,0,5,10,20];
+FAdiff = [-10,-5,0,5,10,20];
 
 Results = cell(length(FA), length(FAdiff));
 
