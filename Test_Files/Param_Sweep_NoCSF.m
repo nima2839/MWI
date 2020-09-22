@@ -5,14 +5,14 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = 0;
+MWFs = [0,.15,.3];
 
 
 
-MyInfo.NumWaterComp = 1;
+MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-%MyInfo.TimeConstRange{1} = [5 20]*1e-3;
-MyInfo.TimeConstRange{1} = [70 80]*1e-3;
+MyInfo.TimeConstRange{1} = [15 15]*1e-3;
+MyInfo.TimeConstRange{1} = [75 75]*1e-3;
 MyInfo.T1Val = [1];
 
 MyInfo.FlipAngle = 180;
@@ -39,6 +39,7 @@ end
 
 runtime = toc;
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_PS_NoMWF_NoCSF','-v7.3')
+save('B1_Sim_Result_PS_FixedT2','-v7.3')
 disp('All Done!')
 clear
+Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2')
