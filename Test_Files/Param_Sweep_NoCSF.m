@@ -30,8 +30,8 @@ for i = 1:length(Chi2Factors)
 	MyInfo.Chi2Factor = Chi2Factors(i);
 	for j = 1:length(MWFs)
 		IE = 1 - MWFs(j);
-		%MyInfo.FractionRange{1}= [MWFs(j), MWFs(j)];
-		MyInfo.FractionRange{1}= [IE, IE];
+		MyInfo.FractionRange{1}= [MWFs(j), MWFs(j)];
+		MyInfo.FractionRange{2}= [IE, IE];
 		Models{i,j} = Template_Model(MyInfo);
 		disp(strcat(string(100*(i+j)/ (length(Chi2Factors) + length(MWFs))) + '% ...'))
 	end
