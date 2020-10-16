@@ -4,12 +4,14 @@ load NMT3_2DGRE_18Cont_Monopolar.mat
 
 
 sd = size(Mag);
-K = Tukey3D(sd(1),sd(2),sd(3),0.35);
+K = Tukey3D(sd(1),sd(2),1,0.35);
+K = repmat(K, [1,1,sd(3)]);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
 myinfo = Info;
-myinfo.Mask = Info.Mask(:,:,14:16);
+slices = 10:20;
+myinfo.Mask = Info.Mask(:,:,slices);
 
 disp('Applying Tukey filter!')
 for i = 1:sd(4)
@@ -18,9 +20,9 @@ end
 
 disp('Process started!')
 tic
-test = TestClass(abs(filtered(:,:,14:16,:)),angle(filtered(:,:,14:16,:)),myinfo);
+test = TestClass(abs(filtered(:,:,slices,:)),angle(filtered(:,:,slices,:)),myinfo);
 test = CalcLFGC(test);
-test.LFGC = NESMA_Filter(test.LFGC,Info.Mask(:,:,14:16),true, 0.02)
+test.LFGC = NESMA_Filter(test.LFGC,myinfo.Mask,true, 0.02)
 
 test = Calc_3PM(test);
 
