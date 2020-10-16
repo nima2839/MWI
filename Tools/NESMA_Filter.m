@@ -9,12 +9,13 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 		Normalize_Flag = false;
     end
     if nargin < 4
-         Threshold = 0.05;
+         Threshold = 0.02;
     end
 
 	if Normalize_Flag
 		disp('Normalizing Data!');
-		Data = Data./repmat(sum(abs(Data),4), [1,1,1,size(Data,4)]);	
+		alpha = sum(Data.^2,4).^-0.5;
+		Data = alpha.*Data;	
 	end
 	sd = size(Data);
 	Data = reshape(Data, sd(1)*sd(2)*sd(3),sd(4));
@@ -22,11 +23,18 @@ function Out = NESMA_Filter(Data, Mask, Normalize_Flag, Threshold)
 	Out = zeros(size(Data));
 	p = floor(length(Mask)*0.1);
 	%Iterate through first three dimonsions
+    disp('Iterating through voxels!')
 	parfor i = 1:length(Mask)
 		if Mask(i)
-			Diff = bsxfun(@minus, Data, Data(i,:));
-			RMD = sum(abs(Diff),2)./ sum(Data(i,:));
-			idx = find((RMD < Threshold) & (Mask > 0));
+			%Diff = bsxfun(@minus, Data, Data(i,:));
+			%RMD = sum(abs(Diff),2)./ sum(Data(i,:));
+			v = squeeze(Data(i,:));
+			RMD = Data * v';
+            if ~Normalize_Flag
+                RMD = RMD./sum(v.^2);
+            end
+            RMD = sqrt(abs(RMD - 1));
+			idx = find((RMD < Threshold));
 			Out(i,:) = sum(Data(idx,:),1)./length(idx);%repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
 			%Mask(idx) = 0;	
 		end
