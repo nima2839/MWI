@@ -18,9 +18,9 @@ end
 
 disp('Process started!')
 tic
-test = TestClass(NESMA_Filter(abs(filtered(:,:,14:16,:)),Info.Mask(:,:,14:16),true, 0.02),angle(filtered(:,:,14:16,:)),Info);
+test = TestClass(abs(filtered(:,:,14:16,:)),angle(filtered(:,:,14:16,:)),myinfo);
 test = CalcLFGC(test);
-
+test.LFGC = NESMA_Filter(test.LFGC,Info.Mask(:,:,14:16),true, 0.02)
 
 X0 = [0.1,   100,	  5,	0.6,	15,	0.3,	25,	   0];
 test = Calc_3PM(test,X0);
