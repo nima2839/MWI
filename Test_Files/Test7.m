@@ -1,5 +1,5 @@
 cd ~/GRE/GRE_To_Do/
-load NMT3_2DGRE_18Cont_Monopolar.mat
+load NESMA_Data.mat
 
 
 
@@ -22,7 +22,7 @@ disp('Process started!')
 tic
 test = TestClass(abs(filtered(:,:,slices,:)),angle(filtered(:,:,slices,:)),myinfo);
 test = CalcLFGC(test);
-test.LFGC = NESMA_Filter(test.LFGC,myinfo.Mask,true, 0.02)
+test.LFGC = NESMA_Filter(test.LFGC,myinfo.Mask,false, 0.05)
 
 test = Calc_3PM(test);
 
