@@ -21,7 +21,10 @@ test = CalcLFGC(test);
 idx = 14:16;
 
 opt.Mask = Info.Mask(:,:,idx);
-test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
+opt.Threshold = 0.03;
+opt.Num_Channels = 10;
+temp =   NESMA_Filter(test.LFGC(:,:,idx,:),opt);
+test = SetLFGC(test,temp(:,:,14:15,:));
 
 test = Calc_3PM(test);
 
@@ -30,7 +33,7 @@ test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
 RunTime = toc;
 
 MWF = test.MWF_3PM;
-LFGC = test.LFGC
+LFGC = test.LFGC;
 
 cd ~/GRE/GRE_Results/
 save('18Cont_2DMonopolar_NESMA','MWF','LFGC');
