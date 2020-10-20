@@ -18,7 +18,7 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 
 
-idx = 14:16;
+idx = 10:20;
 
 opt.Mask = Info.Mask(:,:,idx);
 opt.Threshold = 0.03;

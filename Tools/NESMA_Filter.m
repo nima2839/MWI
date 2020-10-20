@@ -43,7 +43,7 @@ function Out = NESMA_Filter(input_Data, Options)
 	input_Data = reshape(input_Data, sd(1)*sd(2)*sd(3), sd(4));
 	Data = input_Data(:,1:Options.Num_Channels);
 	Mask = reshape(Options.Mask, sd(1)*sd(2)*sd(3),1);
-	Out = zeros(size(input_DataData));
+	Out = zeros(size(input_Data));
 	p = floor(length(Mask)*0.1);
 	%Iterate through first three dimonsions
     disp('Iterating through voxels!')
