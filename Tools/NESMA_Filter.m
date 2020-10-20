@@ -18,8 +18,8 @@ function Out = NESMA_Filter(input_Data, Options)
 	
 	disp('NESMA filtering started!');
 	
-	if ~isfield(Options, 'Mask')
-		Options.Mask = Data(:,:,;,1) > 0;
+    if ~isfield(Options, 'Mask')
+		Options.Mask = input_Data(:,:,:,1) > 0;
     end
     if ~isfield(Options, 'Normalize_Flag')
          Options.Normalize_Flag = false;
@@ -36,8 +36,8 @@ function Out = NESMA_Filter(input_Data, Options)
 	
 	if Options.Normalize_Flag
 		disp('Normalizing Data!');
-		alpha = sum(Data.^2,4).^-0.5;
-		Data = alpha.*Data;	
+		alpha = sum(input_Data.^2,4).^-0.5;
+		input_Data = alpha.*input_Data;	
 	end
 	
 	input_Data = reshape(input_Data, sd(1)*sd(2)*sd(3), sd(4));
