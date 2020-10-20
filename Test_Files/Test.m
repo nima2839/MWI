@@ -21,7 +21,7 @@ test = CalcLFGC(test);
 idx = 14:16;
 
 opt.Mask = Info.Mask(:,:,idx);
-test.LFGC = NESMA_Filter(test.LFGC(:,:,idx,:),opt);
+test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
 
 test = Calc_3PM(test);
 

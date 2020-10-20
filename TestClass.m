@@ -67,10 +67,12 @@ classdef TestClass
 
 	     function obj = SetMag(obj,Mag)
          obj.Mag = Mag;
+		 obj.SizeData = size(Mag);
        end
 
 	     function obj = SetLFGC(obj,Mag)
          obj.LFGC = Mag;
+		 obj.SizeData = size(Mag);
        end
 
        function obj = CalcLFGC(obj,method)
