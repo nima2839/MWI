@@ -52,9 +52,7 @@ function Out = NESMA_Filter(input_Data, Options)
 		if Mask(i)
 			if strcmp(Options.Method, "SCD")
 				Distance = Data * v';
-				if ~Normalize_Flag
-					Distance = Distance./sum(v.^2);
-				end
+				Distance = Distance./sum(v.^2);
 				Distance = sqrt(abs(Distance - 1));
 			elseif strcmp(Options.Method, "RMD")
 				Diff = bsxfun(@minus, Data, v);
