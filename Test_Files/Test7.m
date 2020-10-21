@@ -23,7 +23,7 @@ idx = 18:19;
 opt.Mask = Info.Mask(:,:,idx);
 opt.Method = "RMD"
 temp =   NESMA_Filter(test.Mag(:,:,idx,:),opt);
-test = SetLFGC(test,temp(:,:,1,:));
+test = SetMag(test,temp(:,:,1,:));
 
 test = Calc_3PM(test);
 
