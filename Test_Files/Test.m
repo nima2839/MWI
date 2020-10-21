@@ -11,21 +11,21 @@ clear Mag Phase
 for i = 1:sd(4)
 	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i)./Mag_Bias)).*K)) ;
 end
-
+clear complex_data Mag_Bias
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
+clear filtered
 
-
-idx = 16:18;
+idx = 10:20;
 
 opt.Mask = Info.Mask(:,:,idx);
 opt.Num_Channels = 10;
 opt.Method = "RED"
 
-temp = NESMA_Filter(test.LFGC(:,:,idx,:),opt);
-test = SetLFGC(test,temp(:,:,1,:));
+test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
+test.MyInfo.Mask = Info.Mask(:,:,idx);
 test = Calc_SC(test,2);
 test = Calc_3PM(test);
 
@@ -33,10 +33,7 @@ disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
 RunTime = toc;
 
-MWF = test.MWF_3PM;
-Res = test.Res_3PM;
-RSC = test.RSC;
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA', 'MWF', 'Res', 'temp','RSC');
+save('18Cont_2DMonopolar_RED_NESMA');
 disp('Done!')

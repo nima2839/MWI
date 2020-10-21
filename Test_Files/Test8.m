@@ -11,12 +11,12 @@ clear Mag Phase
 for i = 1:sd(4)
 	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K))./Mag_Bias ;
 end
-
+clear complex_data Mag_Bias
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
-
+clear filtered
 
 idx = 10:20;
 
