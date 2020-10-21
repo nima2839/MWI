@@ -26,7 +26,7 @@ opt.Method = "RMD"
 
 test = SetLFGC(test,NESMA_Filter(test.LFGC(:,:,idx,:),opt));
 
-test = Calc_SC(test);
+test = Calc_SC(test,2);
 test = Calc_3PM(test);
 
 disp('Saving results...')
