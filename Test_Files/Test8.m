@@ -21,7 +21,7 @@ test = CalcLFGC(test);
 idx = 10:20;
 
 
-test = SetLFGC(test, test.LFGC(:,:,idx,:););
+test = SetLFGC(test, test.LFGC(:,:,idx,:));
 
 test = Calc_SC(test,2);
 test = Calc_3PM(test);
