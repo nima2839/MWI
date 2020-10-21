@@ -20,7 +20,7 @@ test = CalcLFGC(test);
 
 idx = 10:20;
 
-temp =   test.LFGC(:,:,idx,:));
+temp =   test.LFGC(:,:,idx,:);
 test = SetLFGC(test,temp(:,:,idx,:));
 
 test = Calc_SC(test,2);
