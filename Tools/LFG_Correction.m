@@ -42,7 +42,7 @@ SizeData = size(Mag);
 	end
 
 	if isfield(Info,'EchoIndexes') == 0
-        Info.EchoIndexes = [11 13];
+        Info.EchoIndexes = [7 9];
     end
 	
 	if isfield(Info,'Method') == 0
