@@ -24,14 +24,17 @@ function Out = NESMA_Filter(input_Data, Options)
     if ~isfield(Options, 'Normalize_Flag')
          Options.Normalize_Flag = false;
     end
-	if ~isfield(Options, 'Threshold')
-		Options.Threshold = 0.02;
-	end
 	if ~isfield(Options, 'Num_Channels')
 		Options.Num_Channels = sd(4);
 	end
 	if ~isfield(Options, 'Method')
 		Options.Method = "SCD";
+	end
+	if ~isfield(Options, 'Threshold')
+		Options.Threshold = 0.05;
+		if strcmp(Options.Method, "RED")
+			Options.Threshold = 25e-4;
+		end
 	end
 	
 	if Options.Normalize_Flag
@@ -54,11 +57,13 @@ function Out = NESMA_Filter(input_Data, Options)
 				Distance = Data * v';
 				Distance = Distance./sum(v.^2);
 				Distance = sqrt(abs(Distance - 1));
-			elseif strcmp(Options.Method, "RMD")
-				Diff = bsxfun(@minus, Data, v);
-				Distance = sum(abs(Diff),2)./ sum(v);
-			else % Method = "RED"
-			
+			else
+				Diff = v - Data;
+				if strcmp(Options.Method, "RMD") 
+					Distance = sum(abs(Diff),2)./ sum(v);
+				else % Method = "RED"
+					Distance = sum(Diff.^2,2)./ sum(v)^2;
+				end
 			end
             
 			idx = find((Distance < Options.Threshold));
