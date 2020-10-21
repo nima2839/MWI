@@ -15,26 +15,22 @@ end
 tic
 
 test = TestClass(abs(filtered),angle(filtered),Info);
-%test = CalcLFGC(test);
+test = CalcLFGC(test);
 
 
-idx = 15:20;
+idx = 10:20;
 
-opt.Mask = Info.Mask(:,:,idx);
-opt.Method = "RCD"
-temp =   NESMA_Filter(test.Mag(:,:,idx,:),opt);
-test = SetMag(test,temp(:,:,3,:));
+temp =   test.LFGC(:,:,idx,:));
+test = SetLFGC(test,temp(:,:,idx,:));
 
+test = Calc_SC(test,2);
 test = Calc_3PM(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
 RunTime = toc;
 
-MWF = test.MWF_3PM;
-LFGC = temp;
-Res = test.Res_3PM;
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RCD_NESMA','MWF','LFGC','Res');
+save('18Cont_2DMonopolar_No_NESMA');
 disp('Done!')
