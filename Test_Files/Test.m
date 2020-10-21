@@ -18,7 +18,7 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 %test = CalcLFGC(test);
 
 
-idx = 18:19;
+idx = 15:20;
 
 opt.Mask = Info.Mask(:,:,idx);
 opt.Method = "RED"
