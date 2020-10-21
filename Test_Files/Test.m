@@ -35,7 +35,8 @@ RunTime = toc;
 
 MWF = test.MWF_3PM;
 Res = test.Res_3PM;
+RSC = test.RSC;
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA', 'MWF', 'Res', 'temp');
+save('18Cont_2DMonopolar_RED_NESMA', 'MWF', 'Res', 'temp','RSC');
 disp('Done!')

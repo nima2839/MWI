@@ -72,7 +72,7 @@ function Out = NESMA_Filter(input_Data, Options)
             
 			idx = find((Distance < Options.Threshold));
 			% Using Rician corrected average method!
-			Out(i,:) = max(sqrt((sum(input_Data(idx,:).^2,1)./length(idx)) - var(input_Data(idx,:))), zeros(1, sd(4)));%repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
+			Out(i,:) = sqrt(max((sum(input_Data(idx,:).^2,1)./length(idx)) - var(input_Data(idx,:)), zeros(1, sd(4))));%repmat(sum(Data(idx,:),1)./length(idx), [length(idx),1]);
 			%Mask(idx) = 0;	
 		end
 		if mod(i,p) == 0
