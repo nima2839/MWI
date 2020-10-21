@@ -29,7 +29,7 @@ function Out = NESMA_Filter(input_Data, Options)
 		Options.Num_Channels = sd(4);
 	end
 	if ~isfield(Options, 'SNR_Min')
-		Options.SNR_Min = 30;
+		Options.SNR_Min = 100;
 	end
 	if ~isfield(Options, 'Method')
 		Options.Method = "RED";
@@ -37,7 +37,7 @@ function Out = NESMA_Filter(input_Data, Options)
 	if ~isfield(Options, 'Threshold')
 		Options.Threshold = 2 * (Options.SNR_Min)^-2;
 		if strcmp(Options.Method, "RMD")
-			Options.Threshold = 1e-2;
+			Options.Threshold = 0.675*Op;
 		end
 	end
 	
