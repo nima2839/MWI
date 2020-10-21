@@ -9,9 +9,10 @@ function Out = NESMA_Filter(input_Data, Options)
 %		Options:
 %			Options.Mask
 %			Options.Normalize_Flag
+%			Options.SNR_Min -> SNR of last echo used in calculation to estimate Threshold parameter!
 %			Options.Threshold
 %			Options.Num_Channels
-%			Options.Method : Distance methods -> "RED" (Relative Euclidean Distance), "RMD" (Relative Manhattan Distance), "SCD" (Relative Correlation Differc->Nima)
+%			Options.Method : Distance methods -> "RED" (Relative Euclidean Distance), "RMD" (Relative Manhattan Distance), "SCD" (Relative Correlation Difference -> Testing)
 %
     tic;
 	sd = size(input_Data);
@@ -27,11 +28,14 @@ function Out = NESMA_Filter(input_Data, Options)
 	if ~isfield(Options, 'Num_Channels')
 		Options.Num_Channels = sd(4);
 	end
+	if ~isfield(Options, 'SNR_Min')
+		Options.SNR_Min = 1/30;
+	end
 	if ~isfield(Options, 'Method')
-		Options.Method = "RCD";
+		Options.Method = "RED";
 	end
 	if ~isfield(Options, 'Threshold')
-		Options.Threshold = 1e-5;
+		Options.Threshold = 2 * (Options.SNR_Min)^-2;
 		if strcmp(Options.Method, "RMD")
 			Options.Threshold = 1e-2;
 		end
