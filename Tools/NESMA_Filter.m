@@ -28,8 +28,8 @@ function Out = NESMA_Filter(input_Data, Options)
 	if ~isfield(Options, 'Num_Channels')
 		Options.Num_Channels = sd(4);
 	end
-	if ~isfield(Options, 'SNR_Min')
-		Options.SNR_Min = 1/30;
+	if ~isfield(Options, 'SNR_Max')
+		Options.SNR_Max = 30;
 	end
 	if ~isfield(Options, 'Method')
 		Options.Method = "RED";
