@@ -23,8 +23,8 @@ idx = 10:20;
 opt.Mask = Info.Mask(:,:,idx);
 opt.Threshold = 1e-2;
 opt.Method = "RMD"
-temp =   NESMA_Filter(test.LFGC(:,:,idx,:),opt);
-test = SetLFGC(test,temp(:,:,idx,:));
+
+test = SetLFGC(test,NESMA_Filter(test.LFGC(:,:,idx,:),opt));
 
 test = Calc_SC(test);
 test = Calc_3PM(test);
