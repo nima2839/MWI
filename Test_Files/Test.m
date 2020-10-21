@@ -18,12 +18,12 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 %test = CalcLFGC(test);
 
 
-idx = 12:18;
+idx = 18:19;
 
 opt.Mask = Info.Mask(:,:,idx);
 opt.Method = "RED"
 temp =   NESMA_Filter(test.Mag(:,:,idx,:),opt);
-test = SetLFGC(test,temp(:,:,,:));
+test = SetLFGC(test,temp(:,:,1,:));
 
 test = Calc_3PM(test);
 
@@ -33,7 +33,8 @@ RunTime = toc;
 
 MWF = test.MWF_3PM;
 LFGC = temp;
+Res = test.Res_3PM;
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA','MWF','LFGC');
+save('18Cont_2DMonopolar_RED_NESMA','MWF','LFGC','Res');
 disp('Done!')

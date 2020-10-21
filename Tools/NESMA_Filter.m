@@ -11,7 +11,7 @@ function Out = NESMA_Filter(input_Data, Options)
 %			Options.Normalize_Flag
 %			Options.Threshold
 %			Options.Num_Channels
-%			Options.Method : Distance methods -> "RED" (Relative Euclidean Distance), "RMD" (Relative Manhattan Distance), "SCD" (Square-root of Correlation Differc->Nima)
+%			Options.Method : Distance methods -> "RED" (Relative Euclidean Distance), "RMD" (Relative Manhattan Distance), "SCD" (Relative Correlation Differc->Nima)
 %
     tic;
 	sd = size(input_Data);
@@ -28,12 +28,12 @@ function Out = NESMA_Filter(input_Data, Options)
 		Options.Num_Channels = sd(4);
 	end
 	if ~isfield(Options, 'Method')
-		Options.Method = "SCD";
+		Options.Method = "RCD";
 	end
 	if ~isfield(Options, 'Threshold')
-		Options.Threshold = 0.05;
-		if strcmp(Options.Method, "RED")
-			Options.Threshold = 25e-4;
+		Options.Threshold = 25e-4;
+		if strcmp(Options.Method, "RMD")
+			Options.Threshold = 5e-2;
 		end
 	end
 	
@@ -53,10 +53,10 @@ function Out = NESMA_Filter(input_Data, Options)
 	parfor i = 1:length(Mask)
 		v = squeeze(Data(i,:));
 		if Mask(i)
-			if strcmp(Options.Method, "SCD")
+			if strcmp(Options.Method, "RCD")
 				Distance = Data * v';
 				Distance = Distance./sum(v.^2);
-				Distance = sqrt(abs(Distance - 1));
+				Distance = abs(Distance - 1);
 			else
 				Diff = v - Data;
 				if strcmp(Options.Method, "RMD") 

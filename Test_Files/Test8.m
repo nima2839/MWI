@@ -1,32 +1,40 @@
-load Gre2D_18Con_Monopolar.mat
+cd ~/GRE/GRE_To_Do/
+load NMT3_2DGRE_18Cont_Monopolar.mat
 
-myinfo.Mask = Mask;
-myinfo.Method = 1;	% Du method
-myinfo.FirstTE = 2.01e-3;
-myinfo.EchoSpacing = 2.87e-3;
-myinfo.Vox = [1.5 1.5 3] * 1e-3;
+
 
 sd = size(Mag);
-K = Tukey3D(sd(1),sd(2),sd(3),0.5);
+K = repmat(Tukey3D(sd(1),sd(2),1,0.35),[1,1,sd(3)]);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
 for i = 1:sd(4)
-	filtered(:,:,:,i) =  ifftn(fftshift(fftshift(fftn(Mask.* complex_data(:,:,:,i))).*K)) ;
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K))./Mag_Bias ;
 end
 
 tic
-test = TestClass(abs(filtered),angle(filtered),myinfo);
-test = CalcLFGC(test);
-adf = ADF(test.LFGC,myinfo.Vox,7,110);
-adfiltered = ApplyADF(adf);
-test = SetLFGC(test,adfiltered);
-test = Calc_SC(test,2); % LOG method
-test = Calc_2PM(test);
+
+test = TestClass(abs(filtered),angle(filtered),Info);
+%test = CalcLFGC(test);
+
+
+idx = 15:20;
+
+opt.Mask = Info.Mask(:,:,idx);
+opt.Method = "RCD"
+temp =   NESMA_Filter(test.Mag(:,:,idx,:),opt);
+test = SetLFGC(test,temp(:,:,3,:));
+
 test = Calc_3PM(test);
+
 disp('Saving results...')
-test.Description = 'Calculating 8Param 3PM and 5Param 2PM! LFGC!Tukey alpha = 0.5! ADF 7Iter and 180!';
-test.RunTime = toc;
-data = GetAllData(test);
-save('18Cont_Monopolar_Tukey_ADF','data');
+test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
+RunTime = toc;
+
+MWF = test.MWF_3PM;
+LFGC = temp;
+Res = test.Res_3PM;
+
+cd ~/GRE/GRE_Results/
+save('18Cont_2DMonopolar_RCD_NESMA','MWF','LFGC','Res');
 disp('Done!')
