@@ -31,9 +31,9 @@ function Out = NESMA_Filter(input_Data, Options)
 		Options.Method = "RCD";
 	end
 	if ~isfield(Options, 'Threshold')
-		Options.Threshold = 5e-4;
+		Options.Threshold = 1e-5;
 		if strcmp(Options.Method, "RMD")
-			Options.Threshold = 2e-2;
+			Options.Threshold = 1e-2;
 		end
 	end
 	
