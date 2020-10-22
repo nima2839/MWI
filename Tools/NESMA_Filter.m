@@ -35,9 +35,18 @@ function Out = NESMA_Filter(input_Data, Options)
 		Options.Method = "RED";
 	end
 	if ~isfield(Options, 'Threshold')
-		Options.Threshold = 2 * (Options.SNR_Min)^-2;
+	% Threshold are calculated based on definition of distances and SNR threshold used is empirically calculated to permit less than 2% of MWF difference
+		if Options.SNR_Min > 200
+			Options.Threshold = 2 * (Options.SNR_Min)^-2;
+		else
+			Options.Threshold = 5e-5;
+		end
 		if strcmp(Options.Method, "RMD")
-			Options.Threshold = 2* 0.675/Options.SNR_Min;
+			if Options.SNR_Min > 100
+				Options.Threshold = 2/(pi*Options.SNR_Min);
+			else
+				Options.Threshold = 5e-3;
+			end
 		end
 	end
 	
