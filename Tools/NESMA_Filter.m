@@ -37,7 +37,7 @@ function Out = NESMA_Filter(input_Data, Options)
 	if ~isfield(Options, 'Threshold')
 		Options.Threshold = 2 * (Options.SNR_Min)^-2;
 		if strcmp(Options.Method, "RMD")
-			Options.Threshold = 0.675*Op;
+			Options.Threshold = 0.675/Options.SNR_Min;
 		end
 	end
 	
