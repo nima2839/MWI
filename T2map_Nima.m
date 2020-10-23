@@ -176,7 +176,7 @@ if faset==0
     flip_angles=linspace(minangle, 180, nangles);
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
 	% Nima: This fit uses an extra point at 177 degrees to mitigate underestimation arround 180 degrees!
-	flip_angles = [flip_angles(1:end-1), 177, flip_angles(end)];
+	flip_angles = [flip_angles(1:end-1), flip_angles(end)];
 	nangles = length(flip_angles);
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
