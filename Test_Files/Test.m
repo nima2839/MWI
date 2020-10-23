@@ -25,7 +25,7 @@ opt.Num_Channels = 10;
 opt.Method = "RED"
 
 temp =NESMA_Filter(test.LFGC(:,:,idx,:),opt);
-test = SetLFGC(test, temp(:,:,3,:);
+test = SetLFGC(test, temp(:,:,3,:));
 test.MyInfo.Mask = Info.Mask(:,:,idx(3));
 %test = Calc_SC(test,2);
 %test = Calc_3PM(test);

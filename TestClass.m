@@ -432,7 +432,7 @@ classdef TestClass
 		   if ~obj.Flag_UseLFGC
 			obj = CalcLFGC(obj);
 		   end
-		   Chi2Factor = 0.02;
+		   Chi2Factor = 1.02;
 		   obs_weights = ones(1, obj.SizeData(4));
 		   % Calculating Basis Decay Curves
 		   time =  obj.MyInfo.FirstTE:obj.MyInfo.EchoSpacing:(obj.MyInfo.FirstTE + (obj.SizeData(4) - 1)*obj.MyInfo.EchoSpacing);
