@@ -45,7 +45,7 @@ function Out = NESMA_Filter(input_Data, Options)
 			if Options.SNR_Min > 100
 				Options.Threshold = 2/(pi*Options.SNR_Min);
 			else
-				Options.Threshold = 5e-3;
+				Options.Threshold = 2e-2;
 			end
 		end
 	end
