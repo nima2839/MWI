@@ -429,7 +429,9 @@ classdef TestClass
        end
 
        function obj = Calc_NNLS(obj)
-           obj = CalcLFGC(obj);
+		   if ~obj.Flag_UseLFGC
+			obj = CalcLFGC(obj);
+		   end
 		   Chi2Factor = 0.02;
 		   obs_weights = ones(1, obj.SizeData(4));
 		   % Calculating Basis Decay Curves
