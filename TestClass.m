@@ -28,9 +28,7 @@ classdef TestClass
        Flag_UseSC   %If true, uses single component values in 3PM model
        Description
        RunTime
-       NNLS_W
-       res_NNLS
-       NNLS_Times
+       NNLS
        MWF_3PM
        MWF_S3PM
        MWF_C3PM
@@ -432,20 +430,70 @@ classdef TestClass
 
        function obj = Calc_NNLS(obj)
            obj = CalcLFGC(obj);
-           LFG.Gs = obj.Gs;
-           LFG.Gv = obj.Gv;
-           LFG.Gp = obj.Gp;
-           et.FirstEchoTime = obj.MyInfo.FirstTE;
-           et.EchoSpacing = obj.MyInfo.EchoSpacing;
-           options.T_range = [1 120];
-           options.Number_T = 120;
-           options.Vox = obj.MyInfo.Vox;
-           tic
-           disp('Calculating Weights Using NNLS...')
-           [W, T, r] = NNLS_T_Batch_Fitting(obj.Mag,et,options,LFG);
-           obj.NNLS_W = W;
-           obj.NNLS_Times =T;
-           obj.res_NNLS = r;
+		   Chi2Factor = 0.02;
+		   obs_weights = ones(1, obj.SizeData(4));
+		   % Calculating Basis Decay Curves
+		   time =  obj.MyInfo.FirstTE:obj.MyInfo.EchoSpacing:(obj.MyInfo.FirstTE + (obj.SizeData(4) - 1)*obj.MyInfo.EchoSpacing);
+		   T2Range = [1e-3, 2];
+		   nT2 = 60;
+		   T2_times=logspace(log10(T2Range(1)),log10(T2Range(2)),nT2);
+		   basis_decay = zeros(obj.SizeData(4),nT2);
+		   for x=1:nT2
+			echo_amp = exp(-time/T2_times(x)); % Nima : T1 vector is used
+			basis_decay(:,x) = echo_amp';
+		   end
+		   %initializing
+		   Mask = obj.MyInfo.Mask;
+		   img = obj.LFGC;
+		   [nrows,ncols,nslices,nechs] = size(obj.LFGC);
+		   distributions =zeros(nrows,ncols,nslices,nT2);
+			gdnmap = zeros(nrows,ncols,nslices);
+			ggmmap = zeros(nrows,ncols,nslices);
+			gvamap = zeros(nrows,ncols,nslices);
+			FNRmap = zeros(nrows,ncols,nslices); 
+		   
+		   % Iterating through voxels
+		   parfor row = 1:nrows
+			gdn = zeros(ncols,nslices);
+			ggm = zeros(ncols,nslices);
+			gva = zeros(ncols,nslices);
+			FNR = zeros(ncols,nslices); 
+			dists = zeros(ncols,nslices,nT2);
+			TempRes = zeros(ncols,nslices,nechs); % Nima
+			for col = 1:ncols
+			 for slice = 1:nslices
+				if Mask(row,col,slice)
+					decay_data = squeeze(img(row,col,slice,:));
+					[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, reshape(obs_weights, size(decay_data)), Chi2Factor);
+
+					dists(col,slice,:) = T2_dis;
+					% Compute parameters of distribution
+					gdn(col,slice) = sum(T2_dis);
+					ggm(col,slice) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
+					gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
+					decay_calc = basis_decay*T2_dis;
+					residuals = decay_calc-decay_data;
+					TempRes(col,slice,:) = residuals; % Nima
+					FNR(col,slice) = sum(T2_dis)/std(residuals); 
+				end
+			end
+			end
+			gdnmap(row,:,:) = gdn;
+			ggmmap(row,:,:) = ggm;
+			gvamap(row,:,:) = gva;
+			FNRmap(row,:,:) = FNR; 
+			distributions(row,:,:,:) = dists;
+			ResMap(row,:,:,:) = TempRes; % Nima
+		   end
+			
+		   maps.gdn = gdnmap;
+			maps.ggm = ggmmap;
+			maps.gva = gvamap;
+			maps.alpha = alphamap;
+			maps.FNR = FNRmap; 
+			maps.Residuals = ResMap; % Nima
+           obj.NNLS.Distribution = distributions;
+           obj.NNLS.Maps = maps;
            disp('done!')
            toc
          end
@@ -469,9 +517,7 @@ classdef TestClass
           data.runtime = obj.RunTime;
           data.Params_2PM = obj.Params_2PM;
           data.res2pm = obj.Res_2PM;
-          data.NNLS_W = obj.NNLS_W;
-          data.res_NNLS = obj.res_NNLS;
-          data.NNLS_Times = obj.NNLS_Times;
+          data.NNLS = obj.NNLS;
           data.MWF_3PM = obj.MWF_3PM;
           data.MWF_S3PM = obj.MWF_S3PM;
           data.MWF_C3PM = obj.MWF_C3PM;
