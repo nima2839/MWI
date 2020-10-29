@@ -5,7 +5,7 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = [0,.15,.3];
+MWFs = [1e-2:1e-2:5e-2];
 
 
 
@@ -39,7 +39,7 @@ end
 
 runtime = toc;
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_PS_FixedT2','-v7.3')
+save('B1_Sim_Result_PS_FixedT2_LowMWF','-v7.3')
 disp('All Done!')
 clear
-Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2')
+Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2_LowMWF')
