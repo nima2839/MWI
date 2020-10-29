@@ -1,14 +1,27 @@
-function  ProcessGRASE( FileName )
+function  ProcessGRASE( FileName, Options )
 % function: basic process of GRASE MWI using the code given by UBC
+% Postprocessing directory must be added to path 
+%
+% Inputs:
+%	-FileName: .mat file containting a 4D matrix of data name either 'mgrase' or 'tf_mgrase'
+%		'mgrase' is the raw data and 'tf_mgrase' is the tukey filtered version
+%	-Options: a struture contaiong Read_Dir and Save_Dir which are the directory to load and save
+
+if ~isfield(Options, 'Read_Dir')
+	Options.Read_Dir = '~/GRASE/GRASE_To_Do';
+end
+if ~isfield(Options, 'Save_Dir')
+	Options.Save_Dir = '~/GRASE/GRASE_Results';
+end
 tic;
 
 
-cd ~/GRASE/GRASE_To_Do
+cd(Options.Read_Dir)
 load(FileName, 'tf_mgrase','mgrase')
 
 if ~exist('tf_mgrase')
   if ~exist('mgrase')
-    disp(stract("Processing **",FileName,"** failed: could not load data!"));
+    disp(strcat("Processing **",FileName,"** failed: could not load data!"));
     return;
   end
   fs = 1/3;
@@ -31,22 +44,10 @@ end
 
 MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
-MWI_1 = ( ones( size( MWI )) - isnan( MWI ) ) ;
-[ Xres , Yres , Zres ] = size( MWI );
-Final_MWI = zeros( size( MWI ) ) ;
-for c = 1 : Zres
-    for a = 1 : Xres
-        for b = 1 : Yres
-            if MWI_1( a , b , c ) == 1
-                Final_MWI( a , b , c ) = MWI( a , b , c ) ;
-            end
-        end
-    end
-end
+MWI(isnan(MWI)) = 0;
 
-clear MWI MWI_1 mgrase hfilt2 tf_mgrase mgrase
 runtime=toc;
-cd ~/GRASE/GRASE_Results
+cd(Options.Save_Dir)
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
 save(strcat('GRASE_Results_', FileName))
 end
