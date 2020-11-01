@@ -46,6 +46,8 @@ MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributio
 
 MWI(isnan(MWI)) = 0;
 
+clear mgrase tf_mgrase
+
 runtime=toc;
 cd(Options.Save_Dir)
 Description = 'Threshold = 200; nT2 = 60, T2Range = 8ms to 2s, MinRefAngle = 100 degrees ';
