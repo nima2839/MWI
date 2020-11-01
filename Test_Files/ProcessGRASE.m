@@ -7,6 +7,10 @@ function  ProcessGRASE( FileName, Options )
 %		'mgrase' is the raw data and 'tf_mgrase' is the tukey filtered version
 %	-Options: a struture contaiong Read_Dir and Save_Dir which are the directory to load and save
 
+if nargin < 2
+	Options.Empty = true;
+end
+
 if ~isfield(Options, 'Read_Dir')
 	Options.Read_Dir = '~/GRASE/GRASE_To_Do';
 end
