@@ -23,7 +23,7 @@ try
 
   MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
-  MWI(isnan(MWI) = 0;
+  MWI(isnan(MWI)) = 0;
   runtime=toc;
 
   clear tf_mgrase MWI MWI_1 FlipAngleMap tf_mgrase mgrase
