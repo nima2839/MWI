@@ -5,18 +5,18 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = [1e-2:1e-2:5e-2];
+MWFs = [0,15,30] * 1e-2;
 
 
 
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
 MyInfo.TimeConstRange{1} = [15 15]*1e-3;
-MyInfo.TimeConstRange{2} = [75 75]*1e-3;
+MyInfo.TimeConstRange{2} = [60 60]*1e-3;
 MyInfo.T1Val = [0.5, 1];
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 5e3;
+MyInfo.NumData = 1e3;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
@@ -42,4 +42,4 @@ cd ~/Simulation/B1_Research/
 save('B1_Sim_Result_PS_FixedT2_LowMWF','-v7.3')
 disp('All Done!')
 clear
-Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2_LowMWF')
+Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2_Rice')
