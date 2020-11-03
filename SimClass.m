@@ -291,10 +291,10 @@ classdef SimClass
 			% using rician noise
 			% ref: https://www.mathworks.com/matlabcentral/fileexchange/14237-rice-rician-distribution
 			if nargin < 3
-				out = signal + ricernd(signal, signal/SNR)
+				out = ricernd(signal, signal/SNR)
 			else
 				% sigma = ref / SNR
-				out = signal + ricernd(signal , ref/SNR);
+				out = ricernd(signal , ref/SNR);
 			end
 		end
 	end
