@@ -288,15 +288,13 @@ classdef SimClass
 		
 		function out = ADD_Noise(signal, SNR, ref)
 			% To use a single definition for additive noise throughout the code
-			% if ref is given: SNR = ref/std(noise);
-			% otherwise SNR = power(signal)/power(noise);
+			% using rician noise
+			% ref: https://www.mathworks.com/matlabcentral/fileexchange/14237-rice-rician-distribution
 			if nargin < 3
-				out = awgn(signal,SNR,'measured', 'linear');
+				out = ricernd(signal, signal/SNR)
 			else
-				% in order to match SNR to the given definition power SNR must be calculated!
-				n = length(signal);
-				noise = ref - awgn(ref * ones(size(signal)), n*SNR^2 /(n-1),'measured', 'linear');
-				out = signal + noise;
+				% sigma = ref / SNR
+				out = ricernd(signal , ref/SNR);
 			end
 		end
 	end
