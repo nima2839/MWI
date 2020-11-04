@@ -5,14 +5,14 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = [0,15,30] * 1e-2;
+MWFs = [15] * 1e-2;
 
 
 
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [15 15]*1e-3;
-MyInfo.TimeConstRange{2} = [60 60]*1e-3;
+MyInfo.TimeConstRange{1} = [10 10]*1e-3;
+MyInfo.TimeConstRange{2} = [55 55]*1e-3;
 MyInfo.T1Val = [0.5, 1];
 
 MyInfo.FlipAngle = 180;
@@ -39,7 +39,7 @@ end
 
 runtime = toc;
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_PS_FixedT2_LowMWF','-v7.3')
+save('B1_Sim_Result_PS_FixedT2_Rice','-v7.3')
 disp('All Done!')
 clear
 Summerize_Sim_Results('B1_Sim_Result_PS_FixedT2_Rice')
