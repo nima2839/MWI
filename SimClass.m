@@ -209,7 +209,7 @@ classdef SimClass
 				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
 						'Chi2Factor',MyInfo.Chi2Factor);
 			end
-			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:13),4)./sum(Dist,4))); % Threshold is set to 30 ms!
+			Maps.MWF = squeeze(squeeze(sum(Dist(:,:,:,1:18),4)./sum(Dist,4))); % Threshold is set to 40 ms!
 		end
 	
 		function output = CreateDecayCurve(TimeConstant,t,Freq,SNR)
