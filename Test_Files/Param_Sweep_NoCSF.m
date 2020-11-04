@@ -11,8 +11,8 @@ MWFs = [15] * 1e-2;
 
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [10 10]*1e-3;
-MyInfo.TimeConstRange{2} = [55 55]*1e-3;
+MyInfo.TimeConstRange{1} = [15 15]*1e-3;
+MyInfo.TimeConstRange{2} = [80 80]*1e-3;
 MyInfo.T1Val = [0.5, 1];
 
 MyInfo.FlipAngle = 180;
