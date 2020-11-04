@@ -18,6 +18,11 @@ function Summerize_Sim_Results(filename)
 		Sim.Models{M}.sdAlpha = zeros(nSNR , nFA); ;
 		Sim.Models{M}.T_mAlpha = zeros(nSNR , nFA); ;
 		Sim.Models{M}.T_sdAlpha = zeros(nSNR , nFA); ;
+		
+		Sim.Models{M}.mFNR = zeros(nSNR , nFA); 
+		Sim.Models{M}.sdFNR = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_mFNR = zeros(nSNR , nFA); ;
+		Sim.Models{M}.T_sdFNR = zeros(nSNR , nFA); ;
 
 		for i = 1:nSNR		
 			for j = 1:nFA
@@ -30,6 +35,11 @@ function Summerize_Sim_Results(filename)
 				Sim.Models{M}.sdAlpha (i,j) = std((Models{M}.Maps{i,j}.alpha(:) ));
 				Sim.Models{M}.T_mAlpha (i,j) = mean(Models{M}.TrueFA_Maps{i,j}.alpha(:));
 				Sim.Models{M}.T_sdAlpha (i,j) = std((Models{M}.TrueFA_Maps{i,j}.alpha(:)));
+				
+				Sim.Models{M}.mFNR (i,j) = mean(Models{M}.Maps{i,j}.FNR(:));
+				Sim.Models{M}.sdFNR(i,j) = std((Models{M}.Maps{i,j}.FNR(:) ));
+				Sim.Models{M}.T_mFNR(i,j) = mean(Models{M}.TrueFA_Maps{i,j}.FNR(:));
+				Sim.Models{M}.T_sdFNR(i,j) = std((Models{M}.TrueFA_Maps{i,j}.FNR(:)));
 			end
 		end
 	end
