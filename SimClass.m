@@ -245,12 +245,12 @@ classdef SimClass
 		function out = Create_Guassian_Dist(T2)
 			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
 			% guassian is truncated within two standard deviation
-			% standard deviation is 20% of mean
+			% standard deviation is 10% of mean
 			% out is a struct similar to T2Dist
 
 			L = 20;
 			alpha = 2 * (L - 1) / L;
-			T2Dist.T2Values = linspace(0.6 * T2, 1.4 * T2, L);
+			T2Dist.T2Values = linspace(0.8 * T2, 1.8 * T2, L);
 			T2Dist.Weights = reshape(gausswin(L, alpha), size(T2Dist.T2Values));
 			T2Dist.Weights = T2Dist.Weights / sum(T2Dist.Weights(:));
 			% Normalizing the weights:
