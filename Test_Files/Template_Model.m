@@ -11,7 +11,7 @@ for i = 1:MyInfo.NumWaterComp
 end
 %%
 FA = 110:180;
-SNR = [50,100,200, 300, 500, 750, 1e3];
+SNR = [100,200, 300, 500, 750, 1e3];
 nFA = length(FA);
 nSNR = length(SNR);
 Dist =  cell(nSNR,nFA);
