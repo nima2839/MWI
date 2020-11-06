@@ -21,21 +21,18 @@ TrueFA_Maps = Dist;
 
 MyInfo.TrueFAFlag = false;
 
-parfor j = 1:nSNR
-	Noise = Create_Noise(length(MyInfo.Times), MyInfo.NumData, SNR(j));
-	
+parfor i  = 1:nFA
 	temp = MyInfo;
 	%temp.SNR = SNR(j);
 	%temp_dist = cell(1,nFA);
 	temp_maps = cell(1,nFA);
 	%temp_Tdist = cell(1,nFA);
 	temp_Tmaps = cell(1,nFA);
-	for i  = 1:nFA
-		temp.FlipAngle = FA(i);
+	temp.FlipAngle = FA(i);
+	for j = 1:nSNR
 		temp.TrueFAFlag = false;
-		temp.SNR = 0; % to add costumized noise
+		temp.SNR = SNR(j);
 		a = SimClass(temp);
-		SimulatedData = a.SimulatedData + Noise;
 		%temp_dist{1,i}
 		[~, temp_maps{1,i}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
 		temp.TrueFAFlag = true;
