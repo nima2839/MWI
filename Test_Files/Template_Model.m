@@ -34,10 +34,10 @@ parfor i  = 1:nFA
 		temp.SNR = SNR(j);
 		a = SimClass(temp);
 		%temp_dist{1,i}
-		[~, temp_maps{j,1}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
+		[~, temp_maps{j,1}] = SimClass.UBC_Nima_Fitting(a.SimulatedData, temp);
 		temp.TrueFAFlag = true;
 		%temp_Tdist{1,i}
-		[~, temp_Tmaps{j,1}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
+		[~, temp_Tmaps{j,1}] = SimClass.UBC_Nima_Fitting(a.SimulatedData, temp);
 	end
 	%Dist(j,:) = temp_dist;
 	Maps(:,i) = temp_maps;
