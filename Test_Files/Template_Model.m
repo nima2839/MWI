@@ -25,24 +25,24 @@ parfor i  = 1:nFA
 	temp = MyInfo;
 	%temp.SNR = SNR(j);
 	%temp_dist = cell(1,nFA);
-	temp_maps = cell(1,nFA);
+	temp_maps = cell(nSNR,1);
 	%temp_Tdist = cell(1,nFA);
-	temp_Tmaps = cell(1,nFA);
+	temp_Tmaps = cell(nSNR,1);
 	temp.FlipAngle = FA(i);
 	for j = 1:nSNR
 		temp.TrueFAFlag = false;
 		temp.SNR = SNR(j);
 		a = SimClass(temp);
 		%temp_dist{1,i}
-		[~, temp_maps{1,i}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
+		[~, temp_maps{j,1}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
 		temp.TrueFAFlag = true;
 		%temp_Tdist{1,i}
-		[~, temp_Tmaps{1,i}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
+		[~, temp_Tmaps{j,1}] = SimClass.UBC_Nima_Fitting(SimulatedData, temp);
 	end
 	%Dist(j,:) = temp_dist;
-	Maps(j,:) = temp_maps;
+	Maps(:,i) = temp_maps;
 	%TrueFA_Dist(j,:) = temp_Tdist;
-	TrueFA_Maps(j,:)= temp_Tmaps;
+	TrueFA_Maps(:,i)= temp_Tmaps;
 end
 
 
