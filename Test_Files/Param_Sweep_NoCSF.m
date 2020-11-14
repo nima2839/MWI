@@ -5,7 +5,7 @@ clear
 clc
 
 Chi2Factors = 1.02;
-MWFs = [0:5:30] * 1e-2;
+MWFs = [0:1:30] * 1e-2;
 
 
 
@@ -16,7 +16,7 @@ MyInfo.TimeConstRange{2} = [75 75]*1e-3;
 MyInfo.T1Val = [0.5, 1];
 
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 5e3;
+MyInfo.NumData = 1e3;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
