@@ -37,5 +37,5 @@ RunTime = toc;
 
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_NNLS_RED_NESMA_AllChannels');
+save('18Cont_2DMonopolar_RED_NESMA_AllChannels');
 disp('Done!')
