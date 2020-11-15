@@ -18,18 +18,18 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 clear filtered
 
-idx = 15:17;
+idx = 10:20;
 
 opt.Mask = Info.Mask(:,:,idx);
 opt.Num_Channels = 10;
 opt.Method = "RED"
 
-temp =NESMA_Filter(test.LFGC(:,:,idx,:),opt);
-test = SetLFGC(test, temp(:,:,3,:));
-test.MyInfo.Mask = Info.Mask(:,:,idx(3));
-%test = Calc_SC(test,2);
-%test = Calc_3PM(test);
-test = Calc_NNLS(test);
+temp = NESMA_Filter(test.LFGC(:,:,idx,:),opt);
+test = SetLFGC(test, temp(:,:,:,:));
+test.MyInfo.Mask = Info.Mask(:,:,idx);
+test = Calc_SC(test,2);
+test = Calc_3PM(test);
+%test = Calc_NNLS(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
