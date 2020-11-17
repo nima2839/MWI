@@ -9,7 +9,7 @@ complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
 for i = 1:sd(4)
-	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K))./Mag_Bias ;
+	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i)./Mag_Bias)).*K)) ;
 end
 clear complex_data Mag_Bias
 tic
