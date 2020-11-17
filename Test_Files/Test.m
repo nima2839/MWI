@@ -18,18 +18,18 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 clear filtered
 
-idx = 10:20;
 
-opt.Mask = Info.Mask(:,:,idx);
-%opt.Num_Channels = 10;
+
+opt.Mask = Info.Mask;
+opt.Num_Channels = 10;
 opt.Method = "RED"
 
-temp = NESMA_Filter(test.LFGC(:,:,idx,:),opt);
-test = SetLFGC(test, temp(:,:,:,:));
-test.MyInfo.Mask = Info.Mask(:,:,idx);
-test = Calc_SC(test,2);
-test = Calc_3PM(test);
-%test = Calc_NNLS(test);
+temp = NESMA_Filter(test.LFGC,opt);
+test = SetLFGC(test, temp);
+test.MyInfo.Mask = Info.Mask;
+%test = Calc_SC(test,2);
+%test = Calc_3PM(test);
+test = Calc_NNLS(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
@@ -37,5 +37,5 @@ RunTime = toc;
 
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA_AllChannels');
+save('18Cont_2DMonopolar_RED_NESMA_10Channels_allslices_NNLS');
 disp('Done!')
