@@ -433,7 +433,7 @@ classdef TestClass
 			obj = CalcLFGC(obj);
 		   end
 		   Chi2Factor = 1.02;
-		   obs_weights = ones(1, obj.SizeData(4));
+		   
 		   % Calculating Basis Decay Curves
 		   time =  obj.MyInfo.FirstTE:obj.MyInfo.EchoSpacing:(obj.MyInfo.FirstTE + (obj.SizeData(4) - 1)*obj.MyInfo.EchoSpacing);
 		   T2Range = [1e-3, 2];
@@ -453,6 +453,8 @@ classdef TestClass
 			ggmmap = zeros(nrows,ncols,nslices);
 			gvamap = zeros(nrows,ncols,nslices);
 			FNRmap = zeros(nrows,ncols,nslices); 
+			
+			obs_weights = reshape(ones(1, obj.SizeData(4)),size(squeeze(img(1,1,1,:))));
 		   
 		   % Iterating through voxels
 		   parfor row = 1:nrows
@@ -466,17 +468,19 @@ classdef TestClass
 			 for slice = 1:nslices
 				if Mask(row,col,slice)
 					decay_data = squeeze(img(row,col,slice,:));
-					[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, reshape(obs_weights, size(decay_data)), Chi2Factor);
+					if decay_data(1) > 0
+						[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
 
-					dists(col,slice,:) = T2_dis;
+						dists(col,slice,:) = T2_dis;
 					% Compute parameters of distribution
-					gdn(col,slice) = sum(T2_dis);
-					ggm(col,slice) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
-					gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
-					decay_calc = basis_decay*T2_dis;
-					residuals = decay_calc-decay_data;
-					TempRes(col,slice,:) = residuals; % Nima
-					FNR(col,slice) = sum(T2_dis)/std(residuals); 
+						gdn(col,slice) = sum(T2_dis);
+						ggm(col,slice) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
+						gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
+						decay_calc = basis_decay*T2_dis;
+						residuals = decay_calc-decay_data;
+						TempRes(col,slice,:) = residuals; % Nima
+						FNR(col,slice) = sum(T2_dis)/std(residuals); 
+					end
 				end
 			end
 			end
