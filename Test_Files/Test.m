@@ -21,7 +21,7 @@ clear filtered
 
 
 opt.Mask = Info.Mask;
-opt.Num_Channels = 10;
+%opt.Num_Channels = 10;
 opt.Method = "RED"
 
 temp = NESMA_Filter(test.LFGC,opt);
@@ -37,5 +37,5 @@ RunTime = toc;
 
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA_10Channels_allslices_NNLS');
+save('18Cont_2DMonopolar_RED_NESMA_allChannels_allslices_NNLS');
 disp('Done!')
