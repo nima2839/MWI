@@ -1,5 +1,5 @@
 function UBC_Vs_BSB1(Subject, Nominal_Angle)
-
+addpath(genpath('~/GRASE'))
 if nargin < 2
 	Nominal_Angle = 156.2;
 end
@@ -10,8 +10,23 @@ try
   load(Subject, 'tf_mgrase','mgrase')
   
   if ~exist('tf_mgrase')
-    tf_mgrase = mgrase;
-  end
+	  if ~exist('mgrase')
+		disp(strcat("Processing **",FileName,"** failed: could not load data!"));
+		return;
+	  end
+	  fs = 1/3;
+	  [ys xs zs es]=size(mgrase);
+	  tf_mgrase = zeros(ys,xs,zs,es);
+	  hfilt2=tukeywin(ys,fs)*tukeywin(xs,fs)';
+
+	  for i = 1:es
+		  for j = 1:zs
+
+			  tf_mgrase(:,:,j,i) = abs(ifft2c(fft2c(mgrase(:,:,j,i)).*hfilt2));
+
+		  end
+	  end
+end
 
   cd(strcat('~/GRASE/B1_Maps/',Subject,'/'))
 
