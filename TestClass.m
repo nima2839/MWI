@@ -336,7 +336,8 @@ classdef TestClass
           end
           rc = zeros(obj.SizeData(1:3));
           res = rc;
-          e1 = 4; % Based on Gelderen 2012 to exclude first 4 echoes of the decay
+		  disp('Excluding first 4 echoes for single component fitting!...')
+          e1 = 5; % Based on Gelderen 2012 to exclude first 4 echoes of the decay
           np = obj.SizeData(1);
           nv = obj.SizeData(2);
           ns = obj.SizeData(3);
