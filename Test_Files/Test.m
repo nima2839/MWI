@@ -21,7 +21,7 @@ clear filtered
 
 
 opt.Mask = Info.Mask;
-%opt.Num_Channels = 10;
+opt.Num_Channels = 10;
 opt.Method = "RED"
 
 idx = 10:20;
