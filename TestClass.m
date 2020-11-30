@@ -336,11 +336,7 @@ classdef TestClass
           end
           rc = zeros(obj.SizeData(1:3));
           res = rc;
-          e1 = 1; % testing!
-          e2 = 40;
-          if e2 > obj.SizeData(4)
-              e2 = obj.SizeData(4);
-          end
+          e1 = 4; % Based on Gelderen 2012 to exclude first 4 echoes of the decay
           np = obj.SizeData(1);
           nv = obj.SizeData(2);
           ns = obj.SizeData(3);
@@ -360,7 +356,7 @@ classdef TestClass
                 for k = 1:ns
                     if mask(i,j,k) > 0
                         tmp = squeeze(mag(i,j,k,:));
-                        tmpd = tmp(e1:e2);
+                        tmpd = tmp(e1:end);
                         if Method == 1
                             [temprc(j,k) , tempres(j,k)] = SingleComponentNLLS(tmpd,Info);
                         else
@@ -393,9 +389,9 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),5]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 = [0.1, 60,	5,	 0.9, 30];
-           lb = [0,   40,   0,	0.5, 1];
-           ub = [2,	300,	25,	2, 40];
+           X0 = [0.1,	100,	5,		0.9, 	30];
+           lb = [0,		40,		-25,	0.5, 	0.2];
+           ub = [2,		300,	25,		2, 		40];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
