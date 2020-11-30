@@ -19,12 +19,11 @@ test = CalcLFGC(test);
 clear filtered
 
 
+idx = 10:20;
 
-opt.Mask = Info.Mask;
+opt.Mask =  Info.Mask(:,:,idx);
 opt.Num_Channels = 10;
 opt.Method = "RED"
-
-idx = 10:20;
 
 
 test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
