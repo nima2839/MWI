@@ -27,7 +27,7 @@ opt.Method = "RED"
 idx = 10:20;
 
 
-test = SetLFGC(test, test.LFGC(:,:,idx,:));
+test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
 test.MyInfo.Mask = Info.Mask(:,:,idx);
 
 test = Calc_SC(test,2);
