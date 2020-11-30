@@ -24,7 +24,7 @@ try
 	   		lb = [0,	50,     -40,	0.5, 0];
 	   		ub = [0.5,	1000,	40,	1, 50];
 		end
-		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-12,'MaxIter',1e3,'TolX',1e-7,'Display','off');
+		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-12,'MaxIter',1e3,'TolX',1e-8,'Display','off');
 		options.MaxFunEvals = 1e3;
 	
 		if strcmp(Info.Algorithm,'levenberg-marquardt')

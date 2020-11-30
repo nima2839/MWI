@@ -25,6 +25,7 @@ test = SetLFGC(test, test.LFGC(:,:,idx,:));
 test.MyInfo.Mask = Info.Mask(:,:,idx);
 test = Calc_SC(test,2);
 test = Calc_3PM(test);
+test = Calc_2PM(test);
 
 disp('Saving results...')
 test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
@@ -32,5 +33,5 @@ RunTime = toc;
 
 
 cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_No_NESMA');
+save('18Cont_2DMonopolar_2PModel');
 disp('Done!')
