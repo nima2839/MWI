@@ -250,7 +250,7 @@ classdef SimClass
 
 			L = 20;
 			alpha = 2 * (L - 1) / L;
-			T2Dist.T2Values = linspace(0.8 * T2, 1.8 * T2, L);
+			T2Dist.T2Values = linspace(0.8 * T2, 1.2 * T2, L);
 			T2Dist.Weights = reshape(gausswin(L, alpha), size(T2Dist.T2Values));
 			T2Dist.Weights = T2Dist.Weights / sum(T2Dist.Weights(:));
 			% Normalizing the weights:
