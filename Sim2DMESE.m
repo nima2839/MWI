@@ -53,7 +53,7 @@ classdef Sim2DMESE
 			
 			% Creating lookup table for MC_Analyzer
 			dummy = MC_MESE_SLR('Dummy');
-			dummy.MyInfo = object.MyInfo;
+			dummy.MyInfo = obj.MyInfo;
 			dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.2, logspace(log10(8e-3),log10(2),60));
 			obj.MyInfo.MC_Analyzer.LookUpTable = dummy.MyInfo.LookUpTable;
 			disp('Sim2DMESE object created!')
