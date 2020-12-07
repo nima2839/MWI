@@ -50,6 +50,12 @@ classdef Sim2DMESE
 			for j = 1:length(MyInfo.B1_Range)
 				obj.B1Map(:,j,:) = MyInfo.B1_Range(j);
 			end
+			
+			% Creating lookup table for MC_Analyzer
+			dummy = MC_MESE_SLR('Dummy');
+			dummy.MyInfo = object.MyInfo;
+			dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.2, logspace(log10(8e-3),log10(2),60));
+			obj.MyInfo.MC_Analyzer.LookUpTable = dummy.MyInfo.LookUpTable;
 			disp('Sim2DMESE object created!')
 		end
 		
@@ -57,6 +63,8 @@ classdef Sim2DMESE
 			dummy = MC_MESE_SLR('Dummy');
 			dummy.B1Map = obj.B1Map;
 			dummy.MyInfo = obj.MyInfo;
+			dummy.MyInfo.LookUpTable = dummy.MyInfo.MC_Analyzer.LookUpTable;
+			dummy.MyInfo.MC_Analyzer = [];
 			% Add Noise
 			dummy.Data = SimClass.ADD_Noise(obj.Data, SNR, obj.Data(1));
 			%
