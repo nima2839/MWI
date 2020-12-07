@@ -25,7 +25,7 @@ classdef Sim2DMESE
 			if ~isfield(MyInfo, "LookUpTable")
 				disp('Generating LookUpTable using sequence parameters...')
 				MyInfo.T2_Range = MyInfo.T2Dist(1).T2Values;
-				obj.MyInfo.LookUpTable = Sim2DMESE.Generate_LookUpTable(MyInfo);
+				MyInfo.LookUpTable = Sim2DMESE.Generate_LookUpTable(MyInfo);
 			end
 			
 			obj.MyInfo = MyInfo;
