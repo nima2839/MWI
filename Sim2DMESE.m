@@ -20,18 +20,17 @@ classdef Sim2DMESE
 			disp('Initializing Sim2DMESE object...');
 			if ~isfield(MyInfo, "SeqParams")
 				error("SeqParams was not found in the input structure!");
-				return
 			end
 			
 			if ~isfield(MyInfo, "LookUpTable")
 				disp('Genrating LookUpTable using sequence paramters..')
 				MyInfo.T2_Range = MyInfo.T2Dist(1).T2Values;
-				obj.MyInfo.LookUpTable = MC_MESE_SLR.Create_LookUp_Table(MyInfo);
+				obj.MyInfo.LookUpTable = Generate_LookUpTable(MyInfo);
 			end
 			
 			obj.MyInfo = MyInfo;
 			
-			obj.SimulatedData = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(T2Dist), MyInfo.SeqParams.etl);
+			obj.Data = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(T2Dist), MyInfo.SeqParams.etl);
 			
 			disp('Simulating multi-component decay signal...')
 			
@@ -81,7 +80,7 @@ classdef Sim2DMESE
 			if ~isfield(MyInfo, "T2_Range")
 				MyInfo.T2_Range = logspace(log10(8e-3), log10(2), 60);
 			end
-			LookUpTable = MC_ MESE_SLR.Create_LookUp_Table(MyInfo);
+			LookUpTable = MC_MESE_SLR.Create_LookUp_Table(MyInfo);
 		end
 	end
 end

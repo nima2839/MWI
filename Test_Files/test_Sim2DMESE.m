@@ -34,7 +34,7 @@ Maps = cell(1,length(SNRs));
 Maps_B1 = cell(1,length(SNRs));
 for i = 1:length(SNRs)
 	[Maps{i}, Maps_B1{i}] = MC_Analyzer(SimObj, SNRs(i));
-	disp(strcat(string(100*i/length(SNRs)),'%');
+	disp(strcat(string(100*i/length(SNRs)),'%'));
 end
 AnlysisTime = toc;
 
