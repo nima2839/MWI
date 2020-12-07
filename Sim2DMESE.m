@@ -35,9 +35,9 @@ classdef Sim2DMESE
 			disp('Simulating multi-component decay signal...')
 			
 			for j = 1:length(MyInfo.B1_Range)
-				for k = 1:length(T2Dist)
+				for k = 1:length(MyInfo.T2Dist)
 					basis_decay = MC_MESE_SLR.Calc_basis_decay(obj.MyInfo, obj.MyInfo.B1_Range(j));
-					obj.Data(1,j,k,:) = T2Dist(k).Weights * basis_decay;
+					obj.Data(1,j,k,:) = MyInfo.T2Dist(k).Weights * basis_decay;
 				end
 			end
 			
@@ -45,7 +45,7 @@ classdef Sim2DMESE
 				obj.Data(i,:,:,:) = obj.Data(1,:,:,:);
 			end
 			
-			obj.B1Map = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(T2Dist));
+			obj.B1Map = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(MyInfo.T2Dist));
 			
 			for j = 1:length(MyInfo.B1_Range)
 				obj.B1Map(:,j,:) = MyInfo.B1_Range(j);
