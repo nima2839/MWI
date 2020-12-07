@@ -1,4 +1,4 @@
-% this is a parametr sweep code for B1 effect research
+% this is a parameter sweep code for B1 effect research
 % more like MWF sweep
 addpath(genpath('~/MWI'))
 addpath(genpath('~/GRASE/Postprocessing'))
@@ -10,8 +10,8 @@ MWFs = (1:30) / 100;
 
 MyInfo.NumWaterComp = 3;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [5 20]*1e-3;
-MyInfo.TimeConstRange{2} = [70 80]*1e-3;
+MyInfo.TimeConstRange{1} = [15 15]*1e-3;
+MyInfo.TimeConstRange{2} = [75 75]*1e-3;
 MyInfo.TimeConstRange{3} = [500 2000]*1e-3;
 MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FlipAngle = 180;
@@ -19,7 +19,7 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
-CSF = 0.1;
+CSF = 0.3;
 
 
 
@@ -41,6 +41,8 @@ end
 
 runtime = toc;
 cd ~/Simulation/B1_Research/
-save('B1_Sim_Result_PS','-v7.3')
+save('B1_Sim_Result_HighEW','-v7.3')
 disp('All Done!')
 clear
+disp('Summerizing the results');
+Summerize_Sim_Results('B1_Sim_Result_HighEW')
