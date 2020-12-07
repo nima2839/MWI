@@ -80,6 +80,7 @@ classdef Sim2DMESE
 			if ~isfield(MyInfo, "T2_Range")
 				MyInfo.T2_Range = logspace(log10(8e-3), log10(2), 60);
 			end
+			MyInfo.T1 = ones(size(MyInfo.T2Dist(1).Weights));
 			LookUpTable = MC_MESE_SLR.Create_LookUp_Table(MyInfo);
 		end
 	end
