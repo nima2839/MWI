@@ -30,7 +30,7 @@ classdef Sim2DMESE
 			
 			obj.MyInfo = MyInfo;
 			
-			obj.Data = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(T2Dist), MyInfo.SeqParams.etl);
+			obj.Data = zeros(MyInfo.NumData, length(MyInfo.B1_Range), length(MyInfo.T2Dist), MyInfo.SeqParams.etl);
 			
 			disp('Simulating multi-component decay signal...')
 			
