@@ -14,7 +14,7 @@ cd ~/MESE/
 load('2D_32echos_MESE_Nima_dic', 'param')
 MyInfo.SeqParams = param;
 MyInfo.NumData = 500;
-MyInfo.B1Range = 0.5:1e-2:1.2;
+MyInfo.B1_Range = 0.5:1e-2:1.2;
 
 for i = 1:length(MWFs)
 	temp.T2Values = [MW.T2Values, IE.T2Values];
