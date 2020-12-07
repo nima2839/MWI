@@ -23,7 +23,7 @@ classdef Sim2DMESE
 			end
 			
 			if ~isfield(MyInfo, "LookUpTable")
-				disp('Genrating LookUpTable using sequence paramters..')
+				disp('Generating LookUpTable using sequence parameters...')
 				MyInfo.T2_Range = MyInfo.T2Dist(1).T2Values;
 				obj.MyInfo.LookUpTable = Sim2DMESE.Generate_LookUpTable(MyInfo);
 			end
@@ -80,7 +80,7 @@ classdef Sim2DMESE
 			if ~isfield(MyInfo, "T2_Range")
 				MyInfo.T2_Range = logspace(log10(8e-3), log10(2), 60);
 			end
-			MyInfo.T1 = ones(size(MyInfo.T2Dist(1).Weights));
+			MyInfo.T1 = 1;
 			LookUpTable = MC_MESE_SLR.Create_LookUp_Table(MyInfo);
 		end
 	end
