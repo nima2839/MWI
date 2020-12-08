@@ -19,7 +19,7 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
-CSF = 0.3;
+CSF = 0.5;
 
 
 
