@@ -1,43 +1,18 @@
-cd ~/GRE/GRE_To_Do/
-load NMT3_2DGRE_18Cont_Monopolar.mat
+names = ["123","127","Jh","Js","Nm","Nn","Rws","Zz","Rh"];
+nangles = [158.0052  147.3529  144.4640  152.8400  139.5369 149.6512  148.7811  145.5094  143.7493];
 
 
 
-sd = size(Mag);
-K = repmat(Tukey3D(sd(1),sd(2),1,0.35),[1,1,sd(3)]);
-complex_data = Mag.*exp(1i*Phase);
-clear Mag Phase
-
-for i = 1:sd(4)
-	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i)./Mag_Bias)).*K)) ;
+for i = 1:length(names)
+	cd ~/GRASE/GRASE_To_Do/
+	file = dir(strcat('*', names(i),'*'));
+	UBC_Vs_BSB1(file.name, nangles(i));
+	cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
+	file = dir(strcat('*', names(i),'*'));
+	load(file.name,'maps','MWI')
+	cd InVivo_Results/
+	mkdir(names(i))
+	cd(names(i))
+	save('Maps_B1', 'maps')
+	niftiwrite(MWI, 'MWF_B1')
 end
-clear complex_data Mag_Bias
-tic
-
-test = TestClass(abs(filtered),angle(filtered),Info);
-test = CalcLFGC(test);
-clear filtered
-
-
-idx = 10:20;
-
-opt.Mask =  Info.Mask(:,:,idx);
-opt.Num_Channels = 10;
-opt.Method = "RED"
-
-
-test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
-test.MyInfo.Mask = Info.Mask(:,:,idx);
-
-test = Calc_SC(test,2);
-%test = Calc_3PM(test);
-%test = Calc_NNLS(test);
-test = Calc_2PM(test)
-disp('Saving results...')
-test.Description = 'Calculating 8Param 3PM! LFGC!Tukey alpha = 0.35';
-RunTime = toc;
-
-
-cd ~/GRE/GRE_Results/
-save('18Cont_2DMonopolar_RED_NESMA_2PM');
-disp('Done!')
