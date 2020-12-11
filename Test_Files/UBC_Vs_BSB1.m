@@ -41,7 +41,7 @@ end
   MWI(isnan(MWI)) = 0;
   runtime=toc;
 
-  clear tf_mgrase MWI MWI_1 FlipAngleMap tf_mgrase mgrase
+  clear tf_mgrase MWI_1 FlipAngleMap tf_mgrase mgrase
 
   cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
   Description = 'Threshold = 200; FlipAngleMap from B1-map with nominal angle provided by user, nT2 = 60, T2Range = 8ms to 2 S';
