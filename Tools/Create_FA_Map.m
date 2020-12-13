@@ -17,7 +17,7 @@ function FA_Map = Create_FA_Map(Options)
 	end
 	
 	if ~isfield(Options, 'Vox')
-		Options.Vox = floor(Options.Size / min(Options.Size));
+		Options.Vox = floor(Options.Size / min(Options.Size)).^-1;
 	end
 	
 	if ~isfield(Options, 'deltaFA')
@@ -25,7 +25,7 @@ function FA_Map = Create_FA_Map(Options)
 		Options.deltaFA = 5 * Options.CenterFA / sum(temp);
 	end
 	
-	disp(Options)
+	%disp(Options)
 	FA_Map = zeros(Options.Size);
 	Center = floor(Options.Size / 2);
 	for i = 1:Options.Size(1)
@@ -37,8 +37,8 @@ function FA_Map = Create_FA_Map(Options)
 	end
 	function Distance = Calc_Distance_to_Center(Point)
 		temp = Center - Point;
-		temp = temp ./ Options.Vox;
+		temp = temp .* Options.Vox;
 		temp = temp .^ 2;
-		Distance = sum(temp(:));
+		Distance = sqrt(sum(temp(:)));
 	end
 end
