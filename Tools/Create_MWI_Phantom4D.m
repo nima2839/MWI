@@ -34,26 +34,38 @@ ns = sd(3);
 
 IE = MyInfo.FractionRange{2};
 
-Output = zeros(nv,np,ns,length(MyInfo.Times));
+
+
+Output = zeros(nv*np*ns,length(MyInfo.Times));
+Phantom = reshape(Phantom, size(Output));
+Mask = zeros(nv*np*ns,1);
+Mask(~isnan(Phantom(:,1)) = true;
+Mask(Phantom < 0) = false;
+Mask(Phantom > 1) = false;
+Phantom = round(Phantom,2); % rounding to 2 decimal point
+FA_Map = reshape(FA_Map, size(Mask));
 
 disp('Simulation started ...');
 
-parfor i = 1:nv
-	temp_out = zeros(np, ns, length(MyInfo.Times));
-	for j = 1:np
-		for k = 1:ns
-			if ~isnan(Phantom) & (Phantom(i,j,k) > 0) & (Phantom(i,j,k) < 1)
-				tempInfo = MyInfo;
-				tempInfo.FlipAngle = FA_Map(i,j,k);
-				tempInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
-				tempInfo.FractionRange{2} = IE - Phantom(i,j,k);
-				temp = SimClass(tempInfo);
-				temp_out(j,k,:) = squeeze(temp.SimulatedData(1,1,1,:));
-			end
-		end
+
+
+for i = 1:size(Output,1)
+	if Mask(i)
+		idx = find(Phantom == Phantom(i));
+		tempInfo = MyInfo;
+		tempInfo.FlipAngle = FA_Map(i,j,k);
+		tempInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
+		tempInfo.FractionRange{2} = IE - Phantom(i,j,k);
+		tempInfo.NumData = length(idx);
+		temp = SimClass(tempInfo);
+		sd = size(temp.SimulatedData);
+		Data = reshape(temp.SimulatedData, sd(1)*sd(2)*sd(3), sd(4))
+		Output(idx,:) = Data(1:length(idx), :);
+		Mask(idx) = false;
 	end
-	Output(i,:,:,:) = temp_out;
 end
+
+Output = reshape(Output, sd);
 disp('Finished simulating!');
 toc;
 end
