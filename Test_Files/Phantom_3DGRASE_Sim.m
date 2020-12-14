@@ -51,8 +51,8 @@ GRASE_Phantom = zeros(sd);
 for e = 1:sd(4)
 	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e))));
 	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,:,e))));
-	temp(:, 1:floor(sd(2)/3), 1:floor(sd(3)/4)) = tempstar(:, 1:floor(sd(2)/3), 1:floor(sd(3)/4));
-	temp(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/4)) = tempstar(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/4));
+	temp(:, 1:floor(sd(2)/3), :) = tempstar(:, 1:floor(sd(2)/3), :);
+	temp(:, end-floor(sd(2)/3):end, :)) = tempstar(:, end-floor(sd(2)/3):end, :);
 	GRASE_Phantom(:,:,:,e) = ifftn(ifftshift(temp));
 end
 
