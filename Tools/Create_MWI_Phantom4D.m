@@ -39,7 +39,7 @@ Output = zeros(nv,np,ns,length(MyInfo.Times));
 disp('Simulation started ...');
 
 parfor i = 1:nv
-	temp_out = zeros(np, ns, sd(4));
+	temp_out = zeros(np, ns, length(MyInfo.Times));
 	for j = 1:np
 		for k = 1:ns
 			if ~isnan(Phantom) & (Phantom(i,j,k) > 0) & (Phantom(i,j,k) < 1)
