@@ -6,13 +6,12 @@ if nargin < 3
 		FA_Map = 180 * ones(size(Phantom));
 	end
 end
-tic;
+
 disp('Initiating variables...')
 
 if ~isfield(MyInfo, 'NumWaterComp')
 	MyInfo.NumWaterComp = 3;
 	MyInfo.Times = (1:32)*1e-2;
-
 	MyInfo.IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
 	MyInfo.MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 	MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
@@ -29,7 +28,6 @@ nv = sd(1);
 np = sd(2);
 ns = sd(3);
 
-IE = MyInfo.FractionRange{2};
 
 
 
@@ -66,5 +64,4 @@ end
 
 Output = reshape(Output, sd);
 disp('Finished simulating!');
-toc;
 end
