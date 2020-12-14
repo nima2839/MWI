@@ -60,7 +60,7 @@ end
 Phantom_Sim_time = toc
 
 disp('Applying MWI Analysis of GRASE_Phantom...');
- [maps,distributions,~] = T2map_Nima(GRASE_Phantom, 'Threshold', 200, 'T2Range', [0.008, 2],'nT2', 60);
+ [maps,distributions,~] = T2map_Nima(abs(GRASE_Phantom), 'Threshold', 200, 'T2Range', [0.008, 2],'nT2', 60);
 
 
   MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
