@@ -47,15 +47,15 @@ Phantom_4D_T2star =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 disp('Generating3D GRASE sim phantom...');
 sd = size(Phantom_4D_T2);
 GRASE_Phantom = zeros(sd);
-for z = 1:floor(sd(3)/2)
-	for e = 1:sd(4)
-		temp = fftshift(fft2(squeeze(Phantom_4D_T2(:,:,z,e))));
-		tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,z,e))));
-		temp(:, 1:floor(sd(2)/3)) = tempstar(:, 1:floor(sd(2)/3));
-		temp(:, end-floor(sd(2)/3):end) = tempstar(:, end-floor(sd(2)/3):end);
-		GRASE_Phantom(:,:,z,e) = ifft2(ifftshift(temp));
-	end
+
+for e = 1:sd(4)
+	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e))));
+	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,,e))));
+	temp(:, 1:floor(sd(2)/3), 1:floor(sd(3)/2)) = tempstar(:, 1:floor(sd(2)/3), 1:floor(sd(3)/2));
+	temp(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/2)) = tempstar(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/2));
+	GRASE_Phantom(:,:,z,e) = ifft2(ifftshift(temp));
 end
+
 
 Phantom_Sim_time = toc
 
