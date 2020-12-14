@@ -13,13 +13,10 @@ if ~isfield(MyInfo, 'NumWaterComp')
 	MyInfo.NumWaterComp = 3;
 	MyInfo.Times = (1:32)*1e-2;
 
-	MyInfo.TimeConstRange{1} = [20 20]*1e-3;
-	MyInfo.TimeConstRange{2} = [80 80]*1e-3;
-	MyInfo.TimeConstRange{3} = [500 500]*1e-3;
-	MyInfo.T1Val = [.6 1 4];
-	MyInfo.FractionRange{1}= [0,0];
-	MyInfo.FractionRange{2}= [0.9,0.9];
-	MyInfo.FractionRange{3}= [0.1,0.1];
+	MyInfo.IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
+	MyInfo.MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
+	MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
+	MyInfo.T1Val = [.6*ones(size(MyInfo.MW)), ones(size(MyInfo.IE))];
 	MyInfo.FlipAngle = 180;
 	MyInfo.NumData = 1;
 	MyInfo.SNR = 300;
@@ -55,8 +52,9 @@ for i = 1:size(Output,1)
 		idx = find(Phantom == Phantom(i));
 		tempInfo = MyInfo;
 		tempInfo.FlipAngle = FA_Map(i);
-		tempInfo.FractionRange{1} = [0, 0] + Phantom(i);
-		tempInfo.FractionRange{2} = IE - Phantom(i);
+		MW = Phantom(i);
+		IE = 1-MW;
+		tempInfo.T2Dist.Weights = [MW * MyInfo.MW.Weights, IE * MyInfo.IE.Weights];
 		tempInfo.NumData = length(idx);
 		temp = SimClass(tempInfo);
 		sd = size(temp.SimulatedData);

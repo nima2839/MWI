@@ -21,11 +21,10 @@ niftiwrite(FA_Map,'FA')
 disp('Generating 4D phantom: T2 weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = [20 20]*1e-3;
-MyInfo.TimeConstRange{2} = [70 70]*1e-3;
-MyInfo.T1Val = [.6 1];
-MyInfo.FractionRange{1}= [0,0];
-MyInfo.FractionRange{2}= [1,1];
+MyInfo.IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
+MyInfo.MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
+MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
+MyInfo.T1Val = [.6*ones(size(MyInfo.MW)), ones(size(MyInfo.IE))];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 1;
 MyInfo.SNR = 300;
@@ -35,11 +34,10 @@ Phantom_4D_T2 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.TimeConstRange{1} = 0.6*[20 20]*1e-3;
-MyInfo.TimeConstRange{2} = 0.6*[70 70]*1e-3;
-MyInfo.T1Val = [.6 1];
-MyInfo.FractionRange{1}= [0,0];
-MyInfo.FractionRange{2}= [1,1];
+MyInfo.IE = SimClass.Create_Guassian_Dist(55-3); % intra/extra-cellular water 
+MyInfo.MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
+MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
+MyInfo.T1Val = [.6*ones(size(MyInfo.MW)), ones(size(MyInfo.IE))];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 1;
 MyInfo.SNR = 300;
