@@ -54,9 +54,9 @@ for i = 1:size(Output,1)
 	if Mask(i)
 		idx = find(Phantom == Phantom(i));
 		tempInfo = MyInfo;
-		tempInfo.FlipAngle = FA_Map(i,j,k);
-		tempInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
-		tempInfo.FractionRange{2} = IE - Phantom(i,j,k);
+		tempInfo.FlipAngle = FA_Map(i);
+		tempInfo.FractionRange{1} = [0, 0] + Phantom(i);
+		tempInfo.FractionRange{2} = IE - Phantom(i);
 		tempInfo.NumData = length(idx);
 		temp = SimClass(tempInfo);
 		sd = size(temp.SimulatedData);
