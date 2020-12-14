@@ -27,11 +27,11 @@ sd = size(Phantom);
 nv = sd(1);
 np = sd(2);
 ns = sd(3);
+ne = length(MyInfo.Times)
 
 
 
-
-Output = zeros(nv*np*ns,length(MyInfo.Times));
+Output = zeros(nv*np*ns,ne);
 Mask = zeros(nv*np*ns,1);
 Phantom = reshape(Phantom, size(Mask));
 
@@ -61,6 +61,6 @@ for i = 1:size(Output,1)
 	end
 end
 
-Output = reshape(Output, sd);
+Output = reshape(Output, [sd,ne]);
 disp('Finished simulating!');
 end
