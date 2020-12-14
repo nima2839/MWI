@@ -7,8 +7,7 @@ p(p==0) =nan;
 [X, Y, Z] = meshgrid(linspace(1,120, N), linspace(1,160,N), 1:N);
 [Xq, Yq, Zq] = meshgrid(1:120, 1:160, 1:N);
 p1 = interp3(X,Y,Z, p, Xq,Yq,Zq);
-Phantom_3D = p1(:,:, (floor(N/2) - 15): (floor(N/2) +16));
-niftiwrite(Phantom_3D,'p')
+Phantom_3D = abs(p1(:,:, (floor(N/2) - 15): (floor(N/2) +16)));
 %%
 disp('Generating a flip angle map...');
 opt.Size = size(Phantom_3D);
@@ -16,7 +15,7 @@ opt.Vox = [1.5, 1.5, 5];
 opt.deltaFA = 0.8;
 FA_Map = Create_FA_Map(opt);
 FA_Map(isnan(Phantom_3D)) = nan;
-niftiwrite(FA_Map,'FA')
+
 %%
 disp('Generating 4D phantom: T2 weighted...');
 MyInfo.NumWaterComp = 2;
