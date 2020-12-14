@@ -39,6 +39,7 @@ Output = zeros(nv,np,ns,length(MyInfo.Times));
 disp('Simulation started ...');
 
 parfor i = 1:nv
+	temp_out = zeros(np, ns, sd(4));
 	for j = 1:np
 		for k = 1:ns
 			if ~isnan(Phantom) & (Phantom(i,j,k) > 0) & (Phantom(i,j,k) < 1)
@@ -46,10 +47,11 @@ parfor i = 1:nv
 				MyInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
 				MyInfo.FractionRange{2} = IE - Phantom(i,j,k);
 				temp = SimClass(MyInfo);
-				Output(i,j,k,:) = squeeze(temp.SimulatedData);
+				temp_out(,j,k,:) = squeeze(temp.SimulatedData);
 			end
 		end
 	end
+	Output(i,:,:,:) = temp_out;
 end
 disp('Finished simulating!');
 toc;
