@@ -48,7 +48,7 @@ parfor i = 1:nv
 				tempInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
 				tempInfo.FractionRange{2} = IE - Phantom(i,j,k);
 				temp = SimClass(tempInfo);
-				temp_out(j,k,:) = squeeze(temp.SimulatedData(1,1,1,:);
+				temp_out(j,k,:) = squeeze(temp.SimulatedData(1,1,1,:));
 			end
 		end
 	end
