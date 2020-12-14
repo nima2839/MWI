@@ -15,7 +15,7 @@ if ~isfield(MyInfo, 'NumWaterComp')
 	MyInfo.IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
 	MyInfo.MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 	MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
-	MyInfo.T1Val = [.6*ones(size(MyInfo.MW)), ones(size(MyInfo.IE))];
+	MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
 	MyInfo.FlipAngle = 180;
 	MyInfo.NumData = 1;
 	MyInfo.SNR = 300;
