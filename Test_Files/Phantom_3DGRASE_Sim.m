@@ -33,7 +33,7 @@ Phantom_4D_T2 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.IE = SimClass.Create_Guassian_Dist(55e-3); % intra/extra-cellular water 
+MyInfo.IE = SimClass.Create_Guassian_Dist(60e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
@@ -47,7 +47,7 @@ Phantom_4D_T2star =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 disp('Generating3D GRASE sim phantom...');
 sd = size(Phantom_4D_T2);
 GRASE_Phantom = zeros(sd);
-for z = 1:sd(3)
+for z = 1:floor(sd(3)/2)
 	for e = 1:sd(4)
 		temp = fftshift(fft2(squeeze(Phantom_4D_T2(:,:,z,e))));
 		tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,z,e))));
@@ -60,12 +60,18 @@ end
 Phantom_Sim_time = toc
 
 disp('Applying MWI Analysis of GRASE_Phantom...');
- [maps,distributions,~] = T2map_Nima(abs(GRASE_Phantom), 'Threshold', 0, 'T2Range', [0.008, 2],'nT2', 60);
+ [maps,distributions,~] = T2map_Nima(abs(GRASE_Phantom), 'Threshold', 0.1, 'T2Range', [0.008, 2],'nT2', 60);
 
 
   MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
-
-
 cd ~/Simulation/Phantom/
 save('Phantom_3DGRASE_T2starEffect','-v7.3')
+cd ~/Simulation/Phantom/NIFTI_Files/
+niftiwrite(180 - abs(180 - FA_Map), 'FA_Map')
+niftiwrite(Phantom_3D, 'Phantom_3D')
+niftiwrite(Phantom_4D_T2, 'P_4D_T2')
+niftiwrite(Phantom_4D_T2star, 'P_4D_T2S')
+niftiwrite(GRASE_Phantom, 'GRASE_Phantom')
+niftiwrite(maps.alpha , 'alpha')
+niftiwrite(MWI, 'MWF')
