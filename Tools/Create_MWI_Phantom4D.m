@@ -27,7 +27,7 @@ sd = size(Phantom);
 nv = sd(1);
 np = sd(2);
 ns = sd(3);
-ne = length(MyInfo.Times)
+ne = length(MyInfo.Times);
 
 
 
