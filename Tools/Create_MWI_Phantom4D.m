@@ -43,10 +43,11 @@ parfor i = 1:nv
 	for j = 1:np
 		for k = 1:ns
 			if ~isnan(Phantom) & (Phantom(i,j,k) > 0) & (Phantom(i,j,k) < 1)
-				MyInfo.FlipAngle = FA_Map(i,j,k);
-				MyInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
-				MyInfo.FractionRange{2} = IE - Phantom(i,j,k);
-				temp = SimClass(MyInfo);
+				tempInfo = MyInfo;
+				tempInfo.FlipAngle = FA_Map(i,j,k);
+				tempInfo.FractionRange{1} = [0, 0] + Phantom(i,j,k);
+				tempInfo.FractionRange{2} = IE - Phantom(i,j,k);
+				temp = SimClass(tempInfo);
 				temp_out(j,k,:) = squeeze(temp.SimulatedData);
 			end
 		end
