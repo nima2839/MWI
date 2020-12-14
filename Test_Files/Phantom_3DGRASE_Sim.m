@@ -1,4 +1,5 @@
 addpath(genpath('~\MWI'))
+tic;
 disp('Creating 3D GRASE phantom...')
 N = 120;
 p = phantom3d('Modified Shepp-Logan', N);
@@ -58,6 +59,8 @@ for z = 1:sd(3)
 		GRASE_Phantom(:,:,z,e) = ifft2(ifftshift(temp));
 	end
 end
+
+Phantom_Sim_time = toc
 
 disp('Applying MWI Analysis of GRASE_Phantom...');
  [maps,distributions,~] = T2map_Nima(GRASE_Phantom, 'Threshold', 200, 'T2Range', [0.008, 2],'nT2', 60);
