@@ -37,8 +37,9 @@ IE = MyInfo.FractionRange{2};
 
 
 Output = zeros(nv*np*ns,length(MyInfo.Times));
-Phantom = reshape(Phantom, size(Output));
 Mask = zeros(nv*np*ns,1);
+Phantom = reshape(Phantom, size(Mask));
+
 Mask(~isnan(Phantom(:,1))) = true;
 Mask(Phantom < 0) = false;
 Mask(Phantom > 1) = false;
