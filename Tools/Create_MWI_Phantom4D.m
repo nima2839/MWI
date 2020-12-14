@@ -55,9 +55,8 @@ for i = 1:size(Output,1)
 		tempInfo.T2Dist.Weights = [MW * MyInfo.MW.Weights, IE * MyInfo.IE.Weights];
 		tempInfo.NumData = length(idx);
 		temp = SimClass(tempInfo);
-		sd = size(temp.SimulatedData);
-		Data = reshape(temp.SimulatedData, sd(1)*sd(2)*sd(3), sd(4))
-		Output(idx,:) = Data(1:length(idx), :);
+
+		Output(idx,:) = temp.SimulatedData;
 		Mask(idx) = false;
 	end
 end
