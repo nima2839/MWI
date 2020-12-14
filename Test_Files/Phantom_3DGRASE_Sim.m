@@ -53,7 +53,7 @@ for e = 1:sd(4)
 	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,:,e))));
 	temp(:, 1:floor(sd(2)/3), 1:floor(sd(3)/2)) = tempstar(:, 1:floor(sd(2)/3), 1:floor(sd(3)/2));
 	temp(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/2)) = tempstar(:, end-floor(sd(2)/3):end, 1:floor(sd(3)/2));
-	GRASE_Phantom(:,:,z,e) = ifft2(ifftshift(temp));
+	GRASE_Phantom(:,:,:,e) = ifft2(ifftshift(temp));
 end
 
 
