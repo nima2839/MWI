@@ -38,7 +38,7 @@ Output = zeros(nv,np,ns,length(MyInfo.Times));
 
 disp('Simulation started ...');
 
-for i = 1:nv
+parfor i = 1:nv
 	for j = 1:np
 		for k = 1:ns
 			if ~isnan(Phantom) & (Phantom(i,j,k) > 0) & (Phantom(i,j,k) < 1)
