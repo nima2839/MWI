@@ -13,7 +13,7 @@ disp('Generating a flip angle map...');
 opt.Size = size(Phantom_3D);
 opt.Vox = [1.5, 1.5, 5];
 opt.deltaFA = 0.5;
-opt.CenterFA = 180;
+opt.CenterFA = 190;
 FA_Map = Create_FA_Map(opt);
 FA_Map(isnan(Phantom_3D)) = nan;
 
