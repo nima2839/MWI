@@ -45,19 +45,15 @@ disp('Simulation started ...');
 
 
 
-for i = 1:size(Output,1)
+parfor i = 1:size(Output,1)
 	if Mask(i)
-		idx = find(Phantom == Phantom(i));
 		tempInfo = MyInfo;
 		tempInfo.FlipAngle = FA_Map(i);
 		MW = Phantom(i);
 		IE = 1-MW;
 		tempInfo.T2Dist.Weights = [MW * MyInfo.MW.Weights, IE * MyInfo.IE.Weights];
-		tempInfo.NumData = length(idx);
 		temp = SimClass(tempInfo);
-
-		Output(idx,:) = temp.SimulatedData;
-		Mask(idx) = false;
+		Output(i,:) = temp.SimulatedData;
 	end
 end
 
