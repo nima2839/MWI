@@ -12,7 +12,8 @@ Phantom_3D = abs(p1(:,:, (floor(N/2) - 15): (floor(N/2) +16)));
 disp('Generating a flip angle map...');
 opt.Size = size(Phantom_3D);
 opt.Vox = [1.5, 1.5, 5];
-opt.deltaFA = 0.8;
+opt.deltaFA = 0.5;
+opt.CenterFA = 180;
 FA_Map = Create_FA_Map(opt);
 FA_Map(isnan(Phantom_3D)) = nan;
 
@@ -33,8 +34,8 @@ Phantom_4D_T2 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.IE = SimClass.Create_Guassian_Dist(50e-3); % intra/extra-cellular water 
-MyInfo.MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
+MyInfo.IE = SimClass.Create_Guassian_Dist(35e-3); % intra/extra-cellular water 
+MyInfo.MW = SimClass.Create_Guassian_Dist(5e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
 MyInfo.FlipAngle = 180;
