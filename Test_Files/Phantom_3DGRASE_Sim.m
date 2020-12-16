@@ -30,7 +30,7 @@ MyInfo.NumData = 1;
 MyInfo.SNR = 200;
 
 Phantom_4D_T2_1 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
-MyInfo.IE = SimClass.Create_Guassian_Dist(85e-3); % intra/extra-cellular water 
+MyInfo.IE = SimClass.Create_Guassian_Dist(100e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(20e-3); % myelin water
 Phantom_4D_T2_2 = Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 Phantom_4D_T2 = Phantom_4D_T2_2;
@@ -45,7 +45,7 @@ clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.IE = SimClass.Create_Guassian_Dist(30e-3); % intra/extra-cellular water 
+MyInfo.IE = SimClass.Create_Guassian_Dist(50e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(5e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
@@ -54,7 +54,7 @@ MyInfo.NumData = 1;
 MyInfo.SNR = 200;
 
 Phantom_4D_T2star_1 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
-MyInfo.IE = SimClass.Create_Guassian_Dist(40e-3); % intra/extra-cellular water 
+MyInfo.IE = SimClass.Create_Guassian_Dist(30e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
 Phantom_4D_T2star_2 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 Phantom_4D_T2star = Phantom_4D_T2star_2;
