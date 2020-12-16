@@ -34,8 +34,13 @@ MyInfo.IE = SimClass.Create_Guassian_Dist(85e-3); % intra/extra-cellular water
 MyInfo.MW = SimClass.Create_Guassian_Dist(20e-3); % myelin water
 Phantom_4D_T2_2 = Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 Phantom_4D_T2 = Phantom_4D_T2_2;
-Phantom_4D_T2(1:floor(size(Phantom_3D,1)/2),:,:,:) =  Phantom_4D_T2_1(1:floor(size(Phantom_3D,1)/2),:,:,:);
-clear Phantom_4D_T2_2 Phantom_4D_T2_1
+reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3),1])
+Phantom_4D_T2 =  reshape(Phantom_4D_T2, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3), length(MyInfo.Times)]);
+reshped_T2_4D_1 = reshape(Phantom_4D_T2_1, size(Phantom_4D_T2));
+idx = find(reshapedPhantom > 0.25);
+Phantom_4D_T2(idx,:) reshped_T2_4D_1(idx,:); 
+Phantom_4D_T2 = reshape(Phantom_4D_T2, size(Phantom_4D_T2_2));
+clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
 %%
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
@@ -53,8 +58,13 @@ MyInfo.IE = SimClass.Create_Guassian_Dist(40e-3); % intra/extra-cellular water
 MyInfo.MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
 Phantom_4D_T2star_2 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 Phantom_4D_T2star = Phantom_4D_T2star_2;
-Phantom_4D_T2star(1:floor(size(Phantom_3D,1)/2),:,:,:) =  Phantom_4D_T2star_1(1:floor(size(Phantom_3D,1)/2),:,:,:);
-clear Phantom_4D_T2star_2 Phantom_4D_T2star_1
+reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3),1])
+Phantom_4D_T2star =  reshape(Phantom_4D_T2star, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3), length(MyInfo.Times)]);
+reshped_T2star_4D_1 = reshape(Phantom_4D_T2star_1, size(Phantom_4D_T2star));
+idx = find(reshapedPhantom > 0.25);
+Phantom_4D_T2(idx,:) reshped_T2star_4D_1(idx,:); 
+Phantom_4D_T2star = reshape(Phantom_4D_T2star, size(Phantom_4D_T2star_2));
+clear Phantom_4D_T2star_2 Phantom_4D_T2star_1 reshped_T2star_4D_1 reshapedPhantom
 %%
 disp('Generating3D GRASE sim phantom...');
 sd = size(Phantom_4D_T2);
