@@ -12,7 +12,7 @@ Phantom_3D = abs(p1(:,:, (floor(N/2) - 15): (floor(N/2) +16)));
 disp('Generating a flip angle map...');
 opt.Size = size(Phantom_3D);
 opt.Vox = [1.5, 1.5, 5];
-opt.deltaFA = 0.5;
+opt.deltaFA = 0.7;
 opt.CenterFA = 190;
 FA_Map = Create_FA_Map(opt);
 FA_Map(isnan(Phantom_3D)) = nan;
@@ -27,7 +27,7 @@ MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 1;
-MyInfo.SNR = 300;
+MyInfo.SNR = 200;
 
 Phantom_4D_T2_1 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 MyInfo.IE = SimClass.Create_Guassian_Dist(85e-3); % intra/extra-cellular water 
@@ -46,7 +46,7 @@ MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
 MyInfo.FlipAngle = 180;
 MyInfo.NumData = 1;
-MyInfo.SNR = 300;
+MyInfo.SNR = 200;
 
 Phantom_4D_T2star_1 =  Create_MWI_Phantom4D(Phantom_3D, FA_Map, MyInfo);
 MyInfo.IE = SimClass.Create_Guassian_Dist(40e-3); % intra/extra-cellular water 
