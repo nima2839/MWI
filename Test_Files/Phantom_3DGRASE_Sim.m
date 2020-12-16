@@ -38,7 +38,7 @@ reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2),siz
 Phantom_4D_T2 =  reshape(Phantom_4D_T2, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3), length(MyInfo.Times)]);
 reshped_T2_4D_1 = reshape(Phantom_4D_T2_1, size(Phantom_4D_T2));
 idx = find(reshapedPhantom > 0.25);
-Phantom_4D_T2(idx,:) reshped_T2_4D_1(idx,:); 
+Phantom_4D_T2(idx,:) = reshped_T2_4D_1(idx,:); 
 Phantom_4D_T2 = reshape(Phantom_4D_T2, size(Phantom_4D_T2_2));
 clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
 %%
@@ -62,7 +62,7 @@ reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2),siz
 Phantom_4D_T2star =  reshape(Phantom_4D_T2star, [size(Phantom_3D,1)*size(Phantom_3D,2),size(Phantom_3D,3), length(MyInfo.Times)]);
 reshped_T2star_4D_1 = reshape(Phantom_4D_T2star_1, size(Phantom_4D_T2star));
 idx = find(reshapedPhantom > 0.25);
-Phantom_4D_T2(idx,:) reshped_T2star_4D_1(idx,:); 
+Phantom_4D_T2(idx,:) = reshped_T2star_4D_1(idx,:); 
 Phantom_4D_T2star = reshape(Phantom_4D_T2star, size(Phantom_4D_T2star_2));
 clear Phantom_4D_T2star_2 Phantom_4D_T2star_1 reshped_T2star_4D_1 reshapedPhantom
 %%
