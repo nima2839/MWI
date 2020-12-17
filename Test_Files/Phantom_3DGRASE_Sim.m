@@ -61,7 +61,7 @@ Phantom_4D_T2star = Phantom_4D_T2star_2;
 reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2)*size(Phantom_3D,3),1]);
 Phantom_4D_T2star =  reshape(Phantom_4D_T2star, [size(reshapedPhantom,1), length(MyInfo.Times)]);
 reshped_T2star_4D_1 = reshape(Phantom_4D_T2star_1, size(Phantom_4D_T2star));
-idx = find(reshapedPhantom > 0.25);
+idx = find(reshapedPhantom > 0.25 | reshapedPhantom < 0.1);
 Phantom_4D_T2star(idx,:) = reshped_T2star_4D_1(idx,:).*sinc(2*MyInfo.Times); 
 Phantom_4D_T2star = reshape(Phantom_4D_T2star, size(Phantom_4D_T2star_2));
 clear Phantom_4D_T2star_2 Phantom_4D_T2star_1 reshped_T2star_4D_1 reshapedPhantom
@@ -71,8 +71,8 @@ sd = size(Phantom_4D_T2);
 GRASE_Phantom = zeros(sd);
 
 for e = 1:sd(4)
-	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
-	tempstar = fftshift(fftn(squeeze(Phantom_4D_T2star(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
+	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* (sin(FA_Map*pi/360).^-2))));
+	tempstar = fftshift(fftn(squeeze(Phantom_4D_T2star(:,:,:,e).* (sin(FA_Map*pi/360).^-2))));
 	temp(:, 1:floor(sd(2)/3), :) = tempstar(:, 1:floor(sd(2)/3), :);
 	temp(:, end-floor(sd(2)/3):end, :) = tempstar(:, end-floor(sd(2)/3):end, :);
 	GRASE_Phantom(:,:,:,e) = ifftn(ifftshift(temp));
