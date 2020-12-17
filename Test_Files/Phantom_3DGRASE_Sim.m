@@ -15,7 +15,7 @@ opt.Vox = [1.5, 1.5, 5];
 opt.deltaFA = 0.5;
 opt.CenterFA = 180;
 FA_Map = Create_FA_Map(opt);
-FA_Map(isnan(Phantom_3D)) = nan;
+FA_Map(isnan(Phantom_3D)) = 0;
 
 %%
 disp('Generating 4D phantom: T2 weighted...');
@@ -72,7 +72,7 @@ GRASE_Phantom = zeros(sd);
 
 for e = 1:sd(4)
 	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
-	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
+	tempstar = fftshift(fftn(squeeze(Phantom_4D_T2star(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
 	temp(:, 1:floor(sd(2)/3), :) = tempstar(:, 1:floor(sd(2)/3), :);
 	temp(:, end-floor(sd(2)/3):end, :) = tempstar(:, end-floor(sd(2)/3):end, :);
 	GRASE_Phantom(:,:,:,e) = ifftn(ifftshift(temp));
