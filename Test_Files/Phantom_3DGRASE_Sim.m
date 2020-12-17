@@ -12,8 +12,8 @@ Phantom_3D = abs(p1(:,:, (floor(N/2) - 15): (floor(N/2) +16)));
 disp('Generating a flip angle map...');
 opt.Size = size(Phantom_3D);
 opt.Vox = [1.5, 1.5, 5];
-opt.deltaFA = 0.7;
-opt.CenterFA = 190;
+opt.deltaFA = 0.5;
+opt.CenterFA = 180;
 FA_Map = Create_FA_Map(opt);
 FA_Map(isnan(Phantom_3D)) = nan;
 
@@ -45,7 +45,7 @@ clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
-MyInfo.IE = SimClass.Create_Guassian_Dist(50e-3); % intra/extra-cellular water 
+MyInfo.IE = SimClass.Create_Guassian_Dist(40e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(5e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
 MyInfo.T1Val = [.6*ones(size(MyInfo.MW.Weights)), ones(size(MyInfo.IE.Weights))];
@@ -62,7 +62,7 @@ reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2)*siz
 Phantom_4D_T2star =  reshape(Phantom_4D_T2star, [size(reshapedPhantom,1), length(MyInfo.Times)]);
 reshped_T2star_4D_1 = reshape(Phantom_4D_T2star_1, size(Phantom_4D_T2star));
 idx = find(reshapedPhantom > 0.25);
-Phantom_4D_T2star(idx,:) = reshped_T2star_4D_1(idx,:).*sinc(1.5*MyInfo.Times); 
+Phantom_4D_T2star(idx,:) = reshped_T2star_4D_1(idx,:).*sinc(2*MyInfo.Times); 
 Phantom_4D_T2star = reshape(Phantom_4D_T2star, size(Phantom_4D_T2star_2));
 clear Phantom_4D_T2star_2 Phantom_4D_T2star_1 reshped_T2star_4D_1 reshapedPhantom
 %%
@@ -71,8 +71,8 @@ sd = size(Phantom_4D_T2);
 GRASE_Phantom = zeros(sd);
 
 for e = 1:sd(4)
-	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e))));
-	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,:,e))));
+	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
+	tempstar = fftshift(fft2(squeeze(Phantom_4D_T2star(:,:,:,e).* (cos(FA_Map*pi/180).^-2))));
 	temp(:, 1:floor(sd(2)/3), :) = tempstar(:, 1:floor(sd(2)/3), :);
 	temp(:, end-floor(sd(2)/3):end, :) = tempstar(:, end-floor(sd(2)/3):end, :);
 	GRASE_Phantom(:,:,:,e) = ifftn(ifftshift(temp));
