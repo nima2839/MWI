@@ -71,8 +71,10 @@ sd = size(Phantom_4D_T2);
 GRASE_Phantom = zeros(sd);
 
 for e = 1:sd(4)
-	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* (sin(FA_Map*pi/360).^-2))));
-	tempstar = fftshift(fftn(squeeze(Phantom_4D_T2star(:,:,:,e).* (sin(FA_Map*pi/360).^-2))));
+	Coil_effect = (sin(FA_Map*pi/360).^-12);
+	Coil_effect(Coil_effect > 10) = 0;
+	temp = fftshift(fftn(squeeze(Phantom_4D_T2(:,:,:,e).* Coil_effect)));
+	tempstar = fftshift(fftn(squeeze(Phantom_4D_T2star(:,:,:,e).* Coil_effect)));
 	temp(:, 1:floor(sd(2)/3), :) = tempstar(:, 1:floor(sd(2)/3), :);
 	temp(:, end-floor(sd(2)/3):end, :) = tempstar(:, end-floor(sd(2)/3):end, :);
 	GRASE_Phantom(:,:,:,e) = ifftn(ifftshift(temp));
