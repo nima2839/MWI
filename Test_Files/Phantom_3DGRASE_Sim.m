@@ -4,6 +4,8 @@ disp('Creating 3D GRASE phantom...')
 N = 120;
 p = phantom3d('Modified Shepp-Logan', N);
 p(p==0) =nan;
+p(p == 0.3) = 0.15;
+p(p == 0.2) = 0.05;
 [X, Y, Z] = meshgrid(linspace(1,120, N), linspace(1,160,N), 1:N);
 [Xq, Yq, Zq] = meshgrid(1:120, 1:160, 1:N);
 p1 = interp3(X,Y,Z, p, Xq,Yq,Zq);
@@ -37,7 +39,7 @@ Phantom_4D_T2 = Phantom_4D_T2_2;
 reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2)*size(Phantom_3D,3),1]);
 Phantom_4D_T2 =  reshape(Phantom_4D_T2,[size(reshapedPhantom,1), length(MyInfo.Times)]);
 reshped_T2_4D_1 = reshape(Phantom_4D_T2_1, size(Phantom_4D_T2));
-idx = find(reshapedPhantom > 0.25);
+idx = find(reshapedPhantom > 0.1);
 Phantom_4D_T2(idx,:) = reshped_T2_4D_1(idx,:); 
 Phantom_4D_T2 = reshape(Phantom_4D_T2, size(Phantom_4D_T2_2));
 clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
@@ -61,7 +63,7 @@ Phantom_4D_T2star = Phantom_4D_T2star_2;
 reshapedPhantom = reshape(Phantom_3D, [size(Phantom_3D,1)*size(Phantom_3D,2)*size(Phantom_3D,3),1]);
 Phantom_4D_T2star =  reshape(Phantom_4D_T2star, [size(reshapedPhantom,1), length(MyInfo.Times)]);
 reshped_T2star_4D_1 = reshape(Phantom_4D_T2star_1, size(Phantom_4D_T2star));
-idx = find(reshapedPhantom > 0.25 | reshapedPhantom < 0.1);
+idx = find(reshapedPhantom > 0.1 | reshapedPhantom < 0.01);
 Phantom_4D_T2star(idx,:) = reshped_T2star_4D_1(idx,:).*sinc(2*MyInfo.Times); 
 Phantom_4D_T2star = reshape(Phantom_4D_T2star, size(Phantom_4D_T2star_2));
 clear Phantom_4D_T2star_2 Phantom_4D_T2star_1 reshped_T2star_4D_1 reshapedPhantom
