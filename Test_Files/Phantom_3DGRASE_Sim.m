@@ -4,8 +4,8 @@ disp('Creating 3D GRASE phantom...')
 N = 120;
 p = phantom3d('Modified Shepp-Logan', N);
 p(p==0) =nan;
-p(p == 0.3) = 0.15;
-p(p == 0.2) = 0.05;
+p(p > 0.25 & p < 0.35) = 0.15;
+p(p > 0.16 & p < 0.25) = 0.05;
 [X, Y, Z] = meshgrid(linspace(1,120, N), linspace(1,160,N), 1:N);
 [Xq, Yq, Zq] = meshgrid(1:120, 1:160, 1:N);
 p1 = interp3(X,Y,Z, p, Xq,Yq,Zq);
