@@ -28,7 +28,7 @@ try
 
   cd ~/GRASE/GRASE_Results/GRASE_B1_Map_Results/
   
-  load(Subject, 'maps')
+  load(strcat("GRASE_Results_B1_map_",Subject), 'maps')
   
   [ys xs zs es] = size(tf_mgrase);
   tf_mgrase = reshape(tf_mgrase,  [ys*xs*zs, es]);
