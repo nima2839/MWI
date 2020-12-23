@@ -1,5 +1,5 @@
-function [T2, B1, res, Options] = Single_Component_T2_B1(Signal, Options)
-% Fits T2 and B1 at the same time using single component fitting and EPG algorithm
+function [T2, B1, res, Options] = Single_Component_T2(Signal, Options)
+% Fits T2  using single component fitting and EPG algorithm
 % Here B1 is the refocusing angle
 % 
 	if nargin < 2
@@ -22,26 +22,31 @@ function [T2, B1, res, Options] = Single_Component_T2_B1(Signal, Options)
 		Options.ETL = length(Signal);
 	end
 	
+	if ~isfield(Options, 'B1')
+		[T2, B1, res, Options] = Single_Component_T2_B1(Signal, Options);
+		return;
+	else
+		B1 = Options.B1;
+	end
+	
 	opt = optimoptions('lsqnonlin','Algorithm', 'trust-region-reflective','TolFun',1e-12,'MaxIter',1e4,'TolX',1e-8,'Display','off');
 	opt.MaxFunEvals = 1e4;
 	[Param, res] = lsqnonlin(@CostFun ,...
-		[60e-2 , 180, Signal(1) * 2],... 			% Initial guess
-		[Options.T2Range(1), 60, Signal(1)/2],...	% Lower boundary
-		[Options.T2Range(2), 180, inf],...			% Upper boundary
+		[60e-2 , Signal(1) * 2],... 			% Initial guess
+		[Options.T2Range(1), Signal(1)/2],...	% Lower boundary
+		[Options.T2Range(2), inf],...			% Upper boundary
 		opt);
 	T2 = Param(1);
-	B1 = Param(2);
-	Options.Proton_Density = Param(3);
+	Options.Proton_Density = Param(2);
 	function out = CostFun(X)
 		T2 = X(1);
-		flip_angle = X(2);
 		Fit = EPGdecaycurve(Options.ETL,...
-			flip_angle,...
+			B1,...
 			Options.TE,...
 			T2,...
 			Options.T1,...
 			180);
-		out = Signal - X(3)*Fit;
+		out = Signal - X(2)*Fit;
 	end
 	
 end
