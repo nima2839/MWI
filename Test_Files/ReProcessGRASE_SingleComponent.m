@@ -34,24 +34,31 @@ try
   tf_mgrase = reshape(tf_mgrase,  [ys*xs*zs, es]);
   Alpha = reshape(maps.alpha, [size(tf_mgrase,1),1]);
   clear maps ys xs zs es
-  Maps.T2 = zeros(size(tf_mgrase,1),1);
-  Maps.B1 = zeros(size(tf_mgrase,1),1);
-  Maps.Res = zeros(size(tf_mgrase,1),1);
-  Maps_B1 = Maps;
+  T2 = zeros(size(tf_mgrase,1),1);
+  B1 = zeros(size(tf_mgrase,1),1);
+  Res = zeros(size(tf_mgrase,1),1);
+  T2_B1 = zeros(size(tf_mgrase,1),1);
+  Res_B1 = zeros(size(tf_mgrase,1),1);
   Threshold = 200;
   
   tic
   parfor i = 1:size(tf_mgrase,1)
 	if tf_mgrase(i,1) > Threshold
-		[Maps.T2(i), Maps.B1(i), Maps.Res(i), ~] = Single_Component_T2_B1(tf_mgrase(i,:));
+		[T2(i), B1(i), Res(i), ~] = Single_Component_T2_B1(tf_mgrase(i,:));
 		opt.B1 = Alpha(i);
-		[Maps_B1.T2(i), Maps_B1.B1(i), Maps_B1.Res(i), ~] = Single_Component_T2(tf_mgrase(i,:), opt);
+		[T2_B1(i), ~, Res_B1(i), ~] = Single_Component_T2(tf_mgrase(i,:), opt);
 	end
   end
   
+  Maps.T2 = T2;
+  Maps.B1 = B1;
+  Maps.Res = Res;
+  Maps_B1.T2 = T2_B1;
+  Maps_B1.B1 = Alpha;
+  Maps_B1.Res = Res_B1;
   runtime=toc;
 
-  clear tf_mgrase maps tf_mgrase mgrase Alpha
+  clear tf_mgrase maps tf_mgrase mgrase Alpha T2 T2_B1 B1 Res Res_B1 Alpha
 
   cd ~/GRASE/GRASE_Results/SingleComponent/
   Description = 'Using the flip angle map from the GRASE B1 Map Results';
