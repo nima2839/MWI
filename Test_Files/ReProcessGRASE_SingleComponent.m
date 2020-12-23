@@ -35,7 +35,7 @@ try
   Alpha = reshape(maps.alpha, [size(tf_mgrase,1),1]);
   clear maps ys xs zs es
   Maps.T2 = zeros(size(tf_mgrase,1),1);
-  Maps.Alpha = zeros(size(tf_mgrase,1),1);
+  Maps.B1 = zeros(size(tf_mgrase,1),1);
   Maps.Res = zeros(size(tf_mgrase,1),1);
   Maps_B1 = Maps;
   Threshold = 200;
