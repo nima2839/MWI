@@ -1,4 +1,4 @@
-function ReProcessGRASE_SingleComponent(name)
+function ReProcessGRASE_SingleComponent(Subject)
 addpath(genpath('~/GRASE'))
 disp(['Processing BSB1 on :',Subject])
 try
