@@ -43,9 +43,9 @@ try
   tic
   parfor i = 1:size(tf_mgrase,1)
 	if tf_mgrase(i,1) > Threshold
-		[Maps.T2, Maps.B1, Maps.Res, ~] = Single_Component_T2_B1(tf_mgrase(i,:));
+		[Maps.T2(i), Maps.B1(i), Maps.Res(i), ~] = Single_Component_T2_B1(tf_mgrase(i,:));
 		opt.B1 = Alpha(i);
-		[Maps_B1.T2, Maps_B1.B1, Maps_B1.Res, ~] = Single_Component_T2(tf_mgrase(i,:), opt);
+		[Maps_B1.T2(i), Maps_B1.B1(i), Maps_B1.Res(i), ~] = Single_Component_T2(tf_mgrase(i,:), opt);
 	end
   end
   
