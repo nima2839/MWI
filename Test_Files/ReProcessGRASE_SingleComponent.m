@@ -40,13 +40,14 @@ try
   T2_B1 = zeros(size(tf_mgrase,1),1);
   Res_B1 = zeros(size(tf_mgrase,1),1);
   Threshold = 200;
-  
+  opt.B1 = 180;
   tic
   parfor i = 1:size(tf_mgrase,1)
+	temp = opt;
 	if tf_mgrase(i,1) > Threshold
 		[T2(i), B1(i), Res(i), ~] = Single_Component_T2_B1(tf_mgrase(i,:));
-		opt.B1 = Alpha(i);
-		[T2_B1(i), ~, Res_B1(i), ~] = Single_Component_T2(tf_mgrase(i,:), opt);
+		temp.B1 = Alpha(i);
+		[T2_B1(i), ~, Res_B1(i), ~] = Single_Component_T2(tf_mgrase(i,:), temp);
 	end
   end
   
