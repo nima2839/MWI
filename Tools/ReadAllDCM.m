@@ -8,10 +8,10 @@ function Output = ReadAllDCM(directory,NumSlices)
    for k= 3:length(Files)
        temp = mod(k-2, NumSlices);
        if temp == 0
-           Output(:,:,NumSlices,s) = dicomread(Files(k).name);
+           Output(:,:,NumSlices,s) = double(dicomread(Files(k).name));
            s = s + 1;
        else
-           Output(:,:,temp,s) = dicomread(Files(k).name);
+           Output(:,:,temp,s) = double(dicomread(Files(k).name));
        end
    end
    toc
