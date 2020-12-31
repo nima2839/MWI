@@ -22,7 +22,7 @@ FA_Map(isnan(Phantom_3D)) = 0;
 %%
 disp('Generating 4D phantom: T2 weighted...');
 MyInfo.NumWaterComp = 2;
-MyInfo.Times = (1:32)*1e-2;
+MyInfo.Times = (1:32)*1e-2 *11/10;
 MyInfo.IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
@@ -46,7 +46,7 @@ clear Phantom_4D_T2_2 Phantom_4D_T2_1 reshped_T2_4D_1
 %%
 disp('Generating 4D phantom: T2* weighted...');
 MyInfo.NumWaterComp = 2;
-MyInfo.Times = (1:32)*1e-2;
+MyInfo.Times = (1:32)*1e-2 *11/10;
 MyInfo.IE = SimClass.Create_Guassian_Dist(40e-3); % intra/extra-cellular water 
 MyInfo.MW = SimClass.Create_Guassian_Dist(5e-3); % myelin water
 MyInfo.T2Dist.T2Values = [MyInfo.MW.T2Values, MyInfo.IE.T2Values];
@@ -92,7 +92,7 @@ disp('Applying MWI Analysis of GRASE_Phantom...');
   MWI = squeeze(squeeze(sum(distributions(:,:,:,1:18),4))./squeeze(sum(distributions(:,:,:,:),4)));
 
 cd ~/Simulation/Phantom/
-save('Phantom_3DGRASE_T2starEffect','-v7.3')
+save('Phantom_3DGRASE_T2starEffect_LargerEcho','-v7.3')
 cd ~/Simulation/Phantom/NIFTI_Files/
 niftiwrite(180 - abs(180 - FA_Map), 'FA_Map')
 niftiwrite(Phantom_3D, 'Phantom_3D')
