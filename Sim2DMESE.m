@@ -64,7 +64,7 @@ classdef Sim2DMESE
 			dummy = MC_MESE_SLR('Dummy');
 			dummy.B1Map = obj.B1Map;
 			dummy.MyInfo = obj.MyInfo;
-			dummy.MyInfo.LookUpTable = dummy.MyInfo.MC_Analyzer.LookUpTable;
+			dummy.MyInfo.LookUpTable = obj.MyInfo.MC_Analyzer.LookUpTable;
 			dummy.MyInfo.MC_Analyzer = [];
 			% Add Noise
 			dummy.Data = SimClass.ADD_Noise(obj.Data, SNR, obj.Data(1));
