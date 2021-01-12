@@ -15,7 +15,7 @@ function Out = Single_Component_T2_Dict(Signal, Dict, Range)
 		[~,res(i),~] = lsqnonneg(Dict, Signal);
 	end
 	Range_spline = logspace(log10(Range(1)), log10(Range(end)), 1e3);
-	res_spline = interp1(T2Range, res, Range_spline,'spline');
+	res_spline = interp1(Range, res, Range_spline,'spline');
 	[~,index] = min(res_spline);
 	Out = Range_spline(index);
 end
