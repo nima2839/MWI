@@ -12,8 +12,9 @@ SNRs = [100,200, 300, 500, 750, 1e3];
 % Get the sequence parameters
 cd ~/MESE/
 load('2D_32echos_MESE_Nima_dic', 'param')
+%%
 MyInfo.SeqParams = param;
-MyInfo.NumData = 500;
+MyInfo.NumData = 2;
 MyInfo.B1_Range = 0.5:1e-2:1.2;
 
 for i = 1:length(MWFs)
@@ -37,7 +38,7 @@ for i = 1:length(SNRs)
 	disp(strcat(string(100*i/length(SNRs)),'%'));
 end
 AnlysisTime = toc;
-
+%%
 cd ~/Simulation/MESE2D/
 
 save('MESE_2D_B1_suppliedANDestimated','-v7.3')
