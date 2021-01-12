@@ -12,7 +12,7 @@ function Out = Single_Component_T2_Dict(Signal, Dict, Range)
 	Signal = reshape(Signal, [ETL,1]);
 	res = zeros(1,length(Range));
 	for i = 1:length(Range)
-		[~,res(i),~] = lsqnonneg(Dict, Signal);
+		[~,res(i),~] = lsqnonneg(Dict(:,i), Signal);
 	end
 	Range_spline = logspace(log10(Range(1)), log10(Range(end)), 1e3);
 	res_spline = interp1(Range, res, Range_spline,'spline');
