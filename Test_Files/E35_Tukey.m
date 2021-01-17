@@ -19,13 +19,13 @@ for i = 1:sd(4)
 end
 
 tic
-test = TestClass(abs(filtered(:,:,:,1:2:35)),angle(filtered(:,:,:,1:2:35)),MyInfo);
+test = TestClass(abs(filtered(:,:,:,1:2:51)),angle(filtered(:,:,:,1:2:51)),MyInfo);
 test = CalcLFGC(test);
 test = Calc_SC(test,2);
 test = Calc_2PM(test);
 test = Calc_3PM(test);
 disp('Saving results...')
-test.Description = 'Calculating MWF from LFGC! 8Param 3PM! First Echoes 1:2:35! Tukey3D(6,6,1,0.5)!';
+test.Description = 'Calculating MWF from LFGC! 8Param 3PM! First Echoes 1:2:51! Tukey3D(6,6,1,0.5)!';
 test.RunTime = toc;
 data = GetAllData(test);
 save('T2_35_Tukey','data');
