@@ -16,10 +16,7 @@ tic
 test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 clear complex_data filtered
-%for i = 1:sd(4)
-%	adfiltered(:,:,:,i) = imdiffusefilt(test.LFGC(:,:,:,i),'NumberOfIterations',6);
-%end
-test = SetLFGC(test,adfiltered);
+
 test = Calc_SC(test,2); % LOG method
 test = Calc_2PM(test);
 test = Calc_3PM(test);
