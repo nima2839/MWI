@@ -99,8 +99,8 @@ classdef TestClass
 		   if nargin < 2
 				X0 = [0.1,   1/(10e-3),	  0,	0.6,	1/(64e-3),	0.3,	1/(48e-3),	   0];
 		   end
-	       lb = [0,     1/(1e-3),	 -25,	0,	  1/(20e-3),	0,	  1/(20e-3),	-25];
-	       ub = [2,	  1/(20e-3),	25,	2,	  1,	2,	  1,	   25];
+	       lb = [0,     50,	 -25,	0,	  1,	0,	  1,	-25];
+	       ub = [2,	  1e3,	25,	2,	  40,	2,	  40,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -116,8 +116,7 @@ classdef TestClass
                     for k = 1:ns
                         if mask(i,j,k) > 0
                             tmp = squeeze(mag(i,j,k,:));
-                         	tmpd = tmp;	%tmp(ei);
-                         	[tempP(j,k,:), tempR(j,k)] = ThreePoolM_NLLS(tmpd,Info,X0,lb,ub);
+                         	[tempP(j,k,:), tempR(j,k)] = ThreePoolM_NLLS(tmp,Info,X0,lb,ub);
                         end
                     end
                 end
