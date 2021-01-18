@@ -20,11 +20,11 @@ try
 		Model = @(X)abs(X(1)*	exp(-t.*(X(2)+ 1i*2*pi*X(3))) + ...
 		                X(4)*	exp(-t.* X(5))) -ND; % R value should not be over
 		if nargin < 3              
-			X0 = [0.1,	100,	10,	0.9, 25];
-	   		lb = [0,	50,     -40,	0.5, 0];
-	   		ub = [0.5,	1000,	40,	1, 50];
+			X0 = [0.1,	100,	5,		0.9, 25];
+	   		lb = [0,	50,     -40,	0, 	0.1];
+	   		ub = [2,	1000,	40,		2, 	50];
 		end
-		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-12,'MaxIter',1e3,'TolX',1e-8,'Display','off');
+		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-8,'MaxIter',1e3,'TolX',1e-8,'Display','off');
 		options.MaxFunEvals = 1e3;
 	
 		if strcmp(Info.Algorithm,'levenberg-marquardt')
