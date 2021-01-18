@@ -97,10 +97,10 @@ classdef TestClass
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
 		   if nargin < 2
-				X0 = [0.1,   10e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
+				X0 = [0.1,   1/10e-3,	  0,	0.6,	1/64e-3,	0.3,	1/48e-3,	   0];
 		   end
-	       lb = [0,     1e-3,	 -25,	0,	  20e-3,	0,	  20e-3,	-25];
-	       ub = [2,	  20e-3,	25,	2,	  1,	2,	  1,	   25];
+	       lb = [0,     1/1e-3,	 -25,	0,	  1/20e-3,	0,	  21/0e-3,	-25];
+	       ub = [2,	  1/20e-3,	25,	2,	  1,	2,	  1,	   25];
            flag = obj.Flag_UseSC;
            if flag
                RC = obj.RSC;
@@ -117,11 +117,7 @@ classdef TestClass
                         if mask(i,j,k) > 0
                             tmp = squeeze(mag(i,j,k,:));
                          	tmpd = tmp;	%tmp(ei);
-                            Rx0 = X0;
-                            if flag
-                                Rx0(5) = RC(i,j,k) - 3;
-                            end
-                         	[tempP(j,k,:), tempR(j,k)] = ThreePoolM_NLLS(tmpd,Info,Rx0,lb,ub);
+                         	[tempP(j,k,:), tempR(j,k)] = ThreePoolM_NLLS(tmpd,Info,X0,lb,ub);
                         end
                     end
                 end
@@ -138,10 +134,10 @@ classdef TestClass
 		function obj = Calc_Multi_Seed(obj)
 			tic
 			sd = obj.SizeData;
-			Seed{1} = [0.1,   6e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
-			Seed{2} = [0.1,   10e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
-			Seed{3} = [0.1,   14e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
-			Seed{4} = [0.1,   18e-3,	  0,	0.6,	64e-3,	0.3,	48e-3,	   0];
+			Seed{1} = [0.1,   1/6e-3,	  0,	0.6,	1/64e-3,	0.3,	1/48e-3,	   0];
+			Seed{2} = [0.1,   1/10e-3,	  0,	0.6,	1/64e-3,	0.3,	1/48e-3,	   0];
+			Seed{3} = [0.1,   1/14e-3,	  0,	0.6,	1/64e-3,	0.3,	1/48e-3,	   0];
+			Seed{4} = [0.1,   1/18e-3,	  0,	0.6,	1/64e-3,	0.3,	1/48e-3,	   0];
 			Params = zeros([sd(1)*sd(2)*sd(3),8]);
 			Res = inf*ones(sd(1)*sd(2)*sd(3),1);
 			for i = 1:4
@@ -324,8 +320,9 @@ classdef TestClass
 
        function obj = Calc_SC(obj,Method)
           if nargin < 2
-              Method = 1;
+              Method = 2;
           end
+		  
           if Method == 1
               disp('Using NLLS Method!')
           elseif Method == 2
@@ -390,13 +387,10 @@ classdef TestClass
            params = zeros([obj.SizeData(1:3),5]);
            res = zeros(obj.SizeData(1:3));
            Info = obj.MyInfo;
-           X0 = [0.1,	100,	5,		0.9, 	30];
+           X0 = [0.1,	100,	5,		0.9, 	20];
            lb = [0,		40,		-25,	0.5, 	0.2];
            ub = [2,		300,	25,		2, 		40];
-           flag = obj.Flag_UseSC;
-           if flag
-               RC = obj.RSC;
-           end
+		   
            tic
            disp('2PM Started..!')
           parfor i = 1:np
@@ -405,13 +399,8 @@ classdef TestClass
                 for j = 1:nv
                     for k = 1:ns
                         if mask(i,j,k) > 0
-                            tmp = squeeze(mag(i,j,k,:));
-                            tmpd = tmp;	%(ei);
-                            Rx0 = X0;
-                            if flag
-                                Rx0(5) = RC(i,j,k) - 3;
-                            end
-                       	    [tempP(j,k,:), tempR(j,k)] = TwoPoolModel_NLLS(tmpd,Info,Rx0,lb,ub);
+                            decay_data = squeeze(mag(i,j,k,:));
+                       	    [tempP(j,k,:), tempR(j,k)] = TwoPoolModel_NLLS(decay_data,Info,X0,lb,ub);
                         end
                     end
                 end
@@ -508,7 +497,7 @@ classdef TestClass
             data.Mag = obj.Mag;
           end
           data.Info = obj.MyInfo;
-          data.RC = obj.RSC;
+          data.RSC = obj.RSC;
           data.resRC = obj.Res_SC;
           data.Params_3PM = obj.Params_3PM;
           data.res3pm = obj.Res_3PM;
