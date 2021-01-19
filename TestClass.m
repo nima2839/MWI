@@ -7,9 +7,9 @@ classdef TestClass
 		     % Vox: Voxel size
 		     % FirstTE
 		     % EchoSpacing
-         % EchoIndexes: used in the LFG correction code
+			 % EchoIndexes: used in the LFG correction code
 		     % Algorithm: 'trust-region-reflective' or 'levenberg-marquardt' for NLLS fitting
-         % BipolarFlag: to apply bipolar phase correction
+			 % BipolarFlag: to apply bipolar phase correction
        Mag
        Phase
        SizeData
@@ -42,7 +42,7 @@ classdef TestClass
 	   Phi0
    end
    methods
-       function obj = TestClass(dataMag,dataPhase,myinfo)
+        function obj = TestClass(dataMag,dataPhase,myinfo)
          obj.Mag = dataMag;
          obj.Phase = dataPhase;
          obj.MyInfo = myinfo;
@@ -54,7 +54,7 @@ classdef TestClass
          disp('TestClass Initiated!')
        end
 
-       function obj = Normal_Procedure(obj)
+        function obj = Normal_Procedure(obj)
          obj = CalcLFGC(obj);
          obj = Calc_SC(obj,2);
          %obj = Calc_2PM(obj);
@@ -63,17 +63,17 @@ classdef TestClass
          %obj = Calc_Complex3PM(obj);
        end
 
-	     function obj = SetMag(obj,Mag)
+	    function obj = SetMag(obj,Mag)
          obj.Mag = Mag;
 		 obj.SizeData = size(Mag);
        end
 
-	     function obj = SetLFGC(obj,Mag)
+	    function obj = SetLFGC(obj,Mag)
          obj.LFGC = Mag;
 		 obj.SizeData = size(Mag);
        end
 
-       function obj = CalcLFGC(obj,method)
+        function obj = CalcLFGC(obj,method)
           if nargin > 1
               obj.Info.Method =  method;
           end
@@ -82,53 +82,43 @@ classdef TestClass
           obj.Flag_UseLFGC = true;
        end
 
-       function obj = Calc_3PM(obj,X0)
-           np = obj.SizeData(1);
-           nv = obj.SizeData(2);
-           ns = obj.SizeData(3);
-           mask = obj.MyInfo.Mask;
-           if obj.Flag_UseLFGC
-               mag = obj.LFGC;
-           else
-               mag = obj.Mag;
-           end
-           %ei = obj.EchoIndexes;
-           params = zeros([obj.SizeData(1:3),8]);
-           res = zeros(obj.SizeData(1:3));
-           Info = obj.MyInfo;
-		   if nargin < 2
+        function obj = Calc_3PM(obj,X0)
+			np = obj.SizeData(1);
+			nv = obj.SizeData(2);
+			ns = obj.SizeData(3);
+			mask = obj.MyInfo.Mask;
+			if obj.Flag_UseLFGC
+				mag = obj.LFGC;
+			else
+				mag = obj.Mag;
+			end
+			%ei = obj.EchoIndexes;
+			% reshaping for parallel processing purposes
+			mag = reshape(mag,  [np*nv*ns, obj.SizeData(4)]); 
+			params = zeros(np*nv*ns , 8); % the number 8 is from the ThreePoolM_NLLS code 
+			res = zeros(1, np*nv*ns);
+			mask = reshape(mask, size(res));
+			Info = obj.MyInfo;
+			
+			if nargin < 2
 				X0 = [0.1,   1/(10e-3),	  0,	0.6,	1/(64e-3),	0.3,	1/(48e-3),	   0];
-		   end
-	       lb = [0,     50,	 -25,	0,	  1,	0,	  1,	-25];
-	       ub = [2,	  1e3,	25,	2,	  40,	2,	  40,	   25];
-           flag = obj.Flag_UseSC;
-           if flag
-               RC = obj.RSC;
-           else
-		       RC = X0(5)*ones(size(res));
-		   end
-           tic
-           disp('3PM Started..!')
-           parfor i = 1:np
-               tempP = zeros(nv,ns,8);
-               tempR = zeros(nv,ns);
-                for j = 1:nv
-                    for k = 1:ns
-                        if mask(i,j,k) > 0
-                            tmp = squeeze(mag(i,j,k,:));
-                         	[tempP(j,k,:), tempR(j,k)] = ThreePoolM_NLLS(tmp,Info,X0,lb,ub);
-                        end
-                    end
-                end
-                params(i,:,:,:) = tempP;
-                res(i,:,:) = tempR;
-           end
-           obj.Params_3PM = params;
-           obj.Res_3PM = res;
-           obj.MWF_3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);
-           disp('Finished fitting 3PM!')
-           toc
-       end
+			end
+			lb = [0,     50,	 -25,	0,	  1,	0,	  1,	-25];
+			ub = [2,	  1e3,	25,	2,	  40,	2,	  40,	   25];
+			
+			tic
+			disp('3PM Started..!')
+			parfor i = 1:numel(res)
+				if mask(i) > 0
+					[params(i,:), res(i)] = ThreePoolM_NLLS(mag(i,:),Info,X0,lb,ub);
+				end
+			end
+			obj.Params_3PM = reshape(params, [np,nv,ns, size(params,2)]);
+			obj.Res_3PM = reshape(res, [np,nv,ns]);
+			obj.MWF_3PM = reshape(params(:,1)./((params(:,1) + params(:,4) + params(:,6))), [np,nv,ns]);
+			disp('Finished fitting 3PM!')
+			toc
+		end
 
 		function obj = Calc_Multi_Seed(obj)
 			tic
@@ -155,7 +145,7 @@ classdef TestClass
 			toc
 		end
 		
-       function obj = Calc_S3PM(obj)
+        function obj = Calc_S3PM(obj)
            np = obj.SizeData(1);
            nv = obj.SizeData(2);
            ns = obj.SizeData(3);
@@ -168,47 +158,33 @@ classdef TestClass
            Vox = obj.MyInfo.Vox;
            Distance = sqrt(sum(Vox(:).^2));
            %ei = obj.EchoIndexes;
-           params = zeros([obj.SizeData(1:3),9]);
-           res = zeros(obj.SizeData(1:3));
+           % reshaping for parallel processing purposes
+		   mag = reshape(mag,  [np*nv*ns, obj.SizeData(4)]); 
+           params = zeros(np*nv*ns , 9); % the number 9 is from the Sinc3PM_NLLS code 
+           res = zeros(1, np*nv*ns);
+		   mask = reshape(mask, size(res));
            Info = obj.MyInfo;
+		   
            X0 = [0.1,   60,	  0,	0.7,	30,	0.2,	15,	   0,  0];
-          lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0,  0];
-          ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25,  20];
-           flag = obj.Flag_UseSC;
-           if flag
-               RC = obj.RSC;
-           end
+           lb = [0,     40,	 0,	0,	  10,	0,	  0.1,	0,  0];
+           ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25,  20];
+
            tic
            disp('S3PM Started..!')
-           parfor i = 1:np
-               tempP = zeros(nv,ns,9);
-               tempR = zeros(nv,ns);
-                for j = 1:nv
-                    for k = 1:ns
-                        if mask(i,j,k) > 0
-                            tmp = squeeze(mag(i,j,k,:));
-                           tmpd = tmp;	%tmp(ei);
-                            Rx0 = X0;
-                            if flag
-                                Rx0(5) = RC(i,j,k) - 3;
-                            end
-                            Rx0(9) = Gradient(i,j,k) * Distance * 42.575e6;
-                           [tempP(j,k,:), tempR(j,k)] = Sinc3PM_NLLS(tmpd,Info,Rx0,lb,ub);
-                        end
-                    end
+           parfor i = 1:numel(res)
+                if mask(i) > 0
+                    [params(i,:), res(i)] = Sinc3PM_NLLS(mag(i,:),Info,X0,lb,ub);
                 end
-                params(i,:,:,:) = tempP;
-                res(i,:,:) = tempR;
            end
-           obj.Params_S3PM = params;
-           obj.Res_S3PM = res;
-           obj.MWF_S3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,6)).^-1);
+           obj.Params_S3PM = reshape(params, [np,nv,ns, size(params,2)]);
+           obj.Res_S3PM = reshape(res, [np,nv,ns]);
+           obj.MWF_S3PM = reshape(params(:,1)./((params(:,1) + params(:,4) + params(:,6))), [np,nv,ns]);
            disp('Finished fitting S3PM!')
            toc
        end
 
 
-	     function obj = Calc_Freq_bg(obj)
+	    function obj = Calc_Freq_bg(obj)
          tic
 			   disp('Calculating Freq_bg!')
 		     echo1(:,:,:) = obj.Phase(:,:,:,1);
@@ -221,7 +197,7 @@ classdef TestClass
 	       toc
        end
 
-		   function obj = Calc_phi_zero(obj)
+		function obj = Calc_phi_zero(obj)
          obj = Calc_Freq_bg(obj);
 			   tic
          disp('Calculating Phi0!')
@@ -233,7 +209,7 @@ classdef TestClass
          toc
        end
 
-       function obj = Bipolar_Phase_Correction(obj)
+        function obj = Bipolar_Phase_Correction(obj)
          disp('Bipolar_Phase_Correction Started...!');
          tic
          TE = obj.MyInfo.EchoSpacing + obj.MyInfo.FirstTE;
@@ -248,172 +224,153 @@ classdef TestClass
          disp('Done!');
        end
 
-	     function obj = Calc_Complex3PM(obj)
-		       obj = Calc_phi_zero(obj);
-           if obj.MyInfo.BipolarFlag
-             obj = Bipolar_Phase_Correction(obj);
-           end
-           np = obj.SizeData(1);
-           nv = obj.SizeData(2);
-           ns = obj.SizeData(3);
-           mask = obj.MyInfo.Mask;
-           if obj.Flag_UseLFGC
-               mag = obj.LFGC;
-           else
-               mag = obj.Mag;
-           end
-           %ei = obj.EchoIndexes;
-           params = zeros([obj.SizeData(1:3),9]);
-           res = zeros(obj.SizeData(1:3));
-           Info = obj.MyInfo;
-           X0 =   [0.1,   60,	  0,	0.7,	30,0,	0.2,	25,	   0];
-	         lb = [0,     30,	 -25,	0,	  10,-25,	0,	  0.1,	-25];
-	         ub = [2,	  300,	25,	2,	  40,25,	2,	  40,	   25];
-           flag = obj.Flag_UseSC;
-           if flag
-               RC = obj.RSC;
-           end
-		       fbg = obj.Freq_bg;
-		       phi0 = obj.Phi0;
-		       signal = mag.*exp(1i*obj.Phase);
-           tic
-           disp('Complex 3PM Started..!')
-           parfor i = 1:np
-               tempP = zeros(nv,ns,9);
-               tempR = zeros(nv,ns);
-                for j = 1:nv
-                    for k = 1:ns
-                        if mask(i,j,k) > 0
-                          tmp = squeeze(signal(i,j,k,:));
-                         	tmpd = tmp;	%tmp(ei);
-                          Rx0 = X0;
-							            tlb = lb;
-							            tub = ub;
-                          if flag
-                              Rx0(5) = RC(i,j,k) - 3;
-                          end
-							            tempInfo = Info;
-							            tempInfo.Phi0 = phi0(i,j,k);
-							            Rx0(3) = fbg(i,j,k);
-							            tlb(3) = Rx0(3) - 75;
-							            tub(3) = Rx0(3) + 75;
-							            Rx0(6) = fbg(i,j,k);
-							            tlb(6) = Rx0(3) - 25;
-							            tub(6) = Rx0(3) + 25;
-							            Rx0(9) = fbg(i,j,k);
-							            tlb(9) = Rx0(3) - 25;
-							            tub(9) = Rx0(3) + 25;
-                         	[tempP(j,k,:), tempR(j,k)] = Complex3PM(tmpd,tempInfo,Rx0,tlb,tub);
-                        end
-                    end
+	    function obj = Calc_Complex3PM(obj)
+		    obj = Calc_phi_zero(obj);
+            if obj.MyInfo.BipolarFlag
+				obj = Bipolar_Phase_Correction(obj);
+			end
+			np = obj.SizeData(1);
+			nv = obj.SizeData(2);
+			ns = obj.SizeData(3);
+			mask = obj.MyInfo.Mask;
+			if obj.Flag_UseLFGC
+				mag = obj.LFGC;
+			else
+				mag = obj.Mag;
+			end
+            %ei = obj.EchoIndexes;
+			% reshaping for parallel processing purposes
+			
+			params = zeros(np*nv*ns , 9); % the number 9 is from the Complex3PM code 
+			res = zeros(1, np*nv*ns);
+			mask = reshape(mask, size(res));
+			Info = obj.MyInfo;
+			
+			X0 = [0.1,   60,	  0,	0.7,	30,0,	0.2,	25,	   0];
+	        lb = [0,     30,	 -25,	0,	  10,-25,	0,	  0.1,	-25];
+	        ub = [2,	  300,	25,	2,	  40,25,	2,	  40,	   25];
+
+		    fbg = obj.Freq_bg;
+		    phi0 = obj.Phi0;
+		    signal = mag.*exp(1i*obj.Phase);
+			signal = reshape(signal,  [np*nv*ns, obj.SizeData(4)]); 
+			
+			tic;
+			disp('Complex 3PM Started..!')
+			parfor i = 1:numel(res)
+                if mask(i) > 0
+					Rx0 = X0;
+					tlb = lb;
+					tub = ub;
+					tempInfo = Info;
+					tempInfo.Phi0 = phi0(i,j,k);
+					Rx0(3) = fbg(i,j,k);
+					tlb(3) = Rx0(3) - 75;
+					tub(3) = Rx0(3) + 75;
+					Rx0(6) = fbg(i,j,k);
+					tlb(6) = Rx0(3) - 25;
+					tub(6) = Rx0(3) + 25;
+					Rx0(9) = fbg(i,j,k);
+					tlb(9) = Rx0(3) - 25;
+					tub(9) = Rx0(3) + 25;
+					[params(i,:), res(i)] = Complex3PM(signal(i,:),tempInfo,Rx0,tlb,tub);
                 end
-                params(i,:,:,:) = tempP;
-                res(i,:,:) = tempR;
-           end
-           obj.Params_C3PM = params;
-           obj.Res_C3PM = res;
-           obj.MWF_C3PM = params(:,:,:,1).*((params(:,:,:,1) + params(:,:,:,4) + params(:,:,:,7)).^-1);
-           disp('Finished fitting C3PM!')
-           toc
+			end
+			obj.Params_C3PM = reshape(params, [np,nv,ns, size(params,2)]);
+			obj.Res_C3PM = reshape(res, [np,nv,ns]);
+			obj.MWF_C3PM = reshape(params(:,1)./((params(:,1) + params(:,4) + params(:,7))), [np,nv,ns]);
+			disp('Finished fitting C3PM!')
+			toc
        end
 
-       function obj = Calc_SC(obj,Method)
-          if nargin < 2
-              Method = 2;
-          end
-		  
-          if Method == 1
-              disp('Using NLLS Method!')
-          elseif Method == 2
-              disp('Using Log Method!')
-          else
-              disp('Invalid Method for SC!')
-              return;
-          end
-          rc = zeros(obj.SizeData(1:3));
-          res = rc;
-		  disp('Excluding first 4 echoes for single component fitting!...')
-          e1 = 5; % Based on Gelderen 2012 to exclude first 4 echoes of the decay
-          np = obj.SizeData(1);
-          nv = obj.SizeData(2);
-          ns = obj.SizeData(3);
-          if obj.Flag_UseLFGC
-              mag = obj.LFGC;
-          else
-              mag = obj.Mag;
-          end
-          mask = obj.MyInfo.Mask;
-          Info = obj.MyInfo;
-          tic
-          disp('Single Component Fitting Started!...');
-          parfor i = 1:np
-              temprc = zeros(nv,ns);
-              tempres = temprc;
-              for j = 1:nv
-                for k = 1:ns
-                    if mask(i,j,k) > 0
-                        tmp = squeeze(mag(i,j,k,:));
-                        tmpd = tmp(e1:end);
-                        if Method == 1
-                            [temprc(j,k) , tempres(j,k)] = SingleComponentNLLS(tmpd,Info);
-                        else
-                            [temprc(j,k) , tempres(j,k)] = SingleComponentFitting(tmpd,Info);
-                        end
-                    end
+        function obj = Calc_SC(obj,Method)
+			if nargin < 2
+				Method = 2;
+			end
+			
+			if Method == 1
+				disp('Using NLLS Method!')
+			elseif Method == 2
+				disp('Using Log Method!')
+			else
+				disp('Invalid Method for SC!')
+				return;
+			end
+			
+			
+			disp('Excluding first 4 echoes for single component fitting!...')
+			e1 = 5; % Based on Gelderen 2012 to exclude first 4 echoes of the decay
+			np = obj.SizeData(1);
+			nv = obj.SizeData(2);
+			ns = obj.SizeData(3);
+			
+			if obj.Flag_UseLFGC
+				mag = obj.LFGC;
+			else
+				mag = obj.Mag;
+			end
+			
+			% reshaping for parallel processing purposes
+			rc = zeros(1,np*nv*ns);
+			res = rc;
+			mag = reshape(mag,  [np*nv*ns, obj.SizeData(4)]);
+			mask = reshape(obj.MyInfo.Mask, size(res));
+			Info = obj.MyInfo;
+			tic
+			disp('Single Component Fitting Started!...');
+			parfor i = 1:numel(res)
+				if mask(i) > 0
+					if Method == 1
+						[rc(i) , res(i)] = SingleComponentNLLS(mag(i, e1:end),Info);
+					else
+						[rc(i) , res(i)] = SingleComponentFitting(mag(i, e1:end),Info);
+					end
                 end
-              end
-              rc(i,:,:) = temprc;
-              res(i,:,:) = tempres;
-          end
-          obj.RSC = rc;
-          obj.Res_SC = res;
-          disp('SCF Completed!');
-          obj.Flag_UseSC = true;
-          toc
+			end
+			obj.RSC = reshape(rc, size(obj.MyInfo.Mask));
+			obj.Res_SC = reshape(res, size(obj.RSC));
+			disp('SCF Completed!');
+			obj.Flag_UseSC = true;
+			toc
        end
 
-       function obj = Calc_2PM(obj)
-           np = obj.SizeData(1);
-           nv = obj.SizeData(2);
-           ns = obj.SizeData(3);
-           mask = obj.MyInfo.Mask;
-           if obj.Flag_UseLFGC
-               mag = obj.LFGC;
-           else
-               mag = obj.Mag;
-           end
-           %ei = obj.EchoIndexes;
-           params = zeros([obj.SizeData(1:3),5]);
-           res = zeros(obj.SizeData(1:3));
-           Info = obj.MyInfo;
-           X0 = [0.1,	100,	5,		0.9, 	20];
-           lb = [0,		40,		-25,	0.5, 	0.2];
-           ub = [2,		300,	25,		2, 		40];
-		   
-           tic
-           disp('2PM Started..!')
-          parfor i = 1:np
-               tempP = zeros(nv,ns,5);
-               tempR = zeros(nv,ns);
-                for j = 1:nv
-                    for k = 1:ns
-                        if mask(i,j,k) > 0
-                            decay_data = squeeze(mag(i,j,k,:));
-                       	    [tempP(j,k,:), tempR(j,k)] = TwoPoolModel_NLLS(decay_data,Info,X0,lb,ub);
-                        end
-                    end
-                end
-                params(i,:,:,:) = tempP;
-                res(i,:,:) = tempR;
-           end
-           obj.Params_2PM = params;
-           obj.Res_2PM = res;
-           obj.MWF_2PM = obj.Params_2PM(:,:,:,1).*(obj.Params_2PM(:,:,:,1)+obj.Params_2PM(:,:,:,4)).^-1;
-           disp('Finished fitting 2PM!')
-           toc
+        function obj = Calc_2PM(obj)
+			np = obj.SizeData(1);
+			nv = obj.SizeData(2);
+			ns = obj.SizeData(3);
+			mask = obj.MyInfo.Mask;
+			if obj.Flag_UseLFGC
+				mag = obj.LFGC;
+			else
+				mag = obj.Mag;
+			end
+			
+			% reshaping for parallel processing purposes
+			mag = reshape(mag,  [np*nv*ns, obj.SizeData(4)]); 
+			params = zeros(np*nv*ns , 5); % the number 5 is from the TwoPoolModel_NLLS code 
+			res = zeros(1, np*nv*ns);
+			mask = reshape(mask, size(res));
+			Info = obj.MyInfo;
+			
+			X0 = [0.1,	100,	5,		0.9, 	20];
+			lb = [0,		40,		-25,	0.5, 	0.2];
+			ub = [2,		300,	25,		2, 		40];
+			
+			tic
+			disp('2PM Started..!')
+			parfor i = 1:numel(res)
+				if mask(i) > 0
+					[params(i,:), res(i)] = TwoPoolModel_NLLS(mag(i,:),Info,X0,lb,ub);
+				end
+			end
+			obj.Params_2PM = reshape(params, [np,nv,ns, size(params,2)]);
+			obj.Res_2PM = reshape(res, [np,nv,ns]);
+			obj.MWF_2PM = reshape(params(:,1)./((params(:,1) + params(:,4))), [np,nv,ns]);
+			disp('Finished fitting 2PM!')
+			toc
        end
 
-       function obj = Calc_NNLS(obj)
+        function obj = Calc_NNLS(obj)
 		   if ~obj.Flag_UseLFGC
 			obj = CalcLFGC(obj);
 		   end
@@ -489,7 +446,7 @@ classdef TestClass
            toc
          end
 
-       function data = GetAllData(obj)
+        function data = GetAllData(obj)
           if obj.Flag_UseLFGC
             data.LFGC = obj.LFGC;
           else
