@@ -15,6 +15,7 @@ function [Gp, Gv, Gs] = Find_LFG(Echo1, Echo2, Info)
 % Code definitions
 DuMethod = 1;
 HwangMethod = 2;
+Gamma = 42.575e6 *2 *pi;
 tempS =  size(Echo1);
 if length(tempS) < 3
     error('Data must be 3D!');
@@ -47,7 +48,7 @@ disp('Starting LFG acquiring process...')
 tic
 	
 	if Info.Method == DuMethod
-		Denom = Info.Vox * 2*pi*42.575e6 * Info.deltaTE * 2;
+		Denom = Info.Vox * Gamma * Info.deltaTE;
 		Wp = zeros(SizeData);
 		Xp = Wp;Yp = Wp;Zp = Wp;
 		Wv = Wp;Xv = Wp;Yv = Wp;Zv = Wp;
@@ -72,15 +73,15 @@ tic
 		Zs(:,:,2:ns) = Echo1(:,:,1:ns-1)./abs(Echo1(:,:,1:ns-1));
 		LFGs = angle(Ws.*Xs.*Ys.*Zs)/(Denom(3));
 		
-		% Applying 5x5x3 median filter to reduce the effect of rapid phase change that may occur in vessels and other fine structures
-		Kernel = [5,5,3];
+		% Applying 5x5x1 median filter to reduce the effect of rapid phase change that may occur in vessels and other fine structures
+		Kernel = [1,1,1];
 		Gp = medfilt3(LFGp, Kernel);
 		Gv = medfilt3(LFGv, Kernel);
 		Gs = medfilt3(LFGs, Kernel);
         
 	elseif Info.Method == HwangMethod
         	% This needs to be checked!!!
-        	Denom = Info.Vox * 2*pi*42.575e6 * Info.deltaTE;
+        	Denom = Info.Vox * Gamma * Info.deltaTE;
 		Wp = zeros(SizeData);
 		Yp = Wp;Zp = Wp;
 		Wv = Wp;Xv = Wp;Yv = Wp;Zv = Wp;
