@@ -20,6 +20,7 @@ DuMethod = 1;
 HwangMethod = 2;
 Nima = 3;
 SizeData = size(Mag);
+Gamma = 42.575e6;
 % Laying code constraints on inputs
 	if nargin < 3
         error('Function requires 2 inputs!');
@@ -42,7 +43,7 @@ SizeData = size(Mag);
 	end
 
 	if isfield(Info,'EchoIndexes') == 0
-        Info.EchoIndexes = [7 9];
+        Info.EchoIndexes = [5 6];
     end
 	
 	if isfield(Info,'Method') == 0
@@ -50,7 +51,7 @@ SizeData = size(Mag);
     end
 	
 	if isfield(Info,'Threshold') == 0
-        Info.Threshold = 0.1;
+        Info.Threshold = 1e-8;
     end
 	
 	
@@ -66,6 +67,9 @@ SizeData = size(Mag);
 	Echo1 = ComplexData(:,:,:,Info.EchoIndexes(1));
 	Echo2 = ComplexData(:,:,:,Info.EchoIndexes(2));
 	[Gp, Gv, Gs] = Find_LFG(Echo1, Echo2, Info2);
+	Gp = Gp.* Info.Mask;
+	Gv = Gv.* Info.Mask;
+	Gs = Gs.* Info.Mask;
 	
 	TE = zeros(SizeData(4));
 	for k = 1:SizeData(4)
@@ -74,9 +78,9 @@ SizeData = size(Mag);
 	
 	CorDenomWeights = zeros(SizeData);
 	for k = 1:SizeData(4)
-		CorDenomWeights(:,:,:,k) = 	sinc(42.575e6 * Gp * Info.Vox(1)  * TE(k)) .* ...
-						sinc(42.575e6 * Gv * Info.Vox(2)  * TE(k)) .* ...
-						sinc(42.575e6 * Gs * Info.Vox(3)  * TE(k)) .* double(Info.Mask);
+		CorDenomWeights(:,:,:,k) = 	sinc(Gamma * Gp * Info.Vox(1)  * TE(k) / 2) .* ...
+						sinc(Gamma * Gv * Info.Vox(2)  * TE(k) / 2) .* ...
+						sinc(Gamma * Gs * Info.Vox(3)  * TE(k) / 2) .* double(Info.Mask);
 	end
 %	for p = 1:SizeData(1)
 %		for j = 1:SizeData(2)
