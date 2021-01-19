@@ -25,5 +25,5 @@ data = GetAllData(test);
 RunTime = toc;
 clear test filtered
 cd ~/GRE/GRE_Results/
-save('20Cont_192_Monopolar_MEGRE', 'data');
+save('20Cont_192_Monopolar_MEGRE_Result', 'data');
 disp('Done!')
