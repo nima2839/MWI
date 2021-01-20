@@ -30,7 +30,7 @@ MyInfo.EchoSpacing = opt.Times(2) - opt.Times(1);
 
 for i = 1:length(SNR)
 	Phantoms{i} = Create_MEGRE_Phantom_4D(MWF, opt);
-	test = TestClass(abs(Phantom{i}), angle(Phantom{i}), MyInfo);
+	test = TestClass(abs(Phantoms{i}), angle(Phantoms{i}), MyInfo);
 	test = Calc_SC(test,2); % LOG method
 	test = Calc_3PM(test);
 	data{i} = GetAllData(test);
