@@ -18,19 +18,23 @@ opt.FreqShift.IE = temp;
 opt.Times = (1:32) * 2e-3;
 
 disp('Generating 4D MEGRE Phantom...')
-Phantom = Create_MEGRE_Phantom_4D(MWF, opt);
+SNR = [100 200 500 1e3];
+Phantoms = cell(1,length(SNR));
+data = cell(1,length(SNR));
 
 MyInfo.Vox = [1 1 4] * 1e-3;
 MyInfo.Mask = zeros(size(MWF));
 MyInfo.Mask(MWF > 0) = 1;
 MyInfo.FirstTE = opt.Times(1);
 MyInfo.EchoSpacing = opt.Times(2) - opt.Times(1);
-disp('Applying MWI analysis')
-test = TestClass(abs(Phantom), angle(Phantom), MyInfo);
-test = Calc_SC(test,2); % LOG method
-test = Calc_2PM(test);
-test = Calc_3PM(test);
-data = GetAllData(test);
+
+for i = 1:length(SNR)
+	Phantoms{i{ = Create_MEGRE_Phantom_4D(MWF, opt);
+	test = TestClass(abs(Phantom), angle(Phantom), MyInfo);
+	test = Calc_SC(test,2); % LOG method
+	test = Calc_3PM(test);
+	data{i} = GetAllData(test);
+end
 RunTime = toc;
 
 clear test p MyInfo N
