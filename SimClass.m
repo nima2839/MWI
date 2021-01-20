@@ -5,22 +5,22 @@ classdef SimClass
 			%	Fields:
 			%	NumData: Number of data point to be simulated
 			%	Times: A vector containing all the echo times
-			%	NumWaterComp: Number of water compartment in the simuation
+			%	NumWaterComp: Number of water compartment in the simulation
 			%	TimeConstRange:  a cell that contains range of each compartment time constant range (seconds)
 			%		- edit1: if "T2Dist" is defined then this should not be defined at all!
 			%	T1Val: an array containing all T1 values corresponding to each water compartment (seconds)
 			%		- edit1: if "T2Dist" is defined then it should be a vector with the same length!
-			%	FractionRange: a cell containing the fraction of each water compartment (only for T2* simuation)!
+			%	FractionRange: a cell containing the fraction of each water compartment (only for T2* simulation)!
 			%	FreqRange: a cell ... (Must not exist for T2 simulations!)
 			%	FlipAngle: refocusing flip angle value (degrees)
 			%	TrueFAFlag: If false code will estimate FA on its own
-			%	SNR: uses adittive white Gaussian noise!
+			%	SNR: uses additive white Gaussian noise!
 			%	T2Dist: This is a struct containing two vectors->
 			%		- T2Values: contains T2 values in the distribution
 			%		- Weights: contain the corresponding weights
-			%	Method: when T2Dist is not define, simuation method could either be 'Dirac' or 'Gaussian'
+			%	Method: when T2Dist is not define, simulation method could either be 'Dirac' or 'Gaussian'
 			
-		%Dist % Contains distribution weights corresponding to "T2Dist"  option! -> semms extra!
+		%Dist % Contains distribution weights corresponding to "T2Dist"  option! -> seems extra!
 		Compartment_T_Map % TimeConstant values of each water compartment
 		Compartment_Freq_Map
 		Compartment_Fraction_Map
