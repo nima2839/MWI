@@ -100,11 +100,12 @@ classdef TestClass
 			mask = reshape(mask, size(res));
 			Info = obj.MyInfo;
 			
+			% initializing with values from https://doi.org/10.1016/j.neuroimage.2015.03.081
 			if nargin < 2
-				X0 = [0.1,   1/(10e-3),	  5,	0.6,	1/(64e-3),	0.3,	1/(48e-3),	   1];
+				X0 = [0.1,   10e-3,	5,		0.6,	64e-3,	0.3,	48e-3,		0];
 			end
-			lb = [0,     50,	 -25,	0,	  1,	0,	  1,	-25];
-			ub = [2,	  300,	25,	2,	  40,	2,	  40,	   25];
+			lb = [0,     3e-3,	-25,	0,		25e-3,	0,		25e-3,		-10];
+			ub = [2,	 25e-3,	25,		2,		150e-3,	2,		150e-3,		10];
 			
 			tic
 			disp('3PM Started..!')
