@@ -15,15 +15,15 @@ if size(t) ~= size(Data)
     t= t';
 end
 try
-	if max(Data(:)) ~= 0
-		ND = Data/max(Data(:));
-		Model = @(X)abs((X(1)*	exp(-t.*((X(2))+ 1i*2*pi*X(3))) + ...
-		                 X(4)*	exp(-t.* (X(5))) + ...
-		                (X(6))*	exp(-t.*((X(7))+ 1i*2*pi*X(8))))) -ND;
+	if max(Data(1)) ~= 0
+		ND = Data/Data(1); % Normalize signal
+		Model = @(X)abs((X(1)*	exp(-t.*((1/X(2))+ 1i*2*pi*X(3))) + ...
+		                 X(4)*	exp(-t.* (1/X(5))) + ...
+		                (X(6))*	exp(-t.*((1/X(7))+ 1i*2*pi*X(8))))) -ND;
 		if nargin < 3
-			X0 = [0.1,   60,	  0,	0.6,	15,	0.3,	20,	   0];
-			lb = [0,     50,	 -30,	0,	  5,	0,	  10,	-30];
-			ub = [2,	  1000,	30,	2,	  50,	2,	  50,	   30];
+			X0 = [0.1,   10e-3,	5,		0.6,	64e-3,	0.3,	48e-3,		0];
+			lb = [0,     3e-3,	-25,	0,		25e-3,	0,		25e-3,		-10];
+			ub = [2,	 25e-3,	25,		2,		150e-3,	2,		150e-3,		10];
 		end
 		options = optimoptions('lsqnonlin','Algorithm',Info.Algorithm,'TolFun',1e-8,'MaxIter',1e3,'TolX',1e-8,'Display','off');
 		options.MaxFunEvals = 1e3;
