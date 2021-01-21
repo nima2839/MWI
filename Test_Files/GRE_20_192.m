@@ -4,7 +4,7 @@ load Feb20_GRE_20cont_Monopolar.mat
 
 
 sd = size(Mag);
-K = Tukey3D(sd(1),sd(2),sd(3),0.35);
+K = Tukey3D(sd(1),sd(2),sd(3),0.65);
 complex_data = Mag.*exp(1i*Phase);
 clear Mag Phase
 
