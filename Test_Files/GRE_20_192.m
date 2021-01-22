@@ -18,7 +18,7 @@ test = CalcLFGC(test);
 clear complex_data filtered
 
 test = Calc_SC(test,2); % LOG method
-test = Calc_2PM(test);
+test = Calc_NNLS(test);
 test = Calc_3PM(test);
 %test.Description = 'Calculating 8Param C3PM! LFGC!Tukey alpha = 0.35!!';
 data = GetAllData(test);
