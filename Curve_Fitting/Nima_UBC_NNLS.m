@@ -1,16 +1,16 @@
 function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
-	% solves : ||cum(C)x -Cum(d)|| = 0;
-	% d: size must be 1*n'
-	% w: observation weights; same size as "d";
-	%sd = size(d);
-	%if sd(1) == 1
-	%	d = d';
-	%	C = C';
-	%	w = w';
-	%end
-	PreProcess = @(a) a .* w;
-	%x = lsqnonneg(PreProcess(C), PreProcess(d));
+	% solves NNLS fit with the given regularization factor
+	% C: dictionary matrix; size: ETLxN (echo train length x number of decay curves)
+	% d: signal decay that is tried to fit to; size: Nx1
+	% w: observation weights for the fitting analysis: size Nx1
 	%
+	% The following is the function which applies observation weights
+	PreProcess = @(a) a .* w;
+	%
+	% reshaping for consistency
+	d = reshape(d, [size(C,1),1]);
+	w = reshaoe(w, size(d));
+	
 	C = PreProcess(C);
 	d = PreProcess(d);
 	if nargin < 4
