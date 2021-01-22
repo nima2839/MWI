@@ -9,7 +9,7 @@ function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 	%
 	% reshaping for consistency
 	d = reshape(d, [size(C,1),1]);
-	w = reshaoe(w, size(d));
+	w = reshape(w, size(d));
 	
 	C = PreProcess(C);
 	d = PreProcess(d);
