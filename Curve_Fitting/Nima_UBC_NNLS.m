@@ -4,13 +4,12 @@ function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 	% d: signal decay that is tried to fit to; size: Nx1
 	% w: observation weights for the fitting analysis: size Nx1
 	%
-	% The following is the function which applies observation weights
-	PreProcess = @(a) a .* w;
-	%
 	% reshaping for consistency
 	d = reshape(d, [size(C,1),1]);
 	w = reshape(w, size(d));
-	
+	% The following is the function which applies observation weights
+	PreProcess = @(a) a .* w;
+	%
 	C = PreProcess(C);
 	d = PreProcess(d);
 	if nargin < 4
