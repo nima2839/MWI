@@ -403,19 +403,21 @@ classdef TestClass
 			obs_weights = ones(SD(4),1);
 		   
 		   % Iterating through voxels
-			parfor i = find(Mask > 0)
-				decay_data = reshape(img(i,:), [SD(4),1]);
-				if decay_data(1) > 0
-					[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
-					distributions(i,:) = T2_dis;
-					% Compute parameters of distribution
-					gdnmap(i) = sum(T2_dis);
-					ggmmap(i) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
-					gvamap(i) = exp(sum((log(T2_times)-log(ggmmap(i))).^2.*T2_dis')./sum(T2_dis)) - 1;
-					decay_calc = basis_decay*T2_dis;
-					residuals = decay_calc-decay_data;
-					ResMap(i,:) = residuals; % Nima
-					FNRmap(i) = sum(T2_dis)/std(residuals); 
+			parfor i = 1:numel(Mask)
+				if Mask > 0
+					decay_data = reshape(img(i,:), [SD(4),1]);
+					if decay_data(1) > 0
+						[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
+						distributions(i,:) = T2_dis;
+						% Compute parameters of distribution
+						gdnmap(i) = sum(T2_dis);
+						ggmmap(i) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
+						gvamap(i) = exp(sum((log(T2_times)-log(ggmmap(i))).^2.*T2_dis')./sum(T2_dis)) - 1;
+						decay_calc = basis_decay*T2_dis;
+						residuals = decay_calc-decay_data;
+						ResMap(i,:) = residuals; % Nima
+						FNRmap(i) = sum(T2_dis)/std(residuals); 
+					end
 				end
 			end
 			
