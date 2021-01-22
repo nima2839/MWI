@@ -432,7 +432,6 @@ classdef TestClass
 			obj.NNLS.Distribution = reshape(distributions, [SD(1:3), nT2]);
 			obj.NNLS.Maps = maps;
 			disp('done!')
-			toc
         end
 
         function data = GetAllData(obj)
