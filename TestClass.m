@@ -402,6 +402,8 @@ classdef TestClass
 			ResMap = zeros(size(img));
 			obs_weights = ones(SD(4),1);
 		   
+		   tic;
+		   disp('NNLS fitting started...');
 		   % Iterating through voxels
 			parfor i = 1:numel(Mask)
 				if Mask > 0
@@ -420,7 +422,8 @@ classdef TestClass
 					end
 				end
 			end
-			
+			disp('NNLS Completed!');
+			toc
 			maps.gdn = reshape(gdnmap, SD(1:3));
 			maps.ggm = reshape(ggmmap, SD(1:3));
 			maps.gva = reshape(gvamap, SD(1:3));
