@@ -101,12 +101,12 @@ classdef TestClass
 			Info = obj.MyInfo;
 			
 			% initializing with values from https://doi.org/10.1016/j.neuroimage.2015.03.081
-			% with more limits on MW T2s boundaries and freq shift
+			% with more limits on MW T2s boundaries and freq shift was limitted was initilized to 1 instead of 5
 			if nargin < 2
-				X0 = [0.1,   10e-3,	5,		0.6,	64e-3,	0.3,	48e-3,		0];
+				X0 = [0.1,   10e-3,	1,		0.6,	64e-3,	0.3,	48e-3,		0];
 			end
 			lb = [0,     8e-3,	-20,	0,		25e-3,	0,		25e-3,		-10];
-			ub = [2,	 18e-3,	20,		2,		150e-3,	2,		150e-3,		10];
+			ub = [2,	 15e-3,	20,		2,		150e-3,	2,		150e-3,		10];
 			
 			tic
 			disp('3PM Started..!')
@@ -389,64 +389,46 @@ classdef TestClass
 			basis_decay(:,x) = echo_amp';
 		   end
 		   %initializing
-		   Mask = obj.MyInfo.Mask;
-		   img = obj.LFGC;
-		   [nrows,ncols,nslices,nechs] = size(obj.LFGC);
-		   distributions =zeros(nrows,ncols,nslices,nT2);
-			gdnmap = zeros(nrows,ncols,nslices);
-			ggmmap = zeros(nrows,ncols,nslices);
-			gvamap = zeros(nrows,ncols,nslices);
-			FNRmap = zeros(nrows,ncols,nslices); 
-			
-			obs_weights = reshape(ones(1, obj.SizeData(4)),size(squeeze(img(1,1,1,:))));
+		   % reshaping for parallel processing
+		   SD = size(obj.LFGC);
+		   
+		   Mask = reshape(obj.MyInfo.Mask, [SD(1)*SD(2)*SD(3),1]);
+		   img = reshape(obj.LFGC, [SD(1)*SD(2)*SD(3), SD(4)]);
+		   distributions =zeros(size(img,1),nT2);
+			gdnmap = zeros(size(Mask));
+			ggmmap = zeros(size(Mask));
+			gvamap = zeros(size(Mask));
+			FNRmap = zeros(size(Mask));
+			ResMap = zeros(size(img));
+			obs_weights = ones(SD(4),1);
 		   
 		   % Iterating through voxels
-		   parfor row = 1:nrows
-			gdn = zeros(ncols,nslices);
-			ggm = zeros(ncols,nslices);
-			gva = zeros(ncols,nslices);
-			FNR = zeros(ncols,nslices); 
-			dists = zeros(ncols,nslices,nT2);
-			TempRes = zeros(ncols,nslices,nechs); % Nima
-			for col = 1:ncols
-			 for slice = 1:nslices
-				if Mask(row,col,slice)
-					decay_data = squeeze(img(row,col,slice,:));
-					if decay_data(1) > 0
-						[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
-
-						dists(col,slice,:) = T2_dis;
+			parfor i = find(Mask > 0)
+				decay_data = reshape(img(i,:), [SD(4),1]);
+				if decay_data(1) > 0
+					[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
+					distributions(i,:) = T2_dis;
 					% Compute parameters of distribution
-						gdn(col,slice) = sum(T2_dis);
-						ggm(col,slice) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
-						gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
-						decay_calc = basis_decay*T2_dis;
-						residuals = decay_calc-decay_data;
-						TempRes(col,slice,:) = residuals; % Nima
-						FNR(col,slice) = sum(T2_dis)/std(residuals); 
-					end
+					gdnmap(i) = sum(T2_dis);
+					ggmmap(i) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
+					gvamap(i) = exp(sum((log(T2_times)-log(ggmmap(i))).^2.*T2_dis')./sum(T2_dis)) - 1;
+					decay_calc = basis_decay*T2_dis;
+					residuals = decay_calc-decay_data;
+					ResMap(i,:) = residuals; % Nima
+					FNRmap(i) = sum(T2_dis)/std(residuals); 
 				end
 			end
-			end
-			gdnmap(row,:,:) = gdn;
-			ggmmap(row,:,:) = ggm;
-			gvamap(row,:,:) = gva;
-			FNRmap(row,:,:) = FNR; 
-			distributions(row,:,:,:) = dists;
-			ResMap(row,:,:,:) = TempRes; % Nima
-		   end
 			
-		   maps.gdn = gdnmap;
-			maps.ggm = ggmmap;
-			maps.gva = gvamap;
-			maps.alpha = alphamap;
-			maps.FNR = FNRmap; 
-			maps.Residuals = ResMap; % Nima
-           obj.NNLS.Distribution = distributions;
-           obj.NNLS.Maps = maps;
-           disp('done!')
-           toc
-         end
+			maps.gdn = reshape(gdnmap, SD(1:3));
+			maps.ggm = reshape(ggmmap, SD(1:3));
+			maps.gva = reshape(gvamap, SD(1:3));
+			maps.FNR = reshape(FNRmap, SD(1:3)); 
+			maps.Residuals = reshape(ResMap, SD); % Nima
+			obj.NNLS.Distribution = reshape(distributions, [SD(1:3), nT2]);
+			obj.NNLS.Maps = maps;
+			disp('done!')
+			toc
+        end
 
         function data = GetAllData(obj)
           if obj.Flag_UseLFGC
