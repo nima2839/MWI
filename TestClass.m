@@ -435,11 +435,11 @@ classdef TestClass
         end
 
         function data = GetAllData(obj)
-          if obj.Flag_UseLFGC
-            data.LFGC = obj.LFGC;
-          else
-            data.Mag = obj.Mag;
-          end
+          %if obj.Flag_UseLFGC
+          %  data.LFGC = obj.LFGC;
+          %else
+          %  data.Mag = obj.Mag;
+          %end
           data.Info = obj.MyInfo;
           data.RSC = obj.RSC;
           data.resRC = obj.Res_SC;
