@@ -406,7 +406,7 @@ classdef TestClass
 		   disp('NNLS fitting started...');
 		   % Iterating through voxels
 			parfor i = 1:numel(Mask)
-				if Mask > 0
+				if Mask(i) > 0
 					decay_data = reshape(img(i,:), [SD(4),1]);
 					if decay_data(1) > 0
 						[T2_dis,~,~] = Nima_UBC_NNLS(basis_decay, decay_data, obs_weights, Chi2Factor);
