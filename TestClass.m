@@ -101,12 +101,11 @@ classdef TestClass
 			Info = obj.MyInfo;
 			
 			% initializing with values from https://doi.org/10.1016/j.neuroimage.2015.03.081
-			% with more limits on MW T2s boundaries and freq shift was limitted was initilized to 1 instead of 5
 			if nargin < 2
-				X0 = [0.1,   10e-3,	1,		0.6,	64e-3,	0.3,	48e-3,		0];
+				X0 = [0.1,   10e-3,	5,		0.6,	64e-3,	0.3,	48e-3,		0];
 			end
-			lb = [0,     8e-3,	-20,	0,		25e-3,	0,		25e-3,		-10];
-			ub = [2,	 15e-3,	20,		2,		150e-3,	2,		150e-3,		10];
+			lb = [0,     3e-3,	-75,	0,		25e-3,	0,		25e-3,		-25];
+			ub = [2,	 25e-3,	75,		2,		150e-3,	2,		150e-3,		25];
 			
 			tic
 			disp('3PM Started..!')
