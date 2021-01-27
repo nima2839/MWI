@@ -101,8 +101,9 @@ classdef TestClass
 			Info = obj.MyInfo;
 			
 			% initializing with values from https://doi.org/10.1016/j.neuroimage.2015.03.081
+			% Frequency of MW has been initilized to 0 instead of 5
 			if nargin < 2
-				X0 = [0.1,   10e-3,	5,		0.6,	64e-3,	0.3,	48e-3,		0];
+				X0 = [0.1,   10e-3,	0,		0.6,	64e-3,	0.3,	48e-3,		0];
 			end
 			lb = [0,     3e-3,	-75,	0,		25e-3,	0,		25e-3,		-25];
 			ub = [2,	 25e-3,	75,		2,		150e-3,	2,		150e-3,		25];
