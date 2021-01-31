@@ -13,7 +13,7 @@ SNRs = [100,200, 300, 500, 750, 1e3];
 cd ~/MESE/
 load('New_Rh', 'Ryan')
 %%
-MyInfo.SeqParams = Rayan.MyInfo.SeqParams;
+MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
 MyInfo.NumData = 500;
 MyInfo.B1Range = 0.5:1e-2:1.5;
 
