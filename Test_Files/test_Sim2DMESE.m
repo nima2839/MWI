@@ -14,6 +14,7 @@ cd ~/MESE/
 load('New_Rh', 'Ryan')
 %%
 MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
+MyInfo.SeqParams.etl = 32;
 MyInfo.NumData = 500;
 MyInfo.B1Range = 0.5:1e-2:1.5;
 
