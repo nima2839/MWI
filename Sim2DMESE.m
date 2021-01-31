@@ -36,7 +36,7 @@ classdef Sim2DMESE
 			
 			for j = 1:length(MyInfo.B1Range)
 				for k = 1:length(MyInfo.T2Dist)
-					basis_decay = MC_MESE_SLR.Calc_basis_decay(obj.MyInfo, obj.MyInfo.B1Range(j));
+					basis_decay = MC_MESE_Nima.Calc_basis_decay(obj.MyInfo, obj.MyInfo.B1Range(j));
 					obj.Data(1,j,k,:) = MyInfo.T2Dist(k).Weights * basis_decay;
 				end
 			end
