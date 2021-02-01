@@ -31,6 +31,7 @@ function [T2, B1, res, Options] = Single_Component_T2(Signal, Options)
 	
 	opt = optimoptions('lsqnonlin','Algorithm', 'trust-region-reflective','TolFun',1e-12,'MaxIter',1e4,'TolX',1e-8,'Display','off');
 	opt.MaxFunEvals = 1e4;
+	opt.TypicalX = [100e-2, Signal(1)];
 	[Param, res] = lsqnonlin(@CostFun ,...
 		[60e-2 , Signal(1) * 2],... 			% Initial guess
 		[Options.T2Range(1), Signal(1)/2],...	% Lower boundary
