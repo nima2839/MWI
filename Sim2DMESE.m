@@ -55,7 +55,7 @@ classdef Sim2DMESE
 			dummy = MC_MESE_Nima('Dummy');
 			dummy.MyInfo = obj.MyInfo;
 			dummy.MyInfo.T1 = 1;
-			dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.2, logspace(log10(8e-3),log10(2),60));
+			dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.5, logspace(log10(8e-3),log10(2),60));
 			obj.MyInfo.MC_Analyzer.LookUpTable = dummy.MyInfo.LookUpTable;
 			disp('Sim2DMESE object created!')
 		end
@@ -66,17 +66,22 @@ classdef Sim2DMESE
 			dummy.MyInfo = obj.MyInfo;
 			dummy.MyInfo.LookUpTable = obj.MyInfo.MC_Analyzer.LookUpTable;
 			dummy.MyInfo.MC_Analyzer = [];
+			% Normalize data
+			temp = obj.Data(:,:,:,1);
+			for i = 1:size(obj.Data,4)
+				obj.Data(:,:,:,i) = obj.Data(:,:,:,i)./temp;
+			end
 			% Add Noise
-			dummy.Data = SimClass.ADD_Noise(obj.Data, SNR, obj.Data(1));
+			dummy.Data = SimClass.ADD_Noise(obj.Data, SNR, 1);
 			%
 			% Analyze Data
 			
-			[~,Maps_B1] =  MESE_Calculate_Distribution(dummy);
+			[~,Maps_B1] =  MESE_Calculate_Distribution(dummy, false, 0);
 			
 			% Estimate B1 using MC analysis
-			dummy.B1Map = MC_Estimate_B1Map(dummy);
+			dummy.B1Map = MC_Estimate_B1Map(dummy, false, 0);
 			
-			[~,Maps] = MESE_Calculate_Distribution(dummy);
+			[~,Maps] = MESE_Calculate_Distribution(dummy, false, 0);
 		end
 	end
 	
