@@ -19,7 +19,7 @@ test = CalcLFGC(test);
 clear filtered
 
 opt.Mask = Info.Mask;
-opt.Num_Channels = 10;
+opt.Num_Channels = 5;
 opt.Method = "RED"
 
 test = SetLFGC(test, NESMA_Filter(test.LFGC,opt));
