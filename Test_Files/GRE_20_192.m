@@ -17,6 +17,12 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 clear complex_data filtered
 
+opt.Mask = Info.Mask;
+opt.Num_Channels = 10;
+opt.Method = "RED"
+
+test = SetLFGC(test, NESMA_Filter(test.LFGC,opt));
+
 test = Calc_SC(test,2); % LOG method
 test = Calc_NNLS(test);
 test = Calc_3PM(test);
@@ -25,5 +31,5 @@ data = GetAllData(test);
 RunTime = toc;
 clear test filtered
 cd ~/GRE/GRE_Results/
-save('20Cont_192_Monopolar_MEGRE_Result', 'data','-v7.3');
+save('20Cont_192_Monopolar_MEGRE_NESMA_Result', 'data','-v7.3');
 disp('Done!')
