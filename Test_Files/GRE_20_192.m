@@ -18,7 +18,7 @@ test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
 clear complex_data filtered
 
-opt.Mask = Info.Mask;
+opt.Mask = Info.Mask(:,:,idx);
 opt.Num_Channels = 10;
 opt.Method = "RED"
 
