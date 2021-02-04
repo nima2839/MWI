@@ -1,7 +1,7 @@
 cd ~/GRE/GRE_To_Do/
 load Feb20_GRE_20cont_Monopolar.mat
 
-
+idx = 10:15;
 
 sd = size(Mag);
 K = Tukey3D(sd(1),sd(2),sd(3),0.75);
@@ -12,6 +12,7 @@ for i = 1:sd(4)
 	filtered(:,:,:,i) =  Info.Mask.*ifftn(fftshift(fftshift(fftn(complex_data(:,:,:,i))).*K)) ;
 end
 
+
 tic
 test = TestClass(abs(filtered),angle(filtered),Info);
 test = CalcLFGC(test);
@@ -21,8 +22,8 @@ opt.Mask = Info.Mask;
 opt.Num_Channels = 10;
 opt.Method = "RED"
 
-test = SetLFGC(test, NESMA_Filter(test.LFGC,opt));
-
+test = SetLFGC(test, NESMA_Filter(test.LFGC(:,:,idx,:),opt));
+test.MyInfo.Mask = Info.Mask(:,:,idx);;
 test = Calc_SC(test,2); % LOG method
 test = Calc_NNLS(test);
 test = Calc_3PM(test);
