@@ -10,7 +10,7 @@ function [T2, B1, Residual] = Single_Component_T2_B1_Dict(Signal, Dict, T2Range,
 	end
 	
 	%Changing the order of dictionary matrix
-	Dit = permute(Dict, [3,1,2]);
+	Dict = permute(Dict, [3,1,2]);
 	res = zeros(1,length(B1Range));
 	T2Vals = res;
 	for i = 1:length(B1Range)
