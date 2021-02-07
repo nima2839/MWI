@@ -1,4 +1,4 @@
-function Out = Single_Component_T2_Dict(Signal, Dict, Range)
+function [Out, Residual] = Single_Component_T2_Dict(Signal, Dict, Range)
 % Fits for a parameter using single component fitting using a dictionary matrix and interpolates the range
 % Dict: the dictionary matrix which must be a 2D matrix of decay curves (ETLxN)
 % Signal(ETLx1)
@@ -18,4 +18,5 @@ function Out = Single_Component_T2_Dict(Signal, Dict, Range)
 	res_spline = interp1(Range, res, Range_spline,'spline');
 	[~,index] = min(res_spline);
 	Out = Range_spline(index);
+	Residual = min(res);
 end
