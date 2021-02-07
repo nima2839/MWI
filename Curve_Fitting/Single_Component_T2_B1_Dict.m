@@ -15,7 +15,7 @@ function [T2, B1, Residual] = Single_Component_T2_B1_Dict(Signal, Dict, T2Range,
 	T2Vals = res;
 	for i = 1:length(B1Range)
 		temp_dict =  squeeze(Dict(:,:,i));
-		[T2Vals(i),res(i),~] = Single_Component_T2_Dict(Signal, temp_dict, T2Range);
+		[T2Vals(i),res(i)] = Single_Component_T2_Dict(Signal, temp_dict, T2Range);
 	end
 	[~,index] = min(res);
 	B1 = B1Range(index);
