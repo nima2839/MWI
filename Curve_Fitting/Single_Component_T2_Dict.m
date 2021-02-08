@@ -8,11 +8,15 @@ function [Out, Residual] = Single_Component_T2_Dict(Signal, Dict, Range)
 	end
 	
 	ETL = length(Signal);
-	% Rshaping matrices for lsqnonneg function
+	% Reshaping matrices for fitting function
 	Signal = reshape(Signal, [ETL,1]);
 	res = zeros(1,length(Range));
+	% setting options for lsqnonlin function
+	options = optimoptions('lsqnonlin','Algorithm','levenberg-marquardt','TolFun',1e-4,'MaxIter',400,'TolX',1e-4,'Display','off');
+	options.MaxFunEvals = 200;
 	for i = 1:length(Range)
-		[~,res(i),~] = lsqnonneg(Dict(:,i), Signal);
+		Model = @(X)(X* Dict(:,i)) -Signal;
+		[~, res(i)] = lsqnonlin(Model,Signal(1),[],[],options);;
 	end
 	Range_spline = interp1(Range, 1:.1:numel(Range));
 	res_spline = interp1(Range, res, Range_spline,'spline');
