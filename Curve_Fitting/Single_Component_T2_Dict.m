@@ -1,5 +1,5 @@
 function [Out, Residual] = Single_Component_T2_Dict(Signal, Dict, Range, Method)
-% Nima: This is currently too slow to use!
+% 
 % Fits for a parameter using single component fitting using a dictionary matrix and interpolates the range
 % Dict: the dictionary matrix which must be a 2D matrix of decay curves (ETLxN)
 % Signal(ETLx1)
