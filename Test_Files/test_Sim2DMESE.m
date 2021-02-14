@@ -2,8 +2,8 @@
 
 disp('Initializing simulation parameters...');
 % First we define Distribution for each water compartment
-IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
-MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
+IE = SimClass.Create_Guassian_Dist(60e-3); % intra/extra-cellular water 
+MW = SimClass.Create_Guassian_Dist(10e-3); % myelin water
 
 % Now define other sim parameters
 MWFs = (1:2:30) *1e-2;
@@ -44,3 +44,11 @@ AnlysisTime = toc;
 cd ~/Simulation/MESE2D/
 
 save('MESE_2D_B1_suppliedANDestimated','-v7.3')
+
+for  i = 1:numel(SNRs)
+	Maps{i}.Residuals = [];
+	Maps{i}.Distribution = [];
+	Maps_B1{i}.Residuals = [];
+	Maps_B1{i}.Distribution = [];
+end
+save('Sim_2DMESE_Digest', 'Maps' , 'Maps_B1')
