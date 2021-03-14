@@ -10,7 +10,7 @@ function Mask = FindMask(Mag, opt)
 	if system('mkdir temp_FindMask_generated_dir')
 		error('Could not create a directory to perform the process!')
 	end
-	cd temp_FindMask_generated_dir
+	cd('temp_FindMask_generated_dir')
 	if numel(size(Mag)) > 4
 		Mag = Mag(:,:,:,1);
 	end
