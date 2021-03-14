@@ -3,7 +3,7 @@ function Mask = FindMask(Mag, opt)
 % FSL path must be added to the current terminal for this function!
 % /usr/local/fsl/bin/bet in out  -f 0.35 -g 0 -n -m
 	if nargin < 2
-		opt = '-f 0.3 -g 0 -n -m';
+		opt = "-f 0.3 -g 0 -n -m";
 	end
 	orig = pwd;
 	% Create a temp file to save and read files
@@ -17,7 +17,7 @@ function Mask = FindMask(Mag, opt)
 	niftiwrite(Mag,'Mag')
 	% call FSL bet for brain extraction
 	msg = '';
-	if system(strcat('bet Mag.nii out',opt));
+	if system(strcat("bet Mag.nii out ",opt));
 		msg = 'There was an error issued by brain extraction process!';
 		myfunc_Clean(msg);
 		error(msg);
