@@ -22,13 +22,7 @@ function Mask = FindMask(Mag, opt)
 		myfunc_Clean(msg);
 		error(msg);
 	else
-		if system('gunzip out_mask.nii')
-			msg = 'There was an issue in decompressing the fsl results!';
-			myfunc_Clean(msg);
-			error(msg);
-		else
-			Mask = double(niftiread('out_mask.nii'));
-		end
+		Mask = double(niftiread('out_mask.nii.gz'));
 	end
 	myfunc_Clean('');
 	function myfunc_Clean(msg)
