@@ -430,8 +430,11 @@ classdef TestClass
 			maps.gva = reshape(gvamap, SD(1:3));
 			maps.FNR = reshape(FNRmap, SD(1:3)); 
 			maps.Residuals = reshape(ResMap, SD); % Nima
+
 			obj.NNLS.Distribution = reshape(distributions, [SD(1:3), nT2]);
 			obj.NNLS.Maps = maps;
+			[~,idx] = min(abs(T2_times - 25e-3));
+			obj.NNLS.MWF = sum(obj.NLLS.Distribution(:,:,:,1:idx),4)./sum(obj.NLLS.Distribution,4);
 			disp('done!')
         end
 
