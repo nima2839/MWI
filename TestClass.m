@@ -434,7 +434,7 @@ classdef TestClass
 			obj.NNLS.Distribution = reshape(distributions, [SD(1:3), nT2]);
 			obj.NNLS.Maps = maps;
 			[~,idx] = min(abs(T2_times - 25e-3));
-			obj.NNLS.MWF = sum(obj.NNLS.Distribution(:,:,:,1:idx),4)./sum(obj.NLLS.Distribution,4);
+			obj.NNLS.MWF = sum(obj.NNLS.Distribution(:,:,:,1:idx),4)./sum(obj.NNLS.Distribution,4);
 			disp('done!')
         end
 
