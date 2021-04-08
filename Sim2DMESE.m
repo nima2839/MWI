@@ -65,8 +65,10 @@ classdef Sim2DMESE
 		end
 		
 		function [Maps, Maps_B1] = MC_Analyzer(obj, SNR, B1_diff)
-			if nargin > 3
+			if nargin > 2
 				flag_b1diff =  true;
+			else
+				flag_b1diff = false;
 			end
 			dummy = MC_MESE_Nima('Dummy');
 			dummy.B1Map = obj.B1Map;
