@@ -13,11 +13,14 @@ SNRs = [200,  1e4];
 cd ~/MESE/
 load('LookUpTable_101p')
 %%
+orig_info = MyInfo;
 %MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
 %MyInfo.SeqParams.dp = linspace(-1.5,1.5,2001);
 MyInfo.SeqParams.etl = 32;
 MyInfo.NumData = 500;
 MyInfo.B1Range = 0.6:.1:1.4;
+
+MyInfo.LookUpTable = [];
 B1_diff = -0.5:.05:.5;
 
 for i = 1:length(MWFs)
@@ -28,7 +31,7 @@ end
 
 disp('Generating simulation object...');
 tic;
-SimObj = Sim2DMESE(MyInfo);
+SimObj = Sim2DMESE(MyInfo, orig_info.LookUpTable);
 SimTime = toc;
 
 disp('Applying multi-component analysis while iterating through all the SNRs...');

@@ -16,7 +16,7 @@ classdef Sim2DMESE
 	end
 	
 	methods
-		function obj = Sim2DMESE(MyInfo)
+		function obj = Sim2DMESE(MyInfo, Analyze_LookUpTable)
 			disp('Initializing Sim2DMESE object...');
 			if ~isfield(MyInfo, "SeqParams")
 				error("SeqParams was not found in the input structure!");
@@ -52,11 +52,15 @@ classdef Sim2DMESE
 			end
 			
 			% Creating lookup table for MC_Analyzer
-			dummy = MC_MESE_Nima('Dummy');
-			dummy.MyInfo = obj.MyInfo;
-			dummy.MyInfo.T1 = 1;
-			dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.5, logspace(log10(8e-3),log10(2),60));
-			obj.MyInfo.MC_Analyzer.LookUpTable = dummy.MyInfo.LookUpTable;
+			if nargin < 2
+				dummy = MC_MESE_Nima('Dummy');
+				dummy.MyInfo = obj.MyInfo;
+				dummy.MyInfo.T1 = 1;
+				dummy = MC_LookUpTable_Preparation(dummy, 0.5:1e-2:1.5, logspace(log10(8e-3),log10(2),60));
+				obj.MyInfo.MC_Analyzer.LookUpTable = dummy.MyInfo.LookUpTable;
+			else
+				obj.MyInfo.MC_Analyzer.LookUpTable = Analyze_LookUpTable;
+			end
 			disp('Sim2DMESE object created!')
 		end
 		
