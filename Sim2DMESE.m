@@ -60,7 +60,10 @@ classdef Sim2DMESE
 			disp('Sim2DMESE object created!')
 		end
 		
-		function [Maps, Maps_B1] = MC_Analyzer(obj, SNR)
+		function [Maps, Maps_B1] = MC_Analyzer(obj, SNR, B1_diff)
+			if nargin > 3
+				flag_b1diff =  true;
+			end
 			dummy = MC_MESE_Nima('Dummy');
 			dummy.B1Map = obj.B1Map;
 			dummy.MyInfo = obj.MyInfo;
@@ -76,12 +79,23 @@ classdef Sim2DMESE
 			%
 			% Analyze Data
 			
-			[~,Maps_B1] =  MESE_Calculate_Distribution(dummy, false, 0);
+			if flag_b1diff
+				for i = 1:numel(B1_diff)
+					dummy.B1Map = obj.B1Map + B1_diff(i);
+					[~,Maps_B1(i)] =  MESE_Calculate_Distribution(dummy, false, 0);
+					Maps_B1(i).Residuals = [];
+					Maps_B1(i).Distribution = [];
+				end
+				Maps = [];
+			else
 			
-			% Estimate B1 using MC analysis
-			dummy.B1Map = MC_Estimate_B1Map(dummy, false, 0);
+				[~,Maps_B1] =  MESE_Calculate_Distribution(dummy, false, 0);
 			
-			[~,Maps] = MESE_Calculate_Distribution(dummy, false, 0);
+				% Estimate B1 using MC analysis
+				dummy.B1Map = MC_Estimate_B1Map(dummy, false, 0);
+			
+				[~,Maps] = MESE_Calculate_Distribution(dummy, false, 0);
+			end
 		end
 	end
 	
