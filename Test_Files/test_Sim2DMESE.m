@@ -20,7 +20,7 @@ MyInfo.SeqParams.etl = 32;
 MyInfo.NumData = 500;
 MyInfo.B1Range = 0.6:.1:1.4;
 
-MyInfo.LookUpTable = [];
+MyInfo = rmfield(MyInfo, "LookUpTable");
 B1_diff = -0.5:.05:.5;
 
 for i = 1:length(MWFs)
