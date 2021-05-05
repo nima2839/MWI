@@ -18,12 +18,13 @@ MyInfo.FractionRange{2}= [IE, IE];
 
 MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 500;
+MyInfo.NumData = 100;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
+B1diff = -.3:0.01:0.3;
 FA = [130:10:180];%, 165:5:180];
-FAdiff = [-10,-5,0,5,10,20];
+FAdiff = B1diff*180;
 
 Results = cell(length(FA), length(FAdiff));
 
@@ -50,7 +51,7 @@ end
 toc
 
 cd ~/Simulation/B1_Research/
-save('FAdiff_Effect_Results_NoCSF_Dist_fixedT2','Results','FA','FAdiff','MyInfo')
+save('FAB1diff_Effect_Results_NoCSF_Dist_fixedT2','Results','FA','FAdiff','MyInfo')
 
 
 
