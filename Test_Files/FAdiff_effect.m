@@ -18,12 +18,12 @@ MyInfo.FractionRange{2}= [IE, IE];
 
 MyInfo.T1Val = [.6 1 4.163];
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 100;
+MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = true;
 MyInfo.SNR = 1e4;
 
 B1diff = -.3:0.01:0.3;
-FA = [130:10:180];%, 165:5:180];
+FA = [0.6:0.1:1]*180;%, 165:5:180];
 FAdiff = B1diff*180;
 
 Results = cell(length(FA), length(FAdiff));

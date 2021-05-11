@@ -17,7 +17,7 @@ orig_info = MyInfo;
 %MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
 %MyInfo.SeqParams.dp = linspace(-1.5,1.5,2001);
 MyInfo.SeqParams.etl = 32;
-MyInfo.NumData = 100;
+MyInfo.NumData = 500;
 MyInfo.B1Range = 0.6:.1:1.4;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
