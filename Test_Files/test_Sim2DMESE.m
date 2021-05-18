@@ -11,12 +11,15 @@ SNRs = [100,200,300,500, 1e3];
 
 % Get the sequence parameters
 cd ~/MESE/
-load('LookUpTable_z513x129')
+load('LookUpTable_B1_0p3_1p7')
 %%
 orig_info = MyInfo;
 %MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
 %MyInfo.SeqParams.dp = linspace(-1.5,1.5,2001);
 MyInfo.SeqParams.etl = 32;
+MyInfo.SeqParams.dx = linspace(-1.5,1.5, 65);
+MyInfo.SeqParams.dz = linspace(-1.5,1.5, 129);
+MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 500;
 MyInfo.B1Range = 0.5:.1:1.5;
 
