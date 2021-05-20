@@ -6,8 +6,8 @@ IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water
 MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 
 % Now define other sim parameters
-MWFs = 15 *1e-2;
-SNRs = [200, 1e4];
+MWFs = [0:30] *1e-2;
+SNRs = [100,200,500, 1e3];
 
 % Get the sequence parameters
 cd ~/MESE/
@@ -24,7 +24,7 @@ MyInfo.NumData = 500;
 MyInfo.B1Range = 0.5:.1:1.5;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
-B1_diff = -0.3:.01:.3;
+%B1_diff = -0.3:.01:.3;
 
 for i = 1:length(MWFs)
 	temp.T2Values = [MW.T2Values, IE.T2Values];
@@ -40,10 +40,10 @@ SimTime = toc;
 disp('Applying multi-component analysis while iterating through all the SNRs...');
 
 tic;
-%Maps = cell(1,length(SNRs));
+Maps = cell(1,length(SNRs));
 Maps_B1 = cell(1,length(SNRs));
 for i = 1:length(SNRs)
-	[~, Maps_B1{i}] = MC_Analyzer(SimObj, SNRs(i),B1_diff);
+	[Maps, Maps_B1{i}] = MC_Analyzer(SimObj, SNRs(i));%,B1_diff);
 	disp(strcat(string(100*i/length(SNRs)),'%'));
 end
 AnlysisTime = toc;
@@ -58,4 +58,4 @@ cd ~/Simulation/MESE2D/
 %	Maps_B1{i}.Residuals = [];
 %	Maps_B1{i}.Distribution = [];
 %end
-save('Sim_2DMESE_B1diff')
+save('Sim_2DMESE_EstimVsSupplied', 'Maps' , 'Maps_B1')
