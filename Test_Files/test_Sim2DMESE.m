@@ -11,7 +11,7 @@ SNRs = [100,200,500, 1e3];
 
 % Get the sequence parameters
 cd ~/MESE/
-load('LookUpTable_B1_0p3_1p7')
+load('LookUpTable_z257x129')
 %%
 orig_info = MyInfo;
 %MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
