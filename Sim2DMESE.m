@@ -30,12 +30,12 @@ classdef Sim2DMESE
 			
 			obj.MyInfo = MyInfo;
 			
-			obj.Data = zeros(MyInfo.NumData, length(MyInfo.B1Range), length(MyInfo.T2Dist), MyInfo.SeqParams.etl);
+			obj.Data = zeros(MyInfo.NumData, numel(MyInfo.B1Range), numel(MyInfo.T2Dist), MyInfo.SeqParams.etl);
 			
 			disp('Simulating multi-component decay signal...')
 			
-			for j = 1:length(MyInfo.B1Range)
-				for k = 1:length(MyInfo.T2Dist)
+			for j = 1:numel(MyInfo.B1Range)
+				for k = 1:numel(MyInfo.T2Dist)
 					basis_decay = MC_MESE_Nima.Calc_basis_decay(obj.MyInfo, obj.MyInfo.B1Range(j));
 					obj.Data(1,j,k,:) = MyInfo.T2Dist(k).Weights * basis_decay;
 				end
