@@ -11,17 +11,17 @@ SNRs = [100,200,500, 1e3];
 
 % Get the sequence parameters
 cd ~/MESE/
-load('LookUpTable_z257x129')
+load('LookUpTable_z513x129')
 %%
 orig_info = MyInfo;
 %MyInfo.SeqParams = Ryan.MyInfo.SeqParams;
 %MyInfo.SeqParams.dp = linspace(-1.5,1.5,2001);
 MyInfo.SeqParams.etl = 32;
 MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
-MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
+MyInfo.SeqParams.dz = linspace(-1.5,1.5, 513);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 500;
-MyInfo.B1Range = 0.5:.1:1.5;
+MyInfo.B1Range = 0.6:.1:1.4;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
 %B1_diff = -0.3:.01:.3;
@@ -58,4 +58,4 @@ cd ~/Simulation/MESE2D/
 %	Maps_B1{i}.Residuals = [];
 %	Maps_B1{i}.Distribution = [];
 %end
-save('Sim_2DMESE_EstimVsSupplied', 'Maps' , 'Maps_B1')
+save('Sim_2DMESE_EstimVsSupplied_z513x129', 'Maps' , 'Maps_B1')
