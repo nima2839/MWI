@@ -6,7 +6,7 @@ IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water
 MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 
 % Now define other sim parameters
-MWFs = [0:30] *1e-2;
+MWFs = [0:0.25:30] *1e-2;
 SNRs = [100,200,500, 1e3];
 
 % Get the sequence parameters
@@ -21,7 +21,7 @@ MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
 MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 500;
-MyInfo.B1Range = 0.5:.1:1.5;
+%MyInfo.B1Range = 0.5:.1:1.5;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
 %B1_diff = -0.3:.01:.3;
@@ -58,4 +58,4 @@ cd ~/Simulation/MESE2D/
 %	Maps_B1{i}.Residuals = [];
 %	Maps_B1{i}.Distribution = [];
 %end
-save('Sim_2DMESE_EstimVsSupplied', 'Maps' , 'Maps_B1')
+save('Sim_2DMESE_B1diffEffect', 'Maps' , 'Maps_B1')
