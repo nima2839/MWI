@@ -21,7 +21,7 @@ MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
 MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 500;
-%MyInfo.B1Range = 0.5:.1:1.5;
+MyInfo.B1Range = 0.5:.1:1.5;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
 %B1_diff = -0.3:.01:.3;
