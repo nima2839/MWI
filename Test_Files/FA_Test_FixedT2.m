@@ -34,9 +34,9 @@ parfor j = 1:nSNR
 		temp.FlipAngle = FA(i)
 		temp.TrueFAFlag = false;
 		a = SimClass(temp);
-		[temp_dist{i},temp_maps{i}] = UBC_Nima_Fitting(a);
+		[temp_dist{i},temp_maps{i}] = UBC_Nima_Fitting(a, a.MyInfo);
 		a.MyInfo.TrueFAFlag = true;
-		[temp_Tdist{i},temp_Tmaps{i}] = UBC_Nima_Fitting(a);
+		[temp_Tdist{i},temp_Tmaps{i}] = UBC_Nima_Fitting(a, a.MyInfo);
 	end
 	Dist{j}{:} = temp_dist;
 	Maps{j}{:} = temp_maps;
