@@ -23,7 +23,7 @@ SNR = [100, 500, 1000];
 nFA = length(FA);
 nSNR = length(SNR);
 
-parfor j = 1:nSNR
+for j = 1:nSNR
 	temp = MyInfo;
 	temp.SNR = SNR(j);
 	temp_dist = cell(nFA);
@@ -34,9 +34,9 @@ parfor j = 1:nSNR
 		temp.FlipAngle = FA(i)
 		temp.TrueFAFlag = false;
 		a = SimClass(temp);
-		[temp_dist{i},temp_maps{i}] = UBC_Nima_Fitting(a, a.MyInfo);
+		[temp_dist{i},temp_maps{i}] = SimClass.UBC_Nima_Fitting(a.SimulatedData, a.MyInfo);
 		a.MyInfo.TrueFAFlag = true;
-		[temp_Tdist{i},temp_Tmaps{i}] = UBC_Nima_Fitting(a, a.MyInfo);
+		[temp_Tdist{i},temp_Tmaps{i}] = SimClass.UBC_Nima_Fitting(a.SimulatedData, a.MyInfo);
 	end
 	Dist{j}{:} = temp_dist;
 	Maps{j}{:} = temp_maps;
