@@ -190,7 +190,7 @@ classdef SimClass
 			nT2 = 60;
 			ns = MyInfo.NumData;
 			ne = length(MyInfo.Times);
-			temp = reshape(abs(SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
+			temp = reshape(abs(SimulatedData(:,:)), 1,1,ns,ne); 
 			Dist = zeros(1,1,ns,nT2);
 			
 			
