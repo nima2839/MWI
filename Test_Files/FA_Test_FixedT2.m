@@ -19,7 +19,7 @@ MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
 FA = [150, 170];
-SNR = [100, 500, 1000];
+SNR = [100, 200, 500];
 nFA = length(FA);
 nSNR = length(SNR);
 
