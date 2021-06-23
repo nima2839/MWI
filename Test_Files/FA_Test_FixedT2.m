@@ -18,8 +18,8 @@ MyInfo.NumData = 500;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
-FA = [150, 170];
-SNR = [100, 200, 500];
+FA = 0.85*180;
+SNR = 50:50:1e3;
 nFA = length(FA);
 nSNR = length(SNR);
 
@@ -46,4 +46,4 @@ end
 clear a temp
 Description = 'second dim is FlipAngle, and first dim is SNR';
 cd ~/Simulation/Flip_Angle_Test
-save('FA_Result_FixedT2_150_170','-v7.3')
+save('FA_Result_SNR_Sweep','-v7.3')
