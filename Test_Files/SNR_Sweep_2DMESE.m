@@ -20,7 +20,7 @@ MyInfo.SeqParams.etl = 32;
 MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
 MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
-MyInfo.NumData = 500;
+MyInfo.NumData = 1000;
 MyInfo.B1Range = 0.85;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
