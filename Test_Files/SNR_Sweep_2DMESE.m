@@ -21,7 +21,7 @@ MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
 MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 1000;
-MyInfo.B1Range = 0.85;
+MyInfo.B1Range = [0.7:0.05:1.3];
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
 %B1_diff = -0.3:.01:.3;
@@ -53,10 +53,10 @@ cd ~/Simulation/MESE2D/
 
 %save('MESE_2D_B1_suppliedANDestimated','-v7.3')
 
-%for  i = 1:numel(SNRs)
-%	Maps{i}.Residuals = [];
-%	Maps{i}.Distribution = [];
-%	Maps_B1{i}.Residuals = [];
-%	Maps_B1{i}.Distribution = [];
-%end
+for  i = 1:numel(SNRs)
+	Maps{i}.Residuals = [];
+	Maps{i}.Distribution = [];
+	Maps_B1{i}.Residuals = [];
+	Maps_B1{i}.Distribution = [];
+end
 save('Sim_2DMESE_SNR_Sweep')
