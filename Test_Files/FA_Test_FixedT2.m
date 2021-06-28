@@ -47,9 +47,9 @@ for j = 1:nSNR
 		a.MyInfo.TrueFAFlag = true;
 		[temp_Tdist{i},temp_Tmaps{i}] = SimClass.UBC_Nima_Fitting(a.SimulatedData, a.MyInfo);
 	end
-	Dist{j}{:} = temp_dist;
+	%Dist{j}{:} = temp_dist;
 	Maps{j}{:} = temp_maps;
-	Dist_FA{j}{:} = temp_Tdist;
+	%Dist_FA{j}{:} = temp_Tdist;
 	Maps_FA{j}{:}= temp_Tmaps;
 end
 clear a temp temp_Tdist temp_dist temp_Tmaps temp_maps
