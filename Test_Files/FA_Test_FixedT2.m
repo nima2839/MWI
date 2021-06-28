@@ -27,7 +27,7 @@ MyInfo.NumData = 1000;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
-FA = 0.85*180;
+FA = [0.7:0.05:1.3]*180;
 SNR = 50:50:1e3;
 nFA = length(FA);
 nSNR = length(SNR);
