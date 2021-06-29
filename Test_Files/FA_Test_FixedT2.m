@@ -8,9 +8,10 @@ MyInfo.Times = (1:32)*1e-2;
 
 IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
 MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
+MWF = 0.15;
 
 temp.T2Values = [MW.T2Values, IE.T2Values];
-temp.Weights = [MWFs(i) * MW.Weights, (1 - MWFs(i)) * IE.Weights];
+temp.Weights = [MWF * MW.Weights, (1 - MWF) * IE.Weights];
 MyInfo.T2Dist = temp;
 MyInfo.T1Val = [0.6 * ones(size(MW.Weights)), ones(size(1 * IE.Weights))]; % setting T1 parameter
 clear temp
