@@ -22,6 +22,7 @@ MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 1000;
 MyInfo.B1Range = [0.7:0.05:1.3];
+MyInfo.Chi2Factor = 1;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
 %B1_diff = -0.3:.01:.3;
@@ -29,7 +30,7 @@ MyInfo = rmfield(MyInfo, "LookUpTable");
 for i = 1:length(MWFs)
 	temp.T2Values = [MW.T2Values, IE.T2Values];
 	temp.Weights = [MWFs(i) * MW.Weights, (1 - MWFs(i)) * IE.Weights];
-	temp.T1Range = [1 * ones(size(MW.Weights)), ones(size(1 * IE.Weights))]; % setting T1 parameter
+	temp.T1Range = [0.6 * ones(size(MW.Weights)), ones(size(1 * IE.Weights))]; % setting T1 parameter
 	MyInfo.T2Dist(i) = temp;
 end
 
@@ -59,4 +60,4 @@ for  i = 1:numel(SNRs)
 	Maps_B1{i}.Residuals = [];
 	Maps_B1{i}.Distribution = [];
 end
-save('Sim_2DMESE_SNR_Sweep_Alt_T1')
+save('Sim_2DMESE_SNR_Sweep_Alt_Chi2Factor')
