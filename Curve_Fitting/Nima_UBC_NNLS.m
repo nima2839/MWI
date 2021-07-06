@@ -18,6 +18,13 @@ function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 		Chi2FactorActual = 1;
 		return;
 	end
+	
+	if Chi2Factor == 1
+		X = lsqnonneg(C,d);
+		mu = nan;
+		Chi2FactorActual = 1;
+		return;
+	end
 % X = LSQNONNEG_REG(C,d,Chi2Factor) returns the regularized NNLS solution X
 % that incurrs an increase in chi^2 by a factor of Chi2Factor.
 
