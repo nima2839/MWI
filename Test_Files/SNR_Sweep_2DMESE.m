@@ -59,10 +59,10 @@ cd ~/Simulation/MESE2D/
 %save('MESE_2D_B1_suppliedANDestimated','-v7.3')
 for j = 1:numel(Chi2Factors)
 for  i = 1:numel(SNRs)
-	Maps{i}.Residuals = [];
-	Maps{i}.Distribution = [];
-	Maps_B1{i}.Residuals = [];
-	Maps_B1{i}.Distribution = [];
+	Maps{j,i}.Residuals = [];
+	Maps{j,i}.Distribution = [];
+	Maps_B1{j,i}.Residuals = [];
+	Maps_B1{j,i}.Distribution = [];
 end
 end
 save('Sim_2DMESE_SNR_Chi2Factor_Sweep')
