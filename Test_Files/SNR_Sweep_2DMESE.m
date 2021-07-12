@@ -8,6 +8,7 @@ MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 % Now define other sim parameters
 MWFs = 0.15;
 SNRs = 50:50:1e3;
+Chi2Factors = [1:1e-2:1.4];
 
 % Get the sequence parameters
 cd ~/MESE/
@@ -21,7 +22,7 @@ MyInfo.SeqParams.dx = linspace(-1.5,1.5, 129);
 MyInfo.SeqParams.dz = linspace(-1.5,1.5, 257);
 MyInfo.SeqParams.DSF = 10;
 MyInfo.NumData = 1000;
-MyInfo.B1Range = [0.7:0.05:1.3];
+MyInfo.B1Range = 1;
 MyInfo.Chi2Factor = 1;
 
 MyInfo = rmfield(MyInfo, "LookUpTable");
@@ -42,22 +43,26 @@ SimTime = toc;
 disp('Applying multi-component analysis while iterating through all the SNRs...');
 
 tic;
-Maps = cell(1,length(SNRs));
-Maps_B1 = cell(1,length(SNRs));
-for i = 1:length(SNRs)
-	[Maps{i}, Maps_B1{i}] = MC_Analyzer(SimObj, SNRs(i));%,B1_diff);
-	disp(strcat(string(100*i/length(SNRs)),'%'));
+Maps = cell(numel(Chi2Factors),length(SNRs));
+Maps_B1 = cell(numel(Chi2Factors),length(SNRs));
+for j = 1:numel(Chi2Factors)
+	SimObj.MyInfo.Chi2Factor = Chi2Factors(j);
+	for i = 1:length(SNRs)
+		[Maps{j,i}, Maps_B1{j,i}] = MC_Analyzer(SimObj, SNRs(i));%,B1_diff);
+		disp(strcat(string(100*i/length(SNRs)),'%'));
+	end
 end
 AnlysisTime = toc;
 %%
 cd ~/Simulation/MESE2D/
 
 %save('MESE_2D_B1_suppliedANDestimated','-v7.3')
-
+for j = 1:numel(Chi2Factors)
 for  i = 1:numel(SNRs)
 	Maps{i}.Residuals = [];
 	Maps{i}.Distribution = [];
 	Maps_B1{i}.Residuals = [];
 	Maps_B1{i}.Distribution = [];
 end
-save('Sim_2DMESE_SNR_Sweep_Alt_Chi2Factor')
+end
+save('Sim_2DMESE_SNR_Chi2Factor_Sweep')
