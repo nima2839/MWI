@@ -7,7 +7,7 @@ MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 
 % Now define other sim parameters
 MWFs = 0.15;
-SNRs = 50:50:1e3;
+SNRs = 100:200:1e3;
 Chi2Factors = [1:1e-2:1.4];
 
 % Get the sequence parameters
@@ -49,6 +49,10 @@ for j = 1:numel(Chi2Factors)
 	SimObj.MyInfo.Chi2Factor = Chi2Factors(j);
 	for i = 1:length(SNRs)
 		[Maps{j,i}, Maps_B1{j,i}] = MC_Analyzer(SimObj, SNRs(i));%,B1_diff);
+		Maps{j,i}.Residuals = [];
+		Maps{j,i}.Distribution = [];
+		Maps_B1{j,i}.Residuals = [];
+		Maps_B1{j,i}.Distribution = [];
 		disp(strcat(string(100*i/length(SNRs)),'%'));
 	end
 end
@@ -57,12 +61,5 @@ AnlysisTime = toc;
 cd ~/Simulation/MESE2D/
 
 %save('MESE_2D_B1_suppliedANDestimated','-v7.3')
-for j = 1:numel(Chi2Factors)
-for  i = 1:numel(SNRs)
-	Maps{j,i}.Residuals = [];
-	Maps{j,i}.Distribution = [];
-	Maps_B1{j,i}.Residuals = [];
-	Maps_B1{j,i}.Distribution = [];
-end
-end
+
 save('Sim_2DMESE_SNR_Chi2Factor_Sweep')
