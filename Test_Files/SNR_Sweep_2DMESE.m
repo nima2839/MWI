@@ -8,7 +8,7 @@ MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
 % Now define other sim parameters
 MWFs = 0.15;
 SNRs = 100:200:1e3;
-Chi2Factors = [1:1e-2:1.4];
+Chi2Factors = [1.02:1e-3:1.05];
 
 % Get the sequence parameters
 cd ~/MESE/
