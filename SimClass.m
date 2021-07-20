@@ -93,8 +93,8 @@ classdef SimClass
 				if MyInfo.SNR > 0
 					SimulatedData = reshape(SimulatedData, [MyInfo.NumData, length(MyInfo.Times)]);
 					for i = 1:MyInfo.NumData
-						% It is assumed that signal at TE = 0 has the amplitude equal to 1!
-						SimulatedData(i,:) = SimClass.ADD_Noise(SimulatedData(i,:), MyInfo.SNR, 1);
+						% SNR is assumed to be max achievable SNR in the decay =  max(decay) /std(noise)
+						SimulatedData(i,:) = SimClass.ADD_Noise(SimulatedData(i,:), MyInfo.SNR, max(SimulatedData(i,:)));
 					end
 				end
 			else
