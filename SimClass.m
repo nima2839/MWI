@@ -93,8 +93,8 @@ classdef SimClass
 				if MyInfo.SNR > 0
 					SimulatedData = reshape(SimulatedData, [MyInfo.NumData, length(MyInfo.Times)]);
 					for i = 1:MyInfo.NumData
-						% SNR is assumed to be max achievable SNR in the decay =  max(decay) /std(noise)
-						SimulatedData(i,:) = SimClass.ADD_Noise(SimulatedData(i,:), MyInfo.SNR, max(SimulatedData(i,:)));
+						% It is assumed that signal at TE = 0 has the amplitude equal to 1!
+						SimulatedData(i,:) = SimClass.ADD_Noise(SimulatedData(i,:), MyInfo.SNR, 1);
 					end
 				end
 			else
@@ -116,7 +116,7 @@ classdef SimClass
 			%disp(['Total Simulation Time: ', string(SimTime)])
 		end
 
-		function [Dist, Maps] = NNLS_Fitting(obj) % do not use this funtion, this is from the old code!
+		function [Dist, Maps] = NNLS_Fitting(obj) % do not use this function, this is from the old code!
 			TempInfo.FirstTE = obj.MyInfo.Times(1);
 			TempInfo.EchoSpacing = obj.MyInfo.Times(2) - obj.MyInfo.Times(1);
 			TempInfo.Range_T = [1 120] * 1e-3;
@@ -188,10 +188,10 @@ classdef SimClass
 			end
 			
 			nT2 = 60;
-			ns = MyInfo.NumData;
+			ns = MyInfo.NumData / maxNumCompThreads;
 			ne = length(MyInfo.Times);
-			temp = reshape(abs(SimulatedData(:,:)), 1,1,ns,ne); 
-			Dist = zeros(1,1,ns,nT2);
+			temp = reshape(abs(SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
+			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			
 			
 			if isfield(MyInfo, 'Observation_Weights')
@@ -203,7 +203,7 @@ classdef SimClass
 			end
 			
 			if MyInfo.TrueFAFlag
-				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', MyInfo.FlipAngle*ones(1,1,ns), 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
+				[Maps, Dist, ~] = T2map_Nima(temp, 'FlipAngleMap', MyInfo.FlipAngle*ones(maxNumCompThreads,1,ns), 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
 						'Chi2Factor',MyInfo.Chi2Factor);
 			else
 				[Maps, Dist, ~] = T2map_Nima(temp, 'T1', MyInfo.T1,'Threshold', 0,'nT2', nT2,'T2Range', [0.008, 2], 'MinRefAngle', 100,...
@@ -237,14 +237,14 @@ classdef SimClass
 		end
 		
 		function output = GenerateT2DecayCurves_Gaussian(Times,T2,T1,FA)
-			% uses truncated gaussian as distribution
-			T2Dist = SimClass.Create_Guassian_Dist(T2);
+			% uses truncated Gaussian as distribution
+			T2Dist = SimClass.Create_Gaussian_Dist(T2);
 			output = SimClass.GenerateT2DecayCurves(Times,T2Dist,T1 * ones(size(T2Dist.Weights)), FA);
 		end
 		
-		function out = Create_Guassian_Dist(T2,L)
+		function out = Create_Gaussian_Dist(T2,L)
 			% this function replaces spikes/deltas in T2 distribution with truncated Gaussians
-			% guassian is truncated within two standard deviation
+			% Gaussian is truncated within two standard deviation
 			% standard deviation is 10% of mean
 			% out is a struct similar to T2Dist
 			if nargin < 2
