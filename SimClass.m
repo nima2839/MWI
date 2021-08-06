@@ -190,7 +190,7 @@ classdef SimClass
 			nT2 = 60;
 			% Changing the data to match the 4D matrix requirements of "T2map_Nima"
 			temp = reshape(abs(SimulatedData(:,:)), [1,1,size(SimulatedData)]); 
-			Dist = zeros(maxNumCompThreads,1,ns,nT2);
+			Dist = zeros(1,1,size(SimulatedData,1),nT2);
 			
 			
 			if isfield(MyInfo, 'Observation_Weights')
