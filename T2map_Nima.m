@@ -322,7 +322,7 @@ maps.SNR = SNRmap;
 maps.Residuals = ResMap; % Nima
 maps.E2_E1 = E2_E1map; % Nima
 [~, idx] = min(abs(T2_times - MWF_CutOff));
-maps.MWF = sqeeze(sum(distributions(:,:,:,1:idx),4)./sum(distributions,4)); % Nima
+maps.MWF = squeeze(sum(distributions(:,:,:,1:idx),4)./sum(distributions,4)); % Nima
 
 if savereg
     maps.mu=mumap;
