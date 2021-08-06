@@ -188,9 +188,8 @@ classdef SimClass
 			end
 			
 			nT2 = 60;
-			ns = MyInfo.NumData / maxNumCompThreads;
-			ne = length(MyInfo.Times);
-			temp = reshape(abs(SimulatedData(:,:)), maxNumCompThreads,1,ns,ne); 
+			% Changing the data to match the 4D matrix requirements of "T2map_Nima"
+			temp = reshape(abs(SimulatedData(:,:)), [1,1,size(SimulatedData)]); 
 			Dist = zeros(maxNumCompThreads,1,ns,nT2);
 			
 			
