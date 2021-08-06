@@ -93,6 +93,8 @@ p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 % Nima: Setting Observation Weights
 p.addParamValue('Observation_Weights', [], @(x)isnumeric(x) && ndims(x) == 2)
 
+% Nima: This variable determines where in the distribution we would find the myelin water T2 cut-off
+p.addParamValue('MWF_CutOff', 40e-3,@(x)isnumeric(x) && isscalar(x)); % milliseconds 
 % Nima:Set FlipAngleMap
 p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==3);
 p.addParamValue('T1', [], @(x)isa(x,'double'));
@@ -106,6 +108,7 @@ T1 = p.Results.T1; % Nima : This is a vector now
 
 RefCon = p.Results.RefCon;
 Threshold = p.Results.Threshold;
+MWF_CutOff = p.Results.MWF_CutOff;
 Chi2Factor = p.Results.Chi2Factor;
 nT2 = p.Results.nT2;
 T2Range = p.Results.T2Range;
@@ -318,6 +321,9 @@ maps.FNR = FNRmap;
 maps.SNR = SNRmap; 
 maps.Residuals = ResMap; % Nima
 maps.E2_E1 = E2_E1map; % Nima
+[~, idx] = min(abs(T2_times - MWF_CutOff));
+maps.MWF = sqeeze(sum(distributions(:,:,:,1:idx),4)./sum(distributions,4)); % Nima
+
 if savereg
     maps.mu=mumap;
     maps.chi2factor=chi2map;
