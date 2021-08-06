@@ -6,8 +6,8 @@ addpath(genpath('~/GRASE/Postprocessing'))
 MyInfo.NumWaterComp = 2;
 MyInfo.Times = (1:32)*1e-2;
 
-IE = SimClass.Create_Guassian_Dist(75e-3); % intra/extra-cellular water 
-MW = SimClass.Create_Guassian_Dist(15e-3); % myelin water
+IE = SimClass.Create_Gaussian_Dist(75e-3); % intra/extra-cellular water 
+MW = SimClass.Create_Gaussian_Dist(15e-3); % myelin water
 MWF = 0.15;
 
 temp.T2Values = [MW.T2Values, IE.T2Values];
