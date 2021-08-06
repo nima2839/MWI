@@ -24,7 +24,7 @@ clear temp
 %MyInfo.FractionRange{2}= [0.85,0.85];
 %MyInfo.FractionRange{3}= [0.1,0.1];
 MyInfo.FlipAngle = 180;
-MyInfo.NumData = 1000;
+MyInfo.NumData = 10;
 MyInfo.TrueFAFlag = false;
 MyInfo.SNR = 0;
 
