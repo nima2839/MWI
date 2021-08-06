@@ -5,7 +5,7 @@ function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 	% w: observation weights for the fitting analysis: size ETLx1
 	%
 	% reshaping for consistency
-	C = reshape(C, [numel(d), numel(C)/numel(d)])
+	C = reshape(C, [numel(d), numel(C)/numel(d)]);
 	d = reshape(d, [numel(d),1]);
 	w = reshape(w, size(d));
 	% The following is the function which applies observation weights
