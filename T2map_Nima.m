@@ -1,21 +1,24 @@
 function [maps,distributions, T1] = T2map_Nima(image,varargin)
 %
 % Nima Changes:
+%   - Some code encapsulation in the form of function definition was set for better readablity;
+%   - Changed the shape of the for loop for better parallel processing optimization and debugging;
 %	- Regularization is always enabled in this version!
-%	- A flip angle map can be given as input;
-%	- Min flip angle is increased from 50 to 100;
+%	- A flip angle map can be given as input; 'FlipAngleMap' must be the registered B1 map in the correct scale and dimension;
+%	- Default values are changed to match the parameters used in my thesis;
 %	- Observation Weights has been added;
-%	- Add T1 map vector as an input for their corresponding T2 in T2 distribution;
-%	- T1 value is returned in case default values should be set altarnatively;
-%	- Residuals of fit are now saved in maps; To save space this could be set to empty array on the user's end;
-%	- nCores option has been omitted;
-%	- Alternate fitting function is called to work with observation weights;
+%	- Added T1 map vector as an input for their corresponding T2 in T2 distribution;
+%	- T1 value is returned in case default values in case alternate values were to be used;
+%	- Residuals of fit are now saved in the maps structure; To save space this could be set to empty array on the user's end;
+%	- nCores option has been removed; MATLAB now takes care of the parallel processing optimizations;
+%	- Alternate fitting function is called to work with observation weights ("Nima_UBC_NNLS");
 %	- Threshold's default value set back to 200; Must be set to zero for simulated data;
 %	- Ratio of second echo to the first echo of the fitted curve is now recorded in the maps output;
+%   - SNR estimation was added as the ratio of signal power to residual (estimated noise) power; 
 %
 
 %
-% [maps,distributions] = T2map_SEcorr(image,...)
+% [maps,distributions] = T2map_SEcorr(image,...) % Nima: this was the original function
 %
 % Description:
 %   Uses NNLS to compute T2 distributions in the presence of stimulated
@@ -78,26 +81,26 @@ p=inputParser;
 p.addRequired('image',@(x)isa(x,'double') && ndims(x)==4);
 p.addParamValue('TE',0.01,@(x)isnumeric(x) && isscalar(x) && x>=0.001 && x<=1); % TE modification _J
 %p.addParamValue('T1',1,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=0.001); % Nima : a vector is expected now
-p.addParamValue('RefCon',180,@(x)isnumeric(x) && isscalar(x) && x<=180 && x>=1);
-p.addParamValue('Threshold',200,@(x)isnumeric(x) && isscalar(x)); 
-p.addParamValue('Chi2Factor',1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
-p.addParamValue('nT2',200,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=300);
-p.addParamValue('T2Range',[0.015,2],@(x)isnumeric(x) && length(x)==2 && x(2)>x(1) && x(1)>=0.001 && x(2)<=10);
-p.addParamValue('MinRefAngle',100,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
-p.addParamValue('nAngles',8,@(x)isnumeric(x) && isscalar(x) && x>1);
-p.addParamValue('Reg','lcurve',@(x)any(strcmp(x,{'no','chi2','lcurve'})));
-p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
-p.addParamValue('nCores',4,@(x)isnumeric(x) && isscalar(x) && x>=1 && x<=8);
+p.addParamValue('RefCon',       180,@(x)isnumeric(x) && isscalar(x) && x<=180 && x>=1);
+p.addParamValue('Threshold',    200,@(x)isnumeric(x) && isscalar(x)); 
+p.addParamValue('Chi2Factor',   1.02,@(x)isnumeric(x)  && isscalar(x) && x>1);
+p.addParamValue('nT2',          60,@(x)isnumeric(x) && isscalar(x) && x>=10 && x<=300);
+p.addParamValue('T2Range',      [0.008,2],@(x)isnumeric(x) && length(x)==2 && x(2)>x(1) && x(1)>=0.001 && x(2)<=10);
+p.addParamValue('MinRefAngle',  100,@(x)isnumeric(x) && isscalar(x) && x>1 && x<180);
+p.addParamValue('nAngles',      8,@(x)isnumeric(x) && isscalar(x) && x>1);
+p.addParamValue('Reg',          'lcurve',@(x)any(strcmp(x,{'no','chi2','lcurve'})));
+%p.addParamValue('SetFlipAngle',0,@(x)(isnumeric(x) && isscalar(x)));
+%p.addParamValue('nCores',4,@(x)isnumeric(x) && isscalar(x) && x>=1 && x<=8);
 p.addParamValue('Save_regparam','no',@(x)any(strcmp(x,{'yes','no'})));
 
 % Nima: Setting Observation Weights
 p.addParamValue('Observation_Weights', [], @(x)isnumeric(x) && ndims(x) == 2)
 
 % Nima: This variable determines where in the distribution we would find the myelin water T2 cut-off
-p.addParamValue('MWF_CutOff', 40e-3,@(x)isnumeric(x) && isscalar(x)); % milliseconds 
+p.addParamValue('MWF_CutOff',   40e-3,@(x)isnumeric(x) && isscalar(x)); % milliseconds 
 % Nima:Set FlipAngleMap
-p.addParamValue('FlipAngleMap',[],@(x)isa(x,'double') && ndims(x)==3);
-p.addParamValue('T1', [], @(x)isa(x,'double'));
+p.addParamValue('FlipAngleMap', [],@(x)isa(x,'double') && ndims(x)==3);
+p.addParamValue('T1',           [], @(x)isa(x,'double'));
 %
 p.addParamValue('Save_NNLS_basis','no',@(x)any(strcmp(x,{'yes','no'})));
 % Parse inputs (MATLAB will throw an error here if any variables fail validation)
@@ -121,17 +124,15 @@ faset=	~isempty(alphamap);	%p.Results.SetFlipAngle;
 
 if isempty(T1)
 	T1 = ones(1, nT2);
-	disp('T1 is set to 1 seconds for all!');
+	%disp('T1 is set to 1 seconds for all!');
 end
-
-
 
 
 % nCores=p.Results.nCores;
 % nCores= 4; % in case of error message about Cores;
 
-savereg=strcmp(p.Results.Save_regparam,'yes');
-saveNNLS=strcmp(p.Results.Save_NNLS_basis,'yes');
+savereg = strcmp(p.Results.Save_regparam,'yes');
+saveNNLS = strcmp(p.Results.Save_NNLS_basis,'yes');
 
 %==========================================================================
 % Initialize all the data
@@ -147,39 +148,45 @@ if isempty(obs_weights)
 	obs_weights = ones(1,nechs);
 end
 
+
+% Reshaping input for parallel processing
+Map_Numel = nrows*ncols*nslices;
+image = reshape(image, [Map_Numel, nechs]);
+
 % Initialize map matrices
-gdnmap = zeros(nrows,ncols,nslices);
-ggmmap = zeros(nrows,ncols,nslices);
-gvamap = zeros(nrows,ncols,nslices);
-SNRmap = zeros(nrows,ncols,nslices); 
-FNRmap = zeros(nrows,ncols,nslices); 
-E2_E1map = zeros(nrows,ncols,nslices); % Nima: Ratio of second echo to first in the fitter curve
+gdnmap = zeros(Map_Numel, 1);
+ggmmap = zeros(Map_Numel, 1);
+gvamap = zeros(Map_Numel, 1);
+SNRmap = zeros(Map_Numel, 1); 
+FNRmap = zeros(Map_Numel, 1); 
+E2_E1map = zeros(Map_Numel, 1); % Nima: Ratio of second echo to first in the fitter curve
 
 if faset == 0
-	alphamap = zeros(nrows,ncols,nslices);
+	alphamap = zeros(Map_Numel, 1);
+else
+    alphamap = reshape(alpha, [Map_Numel, 1]);
 end
-distributions=nan*ones(nrows,ncols,nslices,nT2);
-ResMap=nan*ones(nrows,ncols,nslices,nechs); % Nima
-mumap=nan*ones(nrows,ncols,nslices);
-chi2map=nan*ones(nrows,ncols,nslices);
+
+distributions = nan*ones(Map_Numel, nT2);
+ResMap = nan*ones(Map_Numel, nechs); % Nima
+mumap = nan*ones(Map_Numel, 1);
+chi2map = nan*ones(Map_Numel, 1);
 
 %
 % decay_basis=nan*ones(nrows,ncols,nslices,nechs,nT2);
 %
 if saveNNLS
-    decay_basis=nan*ones(nrows,ncols,nslices,nechs,nT2);
+    decay_basis = nan*ones(Map_Numel,nT2);
 end
 
 %==========================================================================
 % Find the basis matrices for each flip angle
 %==========================================================================
 % Initialize parameters and variable for angle optimization
-T2_times=logspace(log10(T2Range(1)),log10(T2Range(2)),nT2);
+T2_times = logspace(log10(T2Range(1)), log10(T2Range(2)), nT2);
 if faset==0
     flip_angles=linspace(minangle, 180, nangles);
     % basis_angles is a 1xnangles cell array that will contain the decay bases of each angle
-	% Nima: This fit uses an extra point at 177 degrees to mitigate underestimation arround 180 degrees!
-	flip_angles = [flip_angles(1:end-1), flip_angles(end)];
 	nangles = length(flip_angles);
     basis_angles=cell(nangles);
     % Loop to compute each basis and assign them to a cell in the array
@@ -213,120 +220,79 @@ end
 %    poolopenflag=0;
 %end
 
-try
 
-parfor row = 1:nrows
-    %row
-    gdn = zeros(ncols,nslices);
-    ggm = zeros(ncols,nslices);
-    gva = zeros(ncols,nslices);
-    SNR = zeros(ncols,nslices); 
-    FNR = zeros(ncols,nslices); 
-	E2_E1 = zeros(ncols,nslices); % Nima
-    alpha= reshape(squeeze(alphamap(row,:,:)),ncols,nslices); % Nima
-	dists = zeros(ncols,nslices,nT2);
-	TempRes = zeros(ncols,nslices,nechs); % Nima
-    mus = zeros(ncols,nslices);
-    chi2s = zeros(ncols,nslices);
-
-    if saveNNLS
-        basis_matrices = zeros(ncols,nslices,nechs,nT2);
-    else
-        basis_matrices=[];
-    end
-
-    for col = 1:ncols
-        for slice = 1:nslices
-            % Conditional loop to reject low signal pixels
-            if image(row,col,slice,1) > Threshold
-                % Extract decay curve from the pixel
-                decay_data = squeeze(image(row,col,slice,:));
-				%obs_weights = ones(size(decay_data)); % Nima: set observation weights here
-                %obs_weights(1:10) = 1.5;
-                if faset == 0
-                    %======================================================
-                    % Find optimum flip angle
-                    %======================================================
-                    alpha(col,slice) = Estimate_Alpha(basis_angles, nangles, decay_data, reshape(obs_weights, size(decay_data)), flip_angles);
-                %else
-                %    alpha(col,slice) = alphamap(row,col,slice);
-                end
+parfor i = 1:Map_Numel
+    % Extract decay curve from the voxel
+    decay_data = reshape(squeeze(image(i,:)), [nechs,1]);
+    % Conditional loop to reject low signal pixels
+    try
+        if decay_data(1) > Threshold
+            
+            %obs_weights = ones(size(decay_data)); % Nima: set observation weights here
+            %obs_weights(1:10) = 1.5;
+            if faset == 0
                 %======================================================
-                % Fit basis matrix using alpha
+                % Find optimum flip angle
                 %======================================================
-                basis_decay = Calc_basis_decay(nechs, nT2, alpha(col,slice), TE, T2_times, T1, RefCon);
+                alphamap(i) = Estimate_Alpha(basis_angles, nangles, decay_data, reshape(obs_weights, size(decay_data)), flip_angles);
+            %else
+            %    alpha(col,slice) = alphamap(row,col,slice);
+            end
+            %======================================================
+            % Fit basis matrix using alpha
+            %======================================================
+            basis_decay = Calc_basis_decay(nechs, nT2, alphamap(i), TE, T2_times, T1, RefCon);
 
-                if saveNNLS
-                    basis_matrices(col,slice,:,:) = basis_decay;
-                end
-                %==========================================================
-                % Calculate T2 distribution and global parameters
-                %==========================================================
-                % Find distribution depending on regularization routine
-                [T2_dis,mu,chi2] = Nima_UBC_NNLS(basis_decay, decay_data, reshape(obs_weights, size(decay_data)), Chi2Factor);
+            %==========================================================
+            % Calculate T2 distribution and global parameters
+            %==========================================================
+            % Find distribution depending on regularization routine
+            [T2_dis,mu,chi2] = Nima_UBC_NNLS(basis_decay, decay_data, reshape(obs_weights, size(decay_data)), Chi2Factor);
 
-                dists(col,slice,:) = T2_dis;
-                mus(col,slice) = mu;
-                chi2s(col,slice) = chi2;
-                % Compute parameters of distribution
-                gdn(col,slice) = sum(T2_dis);
-                ggm(col,slice) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
-                gva(col,slice) = exp(sum((log(T2_times)-log(ggm(col,slice))).^2.*T2_dis')./sum(T2_dis)) - 1;
-                decay_calc = basis_decay*T2_dis;
-                residuals = decay_calc-decay_data;
-				TempRes(col,slice,:) = residuals; % Nima
-                FNR(col,slice) = sum(T2_dis)/std(residuals); 
-                %SNR(col,slice) = max(decay_data)/sqrt(var(residuals)); 
-				SNR(col,slice) = sum(decay_calc.^2)/sum(residuals.^2); % Nima
-				E2_E1(col, slice) = decay_calc(2)/decay_calc(1); % Nima
+            % Compute parameters of distribution
+            decay_calc = basis_decay*T2_dis;
+            residuals = decay_calc-decay_data;
+
+            gdnmap(i) = sum(T2_dis);
+            ggmmap(i) = exp(dot(T2_dis,log(T2_times))/sum(T2_dis));
+            gvamap(i) = exp(sum((log(T2_times)-log(ggmmap(i))).^2.*T2_dis')./sum(T2_dis)) - 1;
+            SNRmap(i) = sum(decay_calc.^2)/sum(residuals.^2); % Nima
+            FNRmap(i) = sum(T2_dis)/std(residuals);
+            E2_E1map(i) = decay_calc(2)/decay_calc(1); % Nima
+            distributions(i,:) = T2_dis;
+            ResMap(i,:) = residuals; % Nima
+            mumap(i) = mu;
+            chi2map(i) = chi2;
+            if saveNNLS
+                decay_basis(i,:) = basis_decay;
             end
         end
-    end
-    % Record temporary maps into 3D outputs
-    gdnmap(row,:,:) = gdn;
-    ggmmap(row,:,:) = ggm;
-    gvamap(row,:,:) = gva;
-    SNRmap(row,:,:) = SNR; 
-    FNRmap(row,:,:) = FNR; 
-	E2_E1map(row,:,:) = E2_E1; % Nima
-	if faset == 0
-		alphamap(row,:,:) = alpha;
-	end
-	distributions(row,:,:,:) = dists;
-	ResMap(row,:,:,:) = TempRes; % Nima
-    mumap(row,:,:) = mus;
-    chi2map(row,:,:)=chi2s;
-    if saveNNLS
-        decay_basis(row,:,:,:,:) = basis_matrices;
+    catch ME
+        disp(strcat("An error occured at index = ",string(i),", more details below:"))
+        disp(ME)
     end
 end
 
-catch err
-    %if poolopenflag==1
-    %    matlabpool close
-    %end
-    rethrow(err)
-end
 
 %if poolopenflag==1
 %    matlabpool close
 %end
 
-% Assign outputs
-maps.gdn = gdnmap;
-maps.ggm = ggmmap;
-maps.gva = gvamap;
-maps.alpha = alphamap;
-maps.FNR = FNRmap; 
-maps.SNR = SNRmap; 
-maps.Residuals = ResMap; % Nima
-maps.E2_E1 = E2_E1map; % Nima
+% Assign outputs in the correct shape
+maps.gdn = reshape(gdnmap, [nrows,ncols,nslices]);
+maps.ggm = reshape(ggmmap, [nrows,ncols,nslices]);
+maps.gva = reshape(gvamap, [nrows,ncols,nslices]);
+maps.alpha = reshape(alphamap, [nrows,ncols,nslices]);
+maps.FNR = reshape(FNRmap, [nrows,ncols,nslices]); 
+maps.SNR = reshape(SNRmap, [nrows,ncols,nslices]); 
+maps.Residuals = reshape(ResMap, [nrows,ncols,nslices,nechs]); % Nima
+maps.E2_E1 = reshape(E2_E1map, [nrows,ncols,nslices]); % Nima
 [~, idx] = min(abs(T2_times - MWF_CutOff));
-maps.MWF = squeeze(sum(distributions(:,:,:,1:idx),4)./sum(distributions,4)); % Nima
-
+maps.MWF = reshape(squeeze(sum(distributions(:,1:idx),2)./sum(distributions,2)), [nrows,ncols,nslices]); % Nima
+distributions = reshape(distributions, [nrows,ncols,nslices,nT2]);
 if savereg
-    maps.mu=mumap;
-    maps.chi2factor=chi2map;
+    maps.mu = reshape(mumap, [nrows,ncols,nslices]);
+    maps.chi2factor = reshape(chi2map, [nrows,ncols,nslices]);
 end
 %
 % maps.NNLS_basis=decay_basis;
@@ -347,7 +313,7 @@ function alpha = Estimate_Alpha(basis_angles, nangles, decay_data, obs_weights, 
   for a=1:nangles
       [T2_dis_ls, ~, ~] = Nima_UBC_NNLS(basis_angles{a},decay_data, obs_weights); % Nima: This is to be tested!
       decay_pred=basis_angles{a}*T2_dis_ls;
-      chi2_alpha(a)=sum((decay_data-decay_pred).^2);
+      chi2_alpha(a)=sum((decay_data - decay_pred).^2);
   end
   % Find the minimum chi-squared and the corresponding angle
   alpha_spline = flip_angles(1):0.001:flip_angles(end);
