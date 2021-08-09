@@ -164,7 +164,7 @@ E2_E1map = zeros(Map_Numel, 1); % Nima: Ratio of second echo to first in the fit
 if faset == 0
 	alphamap = zeros(Map_Numel, 1);
 else
-    alphamap = reshape(alpha, [Map_Numel, 1]);
+    alphamap = reshape(alphamap, [Map_Numel, 1]);
 end
 
 distributions = nan*ones(Map_Numel, nT2);
