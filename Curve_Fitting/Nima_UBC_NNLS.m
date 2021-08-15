@@ -8,11 +8,15 @@ function [X,mu,Chi2FactorActual] = Nima_UBC_NNLS(C, d, w, Chi2Factor)
 	C = reshape(C, [numel(d), numel(C)/numel(d)]);
 	d = reshape(d, [numel(d),1]);
 	w = reshape(w, size(d));
+	ww = repmat(w,[1 numel(C)/numel(d)]); % added by -ps- for better code compatiblity
 	% The following is the function which applies observation weights
-	PreProcess = @(a) a .* w;
-	%
-	C = PreProcess(C);
-	d = PreProcess(d);
+	% PreProcess = @(a) a .* w;
+	% This function is only compatible in later versions of MATLAB
+	% C = PreProcess(C);
+	% d = PreProcess(d);
+	
+	C = C .* ww;
+	d = d .* w;
 	if nargin < 4
 		X = lsqnonneg(C,d);
 		mu = nan;
