@@ -86,7 +86,7 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 		
 		try
 			opt.ReadPath = Path;
-			opt.Num_Of_Files = size(Output,4);
+			opt.Num_Of_Files = size(Output,3);
 			opt.Name = temp_name;
 			SPM_Handler.DICOM_TO_NIFTI(opt);
 			temp_name = strcat(temp_name, '.nii');	
