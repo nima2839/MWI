@@ -99,6 +99,6 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 		end
 
 	else
-		error(strcat("Method '",Options.Method,"' is not valid!"))
+		error(strcat('Method %',Options.Method,'% is not valid!'));
 	end
 end

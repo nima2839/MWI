@@ -86,13 +86,13 @@ classdef SPM_Handler
 				if isfield(Options, 'Name')
 					% cd(Options.OutDir)
 					n =  numel(spm_output.files);
-					ext = "";
+					ext = '';
 					out = cell(n, 1);
 					for i = 1:n
 						if n > 1
 							ext = strcat("_Echo_", string(i));
 						end
-						out{i} = strcat(Options.OutDir,'\', Options.Name, ext, ".nii");
+						out{i} = strcat(Options.OutDir,'\', Options.Name, ext, '.nii');
 						movefile(spm_output.files{i}, out{i});
 					end
 				else
@@ -127,7 +127,7 @@ classdef SPM_Handler
 			end
 			FileNames = cell(1,n);
 			for i = 1:n
-				FileNames{i} = char(strcat(ReadDir, "/", files(i).name));
+				FileNames{i} = char(strcat(ReadDir, '/', files(i).name));
 			end
 		end
 
