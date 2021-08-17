@@ -7,5 +7,8 @@ function Nominal_Angle = Estimate_NominalAngle(B1, Maps)
     %
     % Removing voxels containing 'ggm' values over 100ms to avoid vessels and CSF affected areas
     idx = find (B1 > 0.99 & B1 < 1.01  & Maps.ggm < 0.1);
+    if isempty(idx)
+        error('Could not find enough voxels for the process!');
+    end
     Nominal_Angle = mean(Maps.alpha(idx));
 end
