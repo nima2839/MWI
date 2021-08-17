@@ -23,6 +23,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
 %   - 'Find_NominalAngle' is a function pointer that accepts two input args: (B1, Maps)
 %       + Where 'B1' is the normalized coregistered B1 Phase map, and 'Maps' is the results of the estimated FA method; 
 %       + (handled by this funciton);
+%       + If the function fails with an exception it will skip supplied B1+ method;
 %       + (optional)
 %
   % Checking and intializing the input
@@ -64,6 +65,11 @@ function  Results = ProcessGRASE(Options, Save_Name)
     end
   end
 
+  % MWI analysis estimated FA method
+  [Maps, Dist, ~] = T2map_Nima(Image);
+  Results.Maps = Maps;
+  Results.Dist = Dist;
+  Results.nifti_info = nifti_info
 
   
   if isfield(Options, 'B1Phase_Dir')
@@ -95,28 +101,30 @@ function  Results = ProcessGRASE(Options, Save_Name)
       opt.source = temp_files{1};
     end
     SPM_Handler.Coregister(opt);
-    FlipAngleMap = Options.Nominal_Angle * double(niftiread(strcat('r',temp_files{1},'.nii'))) / Options.B1_Scale;
-    % clearing the temp files
+
+    % If the estimation process fails Supplied B1 method will be skiped 
+    Skip_Supplied_B1 = false;
+    if ~isfield(Options, 'Find_NominalAngle')
+      try 
+        Options.Nominal_Angle = Options.Find_NominalAngle(Image, Maps) * B1;
+      catch ME
+        disp(ME);
+        disp('Nominal Angle estimation failed! Skipping B1 supplied method!');
+        Skip_Supplied_B1 = true;
+      end
+    end
+
+    if Skip_Supplied_B1
+      FlipAngleMap = [];
+    else
+      FlipAngleMap = Options.Nominal_Angle * double(niftiread(strcat('r',temp_files{1},'.nii'))) / Options.B1_Scale;
+    end
+      % clearing the temp files
     for i = 1:numel(temp_files)
       delete(strcat(temp_files{i}, '.nii'));
     end
   end
   
-  % MWI analysis
-  [Maps, Dist, ~] = T2map_Nima(Image);
-  Results.Maps = Maps;
-  Results.Dist = Dist;
-  Results.nifti_info = nifti_info
-
-  if ~isfield(Options, 'Find_NominalAngle')
-    try 
-      FlipAngleMap = Options.Find_NominalAngle(Image, Maps);
-    catch ME
-      disp(ME);
-      disp('Nominal Angle estimation failed! Skipping B1 supplied method!');
-      FlipAngleMap = [];
-    end
-  end
 
   if ~isempty(FlipAngleMap)
     [Maps_B1, Dist_B1, ~] = T2map_Nima(Image, 'FlipAngleMap', FlipAngleMap);
