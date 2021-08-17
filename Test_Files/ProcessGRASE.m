@@ -20,9 +20,9 @@ function  Results = ProcessGRASE(Options, Save_Name)
 %   - 'Find_Mask' is a function pointer that user specifies to find mask using only the 4D magnitude data
 %       + Ex: Options.Find_Mask = @(Mag) Create_Mask(Mag(:,:,:,1), 0.35); % "Create_Mask" can be found under "\MWI\Tools\"
 %       + (optional)
-%   - 'Find_NominalAngle' is a function pointer that accepts two input args: (B1, Estimated_Flip_Angle_Map)
-%       + Where 'B1' is the normalized coregistered B1 Phase map, and 'Estimated_Flip_Angle_Map' is the estimation of the 
-%         refocusing angles using the normal analysis (handled by this funciton);
+%   - 'Find_NominalAngle' is a function pointer that accepts two input args: (B1, Maps)
+%       + Where 'B1' is the normalized coregistered B1 Phase map, and 'Maps' is the results of the estimated FA method; 
+%       + (handled by this funciton);
 %       + (optional)
 %
   % Checking and intializing the input
@@ -110,7 +110,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
 
   if ~isfield(Options, 'Find_NominalAngle')
     try 
-      FlipAngleMap = Options.Find_NominalAngle(Image, Maps.alpha);
+      FlipAngleMap = Options.Find_NominalAngle(Image, Maps);
     catch ME
       disp(ME);
       disp('Nominal Angle estimation failed! Skipping B1 supplied method!');
