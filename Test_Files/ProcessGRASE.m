@@ -98,13 +98,20 @@ function  Results = ProcessGRASE(Options, Save_Name)
         temp_files{3} = strcat('r', temp_files{1});
         opt.source = temp_files{1};
       end
-      SPM_Handler.Coregister(opt);
-  
+      try
+        SPM_Handler.Coregister(opt);
+        % Reading the coregistered B1 Map
+        B1_Normalized = double(niftiread(strcat('r',temp_files{1},'.nii'))) / Options.B1_Scale;
+      catch ME
+        disp("Failed in the coregistration process, returning without any results");
+        rethrow(ME)
+      end
+      
       % If the estimation process fails Supplied B1 method will be skiped 
       Skip_Supplied_B1 = false;
       if ~isfield(Options, 'Find_NominalAngle')
         try 
-          Options.Nominal_Angle = Options.Find_NominalAngle(Image, Maps);
+          Options.Nominal_Angle = Options.Find_NominalAngle(B1_Normalized, Maps);
         catch ME
           disp(ME);
           disp('Nominal Angle estimation failed! Skipping B1 supplied method!');
@@ -115,7 +122,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
       if Skip_Supplied_B1
         FlipAngleMap = [];
       else
-        FlipAngleMap = Options.Nominal_Angle * double(niftiread(strcat('r',temp_files{1},'.nii'))) / Options.B1_Scale;
+        FlipAngleMap = Options.Nominal_Angle * B1_Normalized;
       end
         % clearing the temp files
       for i = 1:numel(temp_files)
