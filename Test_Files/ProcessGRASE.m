@@ -41,7 +41,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
   
     if ~isfield(Options, 'Nominal_Angle') 
       if ~isfield(Options, 'Find_NominalAngle')
-      Options.Nominal_Angle = 156.5; % calculated empirically
+        Options.Find_NominalAngle = @(B1, Maps) Estimate_NominalAngle(B1, Maps); % calculated empirically
       end
     end
   
