@@ -136,6 +136,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
       Results.Description = 'The %_B1% extention specifies the supplied B1 method resutls';
       Results.Maps_B1 = Maps_B1;
       Results.Dist_B1 = Dist_B1;
+      Results.Nominal_Angle =  Options.Nominal_Angle;
     end
   
     if nargin > 1
