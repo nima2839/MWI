@@ -104,7 +104,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
       Skip_Supplied_B1 = false;
       if ~isfield(Options, 'Find_NominalAngle')
         try 
-          Options.Nominal_Angle = Options.Find_NominalAngle(Image, Maps) * B1;
+          Options.Nominal_Angle = Options.Find_NominalAngle(Image, Maps);
         catch ME
           disp(ME);
           disp('Nominal Angle estimation failed! Skipping B1 supplied method!');
