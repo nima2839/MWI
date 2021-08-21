@@ -54,7 +54,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
         Mask = Options.Find_Mask(Image);
         sd = size(Image);
         temp = reshape(Image, [numel(Mask), sd(4)]);
-        idx = find(Mask > 0);
+        idx = Mask > 0;
         temp(idx,:) = 0;
         Image = reshape(temp, sd);
       catch ME
@@ -67,23 +67,23 @@ function  Results = ProcessGRASE(Options, Save_Name)
     [Maps, Dist, ~] = T2map_Nima(Image);
     Results.Maps = Maps;
     Results.Dist = Dist;
-    Results.nifti_info = nifti_info
+    Results.nifti_info = nifti_info;
   
     
     if isfield(Options, 'B1Phase_Dir')
       % reading dicom files for coregisteration
       opt.ReadPath = Options.B1Phase_Dir;
-      opt.Name = strcat('B1_Phase_temp', date)
+      opt.Name = strcat('B1_Phase_temp', date);
       temp_files{1} = opt.Name;
       SPM_Handler.DICOM_TO_NIFTI(opt);
       if isfield(Options, 'B1Mag_Dir')
         opt.ReadPath = Options.B1Mag_Dir;
-        opt.Name = strcat('B1_Mag_temp', date)
+        opt.Name = strcat('B1_Mag_temp', date);
         temp_files{2} = opt.Name;
         SPM_Handler.DICOM_TO_NIFTI(opt);
       end
       opt.ReadPath = Options.GRASE_Dir;
-      opt.Name = strcat('GRASE_Mag_temp', date)
+      opt.Name = strcat('GRASE_Mag_temp', date);
       temp_files{numel(temp_files) + 1} = opt.Name;
       opt.Num_Of_Files = size(Image, 3);
       SPM_Handler.DICOM_TO_NIFTI(opt);
