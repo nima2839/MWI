@@ -92,7 +92,7 @@ classdef SPM_Handler
 						if n > 1
 							ext = strcat("_Echo_", string(i));
 						end
-						out{i} = strcat(Options.OutDir,'\', Options.Name, ext, '.nii');
+						out{i} = strcat(Options.OutDir,'/', Options.Name, ext, '.nii');
 						movefile(spm_output.files{i}, out{i});
 					end
 				else
