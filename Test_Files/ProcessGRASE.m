@@ -109,7 +109,7 @@ function  Results = ProcessGRASE(Options, Save_Name)
       
       % If the estimation process fails Supplied B1 method will be skiped 
       Skip_Supplied_B1 = false;
-      if ~isfield(Options, 'Find_NominalAngle')
+      if isfield(Options, 'Find_NominalAngle')
         try 
           Options.Nominal_Angle = Options.Find_NominalAngle(B1_Normalized, Maps);
         catch ME
