@@ -1,8 +1,11 @@
-function [Output, nifti_info] = ReadAllDCM(Path, Options)
+function [Data, data_info] = ReadAllDCM(Path, Options)
 	% Reads all the DICOM files (files ending with '.dcm') in the 'Path' and returns:
-	%	'Output': 4D matrix;
-	%	'nifti_info': when using 'spm' method returns the proper NIFTI information corresponding to the first echo data; 
-	%				+ When using 'Normal' method returns an empty array;
+	%	'Data': 4D matrix;
+	%	'data_info': a structure containing the header information
+	%			+ 'data_info.dcm_hdr': information in the DICOM header (first file in the directory)
+	%			+ 'data_info.nifti_info': when using 'spm' method returns the proper NIFTI information
+	%					corresponding to the first echo data; 
+	%
 	%
 	% Input arguemnts:
 	%	'Path': path to the DICOM images
@@ -14,6 +17,7 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 	%					+ This method requires the toolbox to be added to MATLAB path.
 	%		+ 'Options' can be a sting specifying the 'Method' field as well!
 	%
+	%	
 
 	if nargin < 2
 		Options.Method = 'Normal';
@@ -22,7 +26,7 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 	if ~isstruct(Options)
 		if ischar(char(Options))
 			opt.Method = Options;
-			[Output, nifti_info] = ReadAllDCM(Path, opt);
+			[Data, nifti_info] = ReadAllDCM(Path, opt);
 			return;
 		else
 			error('Invalid input argument!')
@@ -41,16 +45,19 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 		Files = dir('*.dcm'); % First two are the current and parent directories, the rest are assumend to be DICOM files
 		disp('Reading DICOM Files...')
 		disp(Path)
+		% saving header information of the first DICOM file
+		data_info.dcm_hdr = dicominfo(Files(1).name);
+		% parameter 's' is the index for the 4th dimension (echo index)
 		s = 1;
 		tic
 		if nargin > 1 % this assumes files are in stacks of NumSlices
 			for k = 1:length(Files)
 				temp = mod(k, NumSlices);
 				if temp == 0
-					Output(:,:,NumSlices,s) = double(dicomread(Files(k).name));
+					Data(:,:,NumSlices,s) = double(dicomread(Files(k).name));
 					s = s + 1;
 				else
-					Output(:,:,temp,s) = double(dicomread(Files(k).name));
+					Data(:,:,temp,s) = double(dicomread(Files(k).name));
 				end
 			end
 		else % otherwise it will return a cell sorted by EchoNumber and SliceLocation of DICOM headers
@@ -63,35 +70,35 @@ function [Output, nifti_info] = ReadAllDCM(Path, Options)
 			ETL = max(EchoNumbers(:));
 			nrows = size(D_images,1);
 			ncols = size(D_images,2);
-			Output = zeros(nrows, ncols, numel(Files)/ETL, ETL);
+			Data = zeros(nrows, ncols, numel(Files)/ETL, ETL);
 			for i = 1:ETL
 				idx = find(EchoNumbers == i);
 				[~, idx_sort] = sort(SliceLocations(idx));
-				Output(:,:,:,i) = D_images(:,:, idx(idx_sort));
+				Data(:,:,:,i) = D_images(:,:, idx(idx_sort));
 			end
 		end
 		% Matching the dimension to the format of the nifti output of spm12 toolbox
-		Output = permute(flip(Output,1), [2, 1, 3, 4]);
+		Data = permute(flip(Data,1), [2, 1, 3, 4]);
 		toc
 		cd(orig_dir);
 		disp('Finished reading!')
 	elseif  strcmp(Options.Method, 'spm')
 		temp_name = strcat('temp_File',date);
 		if ~isfield(Options,'NumSlices')
-			[Output, ~] = ReadAllDCM(Path);	
+			[Data, ~] = ReadAllDCM(Path);	
 		else
 			opt.NumSlices = Options.NumSlices;
-			[Output, ~] = ReadAllDCM(Path, opt);
+			[Data, ~] = ReadAllDCM(Path, opt);
 		end
 		
 		try
 			opt.ReadPath = Path;
-			opt.Num_Of_Files = size(Output,3);
+			opt.Num_Of_Files = size(Data,3);
 			opt.Name = temp_name;
 			SPM_Handler.DICOM_TO_NIFTI(opt);
 			temp_name = strcat(temp_name, '.nii');	
-			nifti_info = niftiinfo(temp_name);
-			nifti_info.Datatype = 'double';
+			data_info.nifti_info = niftiinfo(temp_name);
+			data_info.nifti_info.Datatype = 'double';
 			delete(temp_name);
 		catch ME
 			disp('The following error occured when reading the nifti-info:');
