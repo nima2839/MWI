@@ -60,7 +60,7 @@ function [Data, data_info] = ReadAllDCM(Path, Options)
 					Data(:,:,temp,s) = double(dicomread(Files(k).name));
 				end
 			end
-		else % otherwise it will return a cell sorted by EchoNumber and SliceLocation of DICOM headers
+		else % otherwise it will return a 4D matrix sorted by EchoNumber and SliceLocation of DICOM headers
 			for i = 1:numel(Files)
 				temp_info =  dicominfo(Files(i).name);
 				SliceLocations(i) = temp_info.SliceLocation;
