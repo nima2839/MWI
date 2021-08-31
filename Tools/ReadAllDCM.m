@@ -26,7 +26,7 @@ function [Data, data_info] = ReadAllDCM(Path, Options)
 	if ~isstruct(Options)
 		if ischar(char(Options))
 			opt.Method = Options;
-			[Data, nifti_info] = ReadAllDCM(Path, opt);
+			[Data, data_info] = ReadAllDCM(Path, opt);
 			return;
 		else
 			error('Invalid input argument!')
@@ -36,8 +36,6 @@ function [Data, data_info] = ReadAllDCM(Path, Options)
 	if ~isfield(Options, 'Method')
 		Options.Method = 'Normal';
 	end
-
-	nifti_info = [];
 
 	if strcmp(Options.Method, 'Normal')
 		orig_dir = pwd;
@@ -50,11 +48,11 @@ function [Data, data_info] = ReadAllDCM(Path, Options)
 		% parameter 's' is the index for the 4th dimension (echo index)
 		s = 1;
 		tic
-		if nargin > 1 % this assumes files are in stacks of NumSlices
+		if isfield(Options, 'NumSlices') % this assumes files are in stacks of NumSlices
 			for k = 1:length(Files)
-				temp = mod(k, NumSlices);
+				temp = mod(k, Options.NumSlices);
 				if temp == 0
-					Data(:,:,NumSlices,s) = double(dicomread(Files(k).name));
+					Data(:,:,Options.NumSlices,s) = double(dicomread(Files(k).name));
 					s = s + 1;
 				else
 					Data(:,:,temp,s) = double(dicomread(Files(k).name));
