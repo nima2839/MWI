@@ -85,10 +85,10 @@ function [Data, data_info] = ReadAllDCM(Path, Options)
 	elseif  strcmp(Options.Method, 'spm')
 		temp_name = strcat('temp_File',date);
 		if ~isfield(Options,'NumSlices')
-			[Data, ~] = ReadAllDCM(Path);	
+			[Data, data_info] = ReadAllDCM(Path);	
 		else
 			opt.NumSlices = Options.NumSlices;
-			[Data, ~] = ReadAllDCM(Path, opt);
+			[Data, data_info] = ReadAllDCM(Path, opt);
 		end
 		
 		try
