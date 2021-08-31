@@ -7,7 +7,7 @@ function [T2, B1, res, Options] = Single_Component_T2_B1(Signal, Options)
 	end
 	
 	if ~isfield(Options, 'T2Range')
-		Options.T2Range = [10e-3, 2]; % seconds
+		Options.T2Range = [8e-3, 2]; % seconds
 	end
 	
 	if ~isfield(Options, 'T1')
@@ -22,8 +22,8 @@ function [T2, B1, res, Options] = Single_Component_T2_B1(Signal, Options)
 		Options.ETL = length(Signal);
 	end
 	
-	opt = optimoptions('lsqnonlin','Algorithm', 'trust-region-reflective','TolFun',1e-12,'MaxIter',1e4,'TolX',1e-8,'Display','off');
-	opt.MaxFunEvals = 1e4;
+	opt = optimoptions('lsqnonlin','Algorithm', 'trust-region-reflective','TolFun',1e-8,'MaxIter',800,'TolX',1e-6,'Display','off');
+	opt.MaxFunEvals = 800;
 	opt.TypicalX = [100e-2 , 180, Signal(1)];
 	[Param, res] = lsqnonlin(@CostFun ,...
 		[60e-2 , 180, Signal(1) * 2],... 			% Initial guess
