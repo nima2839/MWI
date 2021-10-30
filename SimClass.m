@@ -290,11 +290,15 @@ classdef SimClass
 			% To use a single definition for additive noise throughout the code
 			% using rician noise
 			% ref: https://www.mathworks.com/matlabcentral/fileexchange/14237-rice-rician-distribution
-			if nargin < 3
-				out = ricernd(signal, signal/SNR)
+			if SNR > 0
+				if nargin < 3
+					out = ricernd(signal, signal/SNR)
+				else
+					% sigma = ref / SNR
+					out = ricernd(signal , ref/SNR);
+				end
 			else
-				% sigma = ref / SNR
-				out = ricernd(signal , ref/SNR);
+				out = signal;
 			end
 		end
 	end
